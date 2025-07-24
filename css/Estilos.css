@@ -1,0 +1,248 @@
+/* Variables globales */
+:root {
+  --color-primario: #1E3A8A;
+  --color-secundario: #3B82F6;
+  --color-claro: #F3F4F6;
+  --color-texto: #111827;
+  --color-mision: #FFF9C4; /* amarillo suave */
+  --color-vision: #BBDEFB; /* azul suave */
+  --color-valores: #FFCDD2; /* rojo suave */
+  --espaciado: 1rem;
+  --esoaciado-grande: 2.5rem;
+  --borde-radio: 0.75rem;
+  --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --ancho-max: 1200px;
+}
+
+.portada img {
+  width: 100%;
+  margin: var(--espaciado) auto;
+  display: block;
+  max-width: var(--ancho-max);
+  aspect-ratio: 16/6;
+  object-fit: cover;
+  border-radius: var(--borde-radio);
+}
+
+.description {
+  max-width: var(--ancho-max);
+  padding: var(--espaciado);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--espaciado);
+}
+
+.description h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.description p {
+  font-size: 1.1rem;
+  max-width: 800px;
+}
+
+.cajaTarjetas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espaciado);
+  max-width: var(--ancho-max);
+  margin-bottom: 2rem;
+  padding: 0 var(--espaciado);
+}
+
+.Tarjeta {
+  background-color: white;
+  border-radius: var(--borde-radio);
+  padding: var(--espaciado);
+  box-shadow: var(--sombra);
+  width: 300px;
+  text-align: center;
+}
+
+.Tarjeta:nth-child(1) {
+  background-color: var(--color-mision);
+}
+
+.Tarjeta:nth-child(2) {
+  background-color: var(--color-vision);
+}
+
+.Tarjeta:nth-child(3) {
+  background-color: var(--color-valores);
+}
+
+.ImgTarjeta img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+/* Estilo menú */
+section {
+  max-width: var(--ancho-max);
+  margin: 2rem auto;
+  padding: var(--espaciado);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;          
+  justify-content: center;      
+  gap: 1rem;                  
+  padding: 1rem;
+  max-width: var(--ancho-max);  
+  margin: 2rem auto;
+}
+
+.cabecera h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.cabecera img {
+  width: 40px;                 
+  height: 40px;
+  object-fit: contain;
+}
+
+.modulos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--espaciado);
+  width: 100%;
+  max-width: var(--ancho-max);
+  padding: 0 var(--espaciado);
+  box-sizing: border-box;
+}
+
+.modulo {
+  background-color: white;
+  padding: var(--espaciado);
+  border-radius: var(--borde-radio);
+  box-shadow: var(--sombra);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.modulo:hover {
+  transform: translateY(-5px);
+}
+
+.modulo img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.modulo h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ============================
+   Media Queries Responsive
+===============================*/
+
+@media (max-width: 1024px) {
+  .description h1 {
+    font-size: 1.8rem;
+  }
+
+  .description p {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .modulo {
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --espaciado: 0.8rem;
+    --esoaciado-grande: 1.5rem;
+    --borde-radio: 0.5rem;
+  }
+
+  .portada img {
+    aspect-ratio: 16 / 8;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .description h1 {
+    font-size: 1.5rem;
+  }
+
+  .description p {
+    font-size: 0.95rem;
+  }
+
+  .Tarjeta {
+    width: 90%;
+  }
+
+  .cabecera {
+    justify-content: flex-start;  /* Alinea a la izquierda */
+    padding-left: var(--espaciado);
+    padding-right: var(--espaciado);
+  }
+
+  .cabecera h1 {
+    font-size: 1.5rem;
+  }
+
+  .cabecera img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .modulos {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .modulo {
+    max-width: 140px;
+    padding: 0.8rem;
+  }
+
+  .modulo h2 {
+    font-size: 0.9rem;
+  }
+
+  .modulo img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .description h1 {
+    font-size: 1.3rem;
+  }
+
+  .description p {
+    font-size: 0.9rem;
+  }
+
+  .modulo {
+    max-width: 100%;
+  }
+
+  section h1 {
+    font-size: 1.5rem;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+}
