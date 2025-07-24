@@ -10,6 +10,21 @@ session_start();
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
 
     <title>Secciones</title>
+
+    <style>
+        .tooltip .tooltip-inner {
+            background-color: #ffffff;
+            border: 1px solid #343a40;
+            color: #000000;
+
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 220px;
+            text-align: center;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -74,8 +89,21 @@ session_start();
                                         // echo $row['id_estudiante'];
                                 ?>
                                         <tr>
-                                            <td class="id_seccion" style="display: none;"> <?php echo $row['id'] ?> </td>
-                                            <td> <?php echo $row['nombre'] ?> </td>
+
+                                            <td class="id_seccion" style="display: none;"> <?php echo $row['id_seccion'] ?> </td>
+                                            <td> <?php echo $row['nombre'];
+                                                    $fetch_query = "SELECT * FROM horario WHERE id_seccion = " . $row['id_seccion'];
+                                                    $fetch_query_run_hor = mysqli_query($conn, $fetch_query);
+
+                                                    if (mysqli_num_rows($fetch_query_run_hor) == 0) {
+
+                                                        echo ' <i class="bi bi-exclamation-triangle-fill text-danger" 
+                                                        data-bs-toggle="tooltip" 
+                                                        data-bs-placement="top" 
+                                                        title="Esta sección no cuenta con un horario. Por favor, pulse el botón consultar y posteriormente Agregar Horario">
+                                                        </i>';
+                                                    }
+                                                    ?> </td>
                                             <td> <?php echo $row['año'] ?> </td>
 
                                             <td>
@@ -87,7 +115,7 @@ session_start();
                                             </td>
 
                                             <td>
-                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id'] ?> ">
+                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id_seccion'] ?> ">
                                                 <a href="" id="delete-sala" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
                                         </tr>
@@ -146,7 +174,7 @@ session_start();
 
                         </div>
 
-                      
+
 
 
                     </div>
@@ -220,7 +248,7 @@ session_start();
                             <select
                                 class="form-select form-select-lg"
                                 name="año"
-                                id="año" required >
+                                id="año" required>
                                 <option selected value="">Seleccione el año</option>
                                 <option value="1">1ero</option>
                                 <option value="2">2do</option>
@@ -275,12 +303,20 @@ session_start();
                 infoEmpty: 'No se han encontrado resultados',
                 infoFiltered: '(se han encontrado _MAX_ resultados)',
                 lengthMenu: 'Mostrar _MENU_ por pagina',
-                zeroRecords: '0 resultados encontrados'
+                zeroRecords: '0 resultados encontrados',
+                
             },
             columnDefs: [{
                 width: '93px',
                 targets: [2, 3, 4]
-            }]
+            }],
+            order: [[2, 'asc']]
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
         });
 
 
@@ -289,14 +325,14 @@ session_start();
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
 
-                var id = $(this).closest('tr').find('.id_seccion').text();
+                var id_seccion = $(this).closest('tr').find('.id_seccion').text();
 
                 $.ajax({
                     type: "POST",
                     url: "conn_secciones.php",
                     data: {
                         'click-view-btn': true,
-                        'id_seccion': id,
+                        'id_seccion': id_seccion,
                     },
                     success: function(response) {
                         $('.view_seccion_data').html(response);
@@ -311,18 +347,18 @@ session_start();
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
 
-                var id = $(this).closest('tr').find('.id_seccion').text();
-                console.log(id)
+                var id_seccion = $(this).closest('tr').find('.id_seccion').text();
+                console.log(id_seccion)
                 $.ajax({
                     type: "POST",
                     url: "conn_secciones.php",
                     data: {
                         'click-edit-btn': true,
-                        'id': id,
+                        'id_seccion': id_seccion,
                     },
                     success: function(response) {
                         $.each(response, function(Key, value) {
-                            $('#idEdit').val(value['id']);
+                            $('#idEdit').val(value['id_seccion']);
                             $('#nombreEdit').val(value['nombre'].slice(-1));
                             console.log(value['nombre'])
                             $('#añoEdit').val(value['año']);
@@ -341,27 +377,32 @@ session_start();
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
 
-                var id = $(this).closest('tr').find('.id_estudiante').text();
+                var id_seccion = $(this).closest('tr').find('.id_seccion').text();
 
-                swal({
-                    title: "¿Estas seguro?",
-                    text: "Cuando elimines este estudiante lo borraras permanentemente de la base de datos!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará la sección permanentemente!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "conn_estudiantes.php",
+                            url: "conn_secciones.php",
                             data: {
                                 "click-delete-btn": true,
-                                "id_estudiante": id,
+                                "id_seccion": id_seccion,
                             },
                             success: function(response) {
-                                swal("Estudiante Eliminado Correctamente.!", {
-                                    icon: "success",
-                                }).then((result) => {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'La sección ha sido eliminada correctamente.',
+                                    'success'
+                                ).then(() => {
                                     location.reload();
                                 });
                             }

@@ -112,8 +112,9 @@ if(isset($_POST['update-data'])) {
         Municipio= '$Municipio', 
         Parroquia = '$Parroquia', 
         año_academico = '$año_academico', 
-        seccion_estudiante = '$seccion_estudiante',  
-        WHERE id_estudiante = $id";
+        seccion_estudiante = '$seccion_estudiante' 
+        WHERE id_estudiante = '$id'";
+
     $update_query_run = mysqli_query($conn, $update_query);
 
     if($update_query_run) {

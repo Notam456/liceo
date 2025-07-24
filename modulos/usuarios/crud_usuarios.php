@@ -14,16 +14,17 @@ session_start();
 
 <style>
     .info-contrasena {
-      display: none;
-      background-color: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 5px;
-      font-size: 14px;
-      max-width: 400px;
+        display: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 5px;
+        font-size: 14px;
+        max-width: 400px;
     }
-  </style>
+</style>
+
 <body>
 
     <nav>
@@ -142,7 +143,7 @@ session_start();
                                 placeholder="Edite el nombre de usuario" required>
                         </div>
 
-                       
+
                         <div class="form-group mb-3">
                             <label for="">Contraseña</label>
                             <input type="text" id="contrasenaEdit" class="form-control" name="contrasena"
@@ -317,9 +318,12 @@ session_start();
                 infoFiltered: '(se han encontrado _MAX_ resultados)',
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
-                
-            }
-            , columnDefs: [{ width: '93px', targets: [3,4,5] }]
+
+            },
+            columnDefs: [{
+                width: '93px',
+                targets: [3, 4, 5]
+            }]
         });
 
         // Mostrar script
@@ -379,27 +383,32 @@ session_start();
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
 
-                var id = $(this).closest('tr').find('.id_estudiante').text();
+                var id = $(this).closest('tr').find('.id').text();
 
-                swal({
-                    title: "¿Estas seguro?",
-                    text: "Cuando elimines este estudiante lo borraras permanentemente de la base de datos!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará el usuario permanentemente!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
                             url: "conn_usuarios.php",
                             data: {
                                 "click-delete-btn": true,
-                                "id_estudiante": id,
+                                "id": id,
                             },
                             success: function(response) {
-                                swal("Estudiante Eliminado Correctamente.!", {
-                                    icon: "success",
-                                }).then((result) => {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El usuario ha sido eliminado correctamente.',
+                                    'success'
+                                ).then(() => {
                                     location.reload();
                                 });
                             }
@@ -414,27 +423,27 @@ session_start();
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
     <script>
-    const input = document.getElementById("contrasena");
-    const info = document.getElementById("info-contrasena");
-    const inputEdit = document.getElementById("contrasenaEdit");
-    const infoEdit = document.getElementById("info-contrasenaEdit");
+        const input = document.getElementById("contrasena");
+        const info = document.getElementById("info-contrasena");
+        const inputEdit = document.getElementById("contrasenaEdit");
+        const infoEdit = document.getElementById("info-contrasenaEdit");
 
-    input.addEventListener("focus", () => {
-      info.style.display = "block";
-    });
+        input.addEventListener("focus", () => {
+            info.style.display = "block";
+        });
 
-    input.addEventListener("blur", () => {
-      info.style.display = "none";
-    });
+        input.addEventListener("blur", () => {
+            info.style.display = "none";
+        });
 
-    inputEdit.addEventListener("focus", () => {
-      infoEdit.style.display = "block";
-    });
+        inputEdit.addEventListener("focus", () => {
+            infoEdit.style.display = "block";
+        });
 
-    inputEdit.addEventListener("blur", () => {
-      infoEdit.style.display = "none";
-    });
-  </script>
+        inputEdit.addEventListener("blur", () => {
+            infoEdit.style.display = "none";
+        });
+    </script>
 
 </body>
 

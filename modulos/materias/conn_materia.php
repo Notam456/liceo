@@ -30,13 +30,13 @@ if (isset($_POST['click-view-btn'])) {
 
     //echo $id;
 
-    $fetch_query = "SELECT * FROM materia WHERE `id` = '$id'";
+    $fetch_query = "SELECT * FROM materia WHERE `id_materia` = '$id'";
     $fetch_query_run = mysqli_query($conn, $fetch_query);
 
     if (mysqli_num_rows($fetch_query_run) > 0) {
         while ($row = mysqli_fetch_array($fetch_query_run)) {
             echo '
-                <h6> Id primaria: ' . $row['id'] . '</h6>
+                <h6> Id primaria: ' . $row['id_materia'] . '</h6>
                 <h6> Nombre de la materia: ' . $row['nombre_materia'] . '</h6>
                 <h6> Descripción: ' . $row['info_materia'] . '</h6>
             ';
@@ -52,9 +52,9 @@ if (isset($_POST['click-edit-btn'])) {
     $id = $_POST['id'];
     $array_result = [];
 
-    //echo $id;
 
-    $fetch_query = "SELECT * FROM materia WHERE `id` = '$id'";
+
+    $fetch_query = "SELECT * FROM materia WHERE `id_materia` = '$id'";
     $fetch_query_run = mysqli_query($conn, $fetch_query);
 
     if (mysqli_num_rows($fetch_query_run) > 0) {
@@ -83,7 +83,7 @@ if (isset($_POST['update-data'])) {
     $update_query = "UPDATE materia SET
         nombre_materia = '$nombre_materia',
         info_materia = '$info_materia'
-        WHERE `id` = $id";
+        WHERE `id_materia` = $id";
         
     $update_query_run = mysqli_query($conn, $update_query);
 
@@ -104,7 +104,7 @@ if (isset($_POST['click-delete-btn'])) {
 
     $id = $_POST['id'];
 
-    $delete_query = "DELETE FROM materia WHERE id ='$id'";
+    $delete_query = "DELETE FROM materia WHERE id_materia ='$id'";
     $delete_query_run = mysqli_query($conn, $delete_query);
 
     if ($delete_query_run) {

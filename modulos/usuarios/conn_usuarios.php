@@ -106,9 +106,9 @@ if (isset($_POST['update-data'])) {
 // ELIMINAR DATOS
 if (isset($_POST['click-delete-btn'])) {
 
-    $id = $_POST['id_estudiante'];
+    $id = $_POST['id'];
 
-    $delete_query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
+    $delete_query = "DELETE FROM usuario WHERE id ='$id'";
     $delete_query_run = mysqli_query($conn, $delete_query);
 
     if ($delete_query_run) {

@@ -123,62 +123,62 @@ session_start();
                     <div class="modal-body">
 
                         <div class="form-group mb-3">
-                            <input type="hidden" id="id_estudiante" class="form-control" name="id">
+                            <input type="hidden" id="id" class="form-control" name="id_estudiante">
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Nombres</label>
-                            <input type="text" id="Razon_Social" class="form-control" name="nombre_estudiante"
+                            <input type="text" id="nombre_estudianteEdit" class="form-control" name="nombre_estudiante"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Nombres del estudiante" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Apellidos</label>
-                            <input type="text" id="Denominacion_Comercial" class="form-control" name="apellido_estudiante"
+                            <input type="text" id="apellido_estudianteEdit" class="form-control" name="apellido_estudiante"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Apellidos del Estudiante" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Cedula del Estudiante</label>
-                            <input type="text" id="Objeto" class="form-control" name="cedula_estudiante"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
+                            <input type="text" id="cedula_estudianteEdit" class="form-control" name="cedula_estudiante"
+                                pattern="0|[1-9][0-9]*" maxlength="50" minlength="5"
                                 placeholder="Edite la Cedula del Estudiante" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Contacto del Estudiante</label>
-                            <input type="text" id="Direccion_Exacta" class="form-control" name="contacto_estudiante"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" minlength="5"
+                            <input type="text" id="contacto_estudianteEdit" class="form-control" name="contacto_estudiante"
+                                pattern="0|[1-9][0-9]*" minlength="5"
                                 placeholder="Edite el contacto del estudiante" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Municipio</label>
-                            <input type="text" id="Direccion_Exacta" class="form-control" name="Municipio"
+                            <input type="text" id="municipioEdit" class="form-control" name="Municipio"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" minlength="5"
                                 placeholder="Edite el Municipio" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Parroquia</label>
-                            <input type="text" id="Direccion_Exacta" class="form-control" name="Parroquia"
+                            <input type="text" id="parroquiaEdit" class="form-control" name="Parroquia"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" minlength="5"
                                 placeholder="Edite la Parroquia" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Año Academico</label>
-                            <input type="text" id="Sede" class="form-control" name="año_academico"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
+                            <input type="text" id="año_academicoEdit" class="form-control" name="año_academico"
+                                pattern="0|[1-9][0-9]*" maxlength="50" minlength="1"
                                 placeholder="Edite el Año Academico" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Seccion del Estudiante</label>
-                            <input type="text" id="RIF" class="form-control" name="seccion_estudiante"
-                                pattern="^R-\d+$" maxlength="50" minlength="5"
+                            <input type="text" id="seccion_estudianteEdit" class="form-control" name="seccion_estudiante"
+                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="1"
                                 placeholder="Edite la Seccion del Estudiante" required>
 
                         </div>
@@ -265,14 +265,14 @@ session_start();
                         <div class="form-group mb-3">
                             <label for="">Cedula del Estudiante</label>
                             <input type="text" id="cedula_estudiante" class="form-control" name="cedula_estudiante"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
+                                pattern="0|[1-9][0-9]*" maxlength="50" minlength="5"
                                 placeholder="Edite la Cedula del Estudiante" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Contacto del Estudiante</label>
                             <input type="text" id="contacto_estudiante" class="form-control" name="contacto_estudiante"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" minlength="5"
+                                pattern="0|[1-9][0-9]*" minlength="5"
                                 placeholder="Edite el contacto del estudiante" required>
                         </div>
 
@@ -294,14 +294,14 @@ session_start();
                         <div class="form-group mb-3">
                             <label for="">Año Academico</label>
                             <input type="text" id="año_academico" class="form-control" name="año_academico"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
+                                pattern="0|[1-9][0-9]*" maxlength="50" minlength="1"
                                 placeholder="Edite el Año Academico" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Seccion del Estudiante</label>
                             <input type="text" id="seccion_estudiante" class="form-control" name="seccion_estudiante"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
+                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="1"
                                 placeholder="Edite la Seccion del Estudiante" required>
 
                         </div>
@@ -382,7 +382,7 @@ session_start();
                 e.preventDefault();
 
                 var id = $(this).closest('tr').find('.id_estudiante').text();
-
+                console.log(id);
                 $.ajax({
                     type: "POST",
                     url: "conn_estudiantes.php",
@@ -392,18 +392,24 @@ session_start();
                     },
                     success: function(response) {
                         $.each(response, function(Key, value) {
-                            $('#id').val(value['id']);
-                            $('#nombre_estudiante').val(value['nombre_estudiante']);
-                            $('#apellido_estudiante').val(value['apellido_estudiante']);
-                            $('#cedula_estudiante').val(value['cedula_estudiante']);
-                            $('#contacto_estudiante').val(value['contacto_estudiante']);
-                            $('#Municipio').val(value['Municipio']);
-                            $('#Parroquia').val(value['Parroquia']);
-                            $('#año_academico').val(value['año_academico']);
-                            $('#seccion_estudiante').val(value['seccion_estudiante']);
+                            console.log(response)
+                            $('#id').val(value['id_estudiante']);
+                            $('#nombre_estudianteEdit').val(value['nombre_estudiante']);
+                            $('#apellido_estudianteEdit').val(value['apellido_estudiante']);
+                            $('#cedula_estudianteEdit').val(value['cedula_estudiante']);
+                            $('#contacto_estudianteEdit').val(value['contacto_estudiante']);
+                            $('#municipioEdit').val(value['Municipio']);
+                            $('#parroquiaEdit').val(value['Parroquia']);
+                            $('#año_academicoEdit').val(value['año_academico']);
+                            $('#seccion_estudianteEdit').val(value['seccion_estudiante']);
                         });
 
                         $('#editmodal').modal('show');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError)
+                        alert(xhr.status);
+                        alert(thrownError);
                     }
                 });
             });
@@ -418,14 +424,17 @@ session_start();
 
                 var id = $(this).closest('tr').find('.id_estudiante').text();
 
-                swal({
-                    title: "¿Estas seguro?",
-                    text: "Cuando elimines este estudiante lo borraras permanentemente de la base de datos!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará al estudiante permanentemente!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
                             url: "conn_estudiantes.php",
@@ -434,9 +443,11 @@ session_start();
                                 "id_estudiante": id,
                             },
                             success: function(response) {
-                                swal("Estudiante Eliminado Correctamente.!", {
-                                    icon: "success",
-                                }).then((result) => {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El estudiante ha sido eliminado correctamente.',
+                                    'success'
+                                ).then(() => {
                                     location.reload();
                                 });
                             }

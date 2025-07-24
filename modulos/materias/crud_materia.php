@@ -74,7 +74,7 @@ session_start();
                                         // echo $row['id_estudiante'];
                                 ?>
                                         <tr>
-                                            <td class="id" style="display: none;"> <?php echo $row['id'] ?> </td>
+                                            <td class="id" style="display: none;"> <?php echo $row['id_materia'] ?> </td>
                                             <td> <?php echo $row['nombre_materia'] ?> </td>
                                             <td> <?php echo $row['info_materia'] ?> </td>
 
@@ -87,7 +87,7 @@ session_start();
                                             </td>
 
                                             <td>
-                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id'] ?> ">
+                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id_materia'] ?> ">
                                                 <a href="" id="delete-sala" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
                                         </tr>
@@ -264,9 +264,9 @@ session_start();
         $(document).ready(function() {
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-
+                
                 var id = $(this).closest('tr').find('.id').text();
-
+                console.log(id);
                 $.ajax({
                     type: "POST",
                     url: "conn_materia.php",
@@ -276,11 +276,11 @@ session_start();
                     },
                     success: function(response) {
                         $.each(response, function(Key, value) {
-                            $('#idEdit').val(value['id']);
+                            $('#idEdit').val(value['id_materia']);
                             $('#nombre_materia_edit').val(value['nombre_materia']);
                             $('#info_materia_edit').val(value['info_materia']);
                         });
-
+                        alert(response);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -296,14 +296,17 @@ session_start();
 
                 var id = $(this).closest('tr').find('.id').text();
 
-                swal({
-                    title: "¿Estas seguro?",
-                    text: "Cuando elimines esta materia lo borraras permanentemente de la base de datos!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará la materia permanentemente!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
                             url: "conn_materia.php",
@@ -312,9 +315,11 @@ session_start();
                                 "id": id,
                             },
                             success: function(response) {
-                                swal("Materia Eliminado Correctamente.!", {
-                                    icon: "success",
-                                }).then((result) => {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'La materia ha sido eliminada correctamente.',
+                                    'success'
+                                ).then(() => {
                                     location.reload();
                                 });
                             }

@@ -34,13 +34,13 @@ if (isset($_POST['click-view-btn'])) {
 
     //echo $id;
 
-    $fetch_query = "SELECT * FROM seccion WHERE id = '$id'";
+    $fetch_query = "SELECT * FROM seccion WHERE id_seccion = '$id'";
     $fetch_query_run = mysqli_query($conn, $fetch_query);
 
     if (mysqli_num_rows($fetch_query_run) > 0) {
         while ($row = mysqli_fetch_array($fetch_query_run)) {
             echo '
-                <h6> Id primaria: ' . $row['id'] . '</h6>
+                <h6> Id primaria: ' . $row['id_seccion'] . '</h6>
                 <h6> Nombre de la sección: ' . $row['nombre'] . '</h6>
                 <h6> Año de la sección: ' . $row['año'] . '</h6>
                 <a
@@ -50,6 +50,14 @@ if (isset($_POST['click-view-btn'])) {
                     href="#"
                     role="button"
                     >Ver listado de estudiantes</a
+                >
+                <a
+                    name=""
+                    id=""
+                    class="btn btn-primary"
+                    href="../horario/construct_horario.php?secc=' .  $row['id_seccion'] . '"
+                    role="button"
+                    >Crear/modificar Horario</a
                 >
             ';
         }
@@ -61,12 +69,12 @@ if (isset($_POST['click-view-btn'])) {
 // EDITAR DATOS
 if (isset($_POST['click-edit-btn'])) {
 
-    $id = $_POST['id'];
+    $id = $_POST['id_seccion'];
     $array_result = [];
 
     //echo $id;
 
-    $fetch_query = "SELECT * FROM seccion WHERE id = '$id'";
+    $fetch_query = "SELECT * FROM seccion WHERE id_seccion = '$id'";
     $fetch_query_run = mysqli_query($conn, $fetch_query);
 
     if (mysqli_num_rows($fetch_query_run) > 0) {
@@ -95,7 +103,7 @@ if (isset($_POST['update-data'])) {
     $update_query = "UPDATE seccion SET 
         nombre = '$nombre',  
         año = '$año'
-        WHERE id = $id";
+        WHERE id_seccion = $id";
     try {
         $update_query_run = mysqli_query($conn, $update_query);
         $_SESSION['status'] = "Datos ingresados correctamente";
@@ -114,9 +122,9 @@ if (isset($_POST['update-data'])) {
 // ELIMINAR DATOS
 if (isset($_POST['click-delete-btn'])) {
 
-    $id = $_POST['id'];
+    $id = $_POST['id_seccion'];
 
-    $delete_query = "DELETE FROM seccion WHERE id ='$id'";
+    $delete_query = "DELETE FROM seccion WHERE id_seccion ='$id'";
     $delete_query_run = mysqli_query($conn, $delete_query);
 
     if ($delete_query_run) {
