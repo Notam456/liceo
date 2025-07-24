@@ -22,7 +22,7 @@
 
 <!-- LIBRERÍAS JS -->
 <script src="/liceo/js/jquery.min.js"></script>
-<script src="/liceo/js/bootstrap.js"></script>
+<script src="/liceo/js/bootstrap.bundle.js"></script>
 <script src="/liceo/js/datatables.js"></script>
 <script src="/liceo/js/owl.carousel.min.js"></script>
 <script src="/liceo/js/sweetalert2@10.js"></script>
