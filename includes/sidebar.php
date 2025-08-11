@@ -43,12 +43,12 @@
 
 <div id="sidebar" class="sidebar">
     <a href="/liceo/main.php"><i class="bi bi-house-door me-2"></i> Inicio</a>
-    <a href="/liceo/modulos/usuarios/crud_usuarios.php"><i class="bi bi-people me-2"></i> Usuarios</a>
-    <a href="/liceo/modulos/estudiantes/crud_estudiantes.php"><i class="bi bi-person-badge me-2"></i> Estudiantes</a>
-    <a href="/liceo/modulos/profesores/crud_profesores.php"><i class="bi bi-person-workspace me-2"></i> Profesores</a>
-    <a href="/liceo/modulos/Coordinadores/crud_coordinadores.php"><i class="bi bi-person-lines-fill me-2"></i> Coordinadores</a>
-    <a href="/liceo/modulos/secciones/crud_secciones.php"><i class="bi bi-diagram-3 me-2"></i> Secciones</a>
-    <a href="/liceo/modulos/materias/crud_materia.php"><i class="bi bi-journal-bookmark me-2"></i> Materias</a>
+    <a href="/liceo/modulos/usuarios/index.php"><i class="bi bi-people me-2"></i> Usuarios</a>
+    <a href="/liceo/modulos/estudiantes/index.php"><i class="bi bi-person-badge me-2"></i> Estudiantes</a>
+    <a href="/liceo/modulos/profesores/index.php"><i class="bi bi-person-workspace me-2"></i> Profesores</a>
+    <a href="/liceo/modulos/coordinadores/index.php"><i class="bi bi-person-lines-fill me-2"></i> Coordinadores</a>
+    <a href="/liceo/modulos/secciones/index.php"><i class="bi bi-diagram-3 me-2"></i> Secciones</a>
+    <a href="/liceo/modulos/materias/index.php"><i class="bi bi-journal-bookmark me-2"></i> Materias</a>
     <a href="/liceo/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</a>
 </div>
 

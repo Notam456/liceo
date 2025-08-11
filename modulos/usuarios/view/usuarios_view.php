@@ -1,8 +1,3 @@
-<?php
-session_start();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,14 +72,8 @@ session_start();
                             </thead>
                             <tbody>
                                 <?php
-                                include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
-
-                                $fetch_query = "SELECT * FROM usuario";
-                                $fetch_query_run = mysqli_query($conn, $fetch_query);
-
-                                if (mysqli_num_rows($fetch_query_run) > 0) {
-                                    while ($row = mysqli_fetch_array($fetch_query_run)) {
-                                        // echo $row['id_estudiante'];
+                                if (mysqli_num_rows($usuarios) > 0) {
+                                    while ($row = mysqli_fetch_array($usuarios)) {
                                 ?>
                                         <tr>
                                             <td class="id" style="display: none;"> <?php echo $row['id'] ?> </td>
@@ -92,16 +81,15 @@ session_start();
                                             <td> <?php echo $row['rol'] ?> </td>
 
                                             <td>
-                                                <a href="" class="btn btn-warning btn-sm view-data">Consultar</a>
+                                                <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
                                             </td>
 
                                             <td>
-                                                <a href="" class="btn btn-primary btn-sm edit-data">Modificar</a>
+                                                <a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a>
                                             </td>
 
                                             <td>
-                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id'] ?> ">
-                                                <a href="" id="delete-sala" class="btn btn-danger btn-sm delete-data">Eliminar</a>
+                                                <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
                                         </tr>
                                     <?php
@@ -129,12 +117,10 @@ session_start();
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="conn_usuarios.php" method="POST">
+                <form id="edit-form" action="index.php?action=update" method="POST">
                     <div class="modal-body">
 
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="idEdit" class="form-control" name="id">
-                        </div>
+                        <input type="hidden" id="idEdit" name="id">
 
                         <div class="form-group mb-3">
                             <label for="">Nombre de usuario</label>
@@ -176,7 +162,7 @@ session_start();
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
+                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
                     </div>
                 </form>
             </div>
@@ -210,35 +196,11 @@ session_start();
                     <h1 class="modal-title fs-5" id="insertdataLabel">Crea un nuevo usuario</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="conn_usuarios.php" method="POST">
-                    <?php
-
-                    if (isset($_POST['id_estudiante'])) {
-
-                        $nombre_estudiante = $_POST['nombre_estudiante'];
-                        $apellido_estudiante = $_POST['apellido_estudiante'];
-                        $cedula_estudiante = $_POST['cedula_estudiante'];
-                        $contacto_estudiante = $_POST['contacto_estudiante'];
-                        $año_academico = $_POST['año_academico'];
-                        $seccion_estudiante = $_POST['seccion_estudiante'];
-
-                        $campos = array();
-
-                        if ($nombre == "") {
-                            array_push($campos, "Este campo no puede estar vacío");
-                        }
-                    }
-
-                    ?>
+                <form action="index.php?action=create" method="POST">
                     <div class="modal-body">
-
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="id" class="form-control" name="id">
-                        </div>
-
                         <div class="form-group mb-3">
                             <label for="">Nombre de usuario</label>
-                            <input type="text" id="usuario" class="form-control" name="usuario"
+                            <input type="text" class="form-control" name="usuario"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Ingrese un nombre de usuario" required>
                         </div>
@@ -284,167 +246,10 @@ session_start();
         </div>
     </div>
 
-    <!-- Modudlo delete -->
-    <div class="modal fade" id="deletemodal" tabindex="-1" aria-labelledby="deletemodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="deletemodalLabel">Estudiantesss</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" class="form-control" id="confirm_id_sala" name="confirm_id_sala">
-                        <h4>¿Estas seguro de querer eliminar este Estudiante?</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="delete_data" class="btn btn-primary btn-warning">Eliminar datos</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="load_salas"></div>
-
-    <script>
-        // tabla
-        new DataTable('#myTable', {
-            language: {
-                //url: '//cdn.datatables.net/plug-ins/2.1.2/i18n/es-ES.json',
-                search: 'Buscar',
-                info: 'Mostrando pagina _PAGE_ de _PAGES_',
-                infoEmpty: 'No se han encontrado resultados',
-                infoFiltered: '(se han encontrado _MAX_ resultados)',
-                lengthMenu: 'Mostrar _MENU_ por pagina',
-                zeroRecords: '0 resultados encontrados'
-
-            },
-            columnDefs: [{
-                width: '93px',
-                targets: [3, 4, 5]
-            }]
-        });
-
-        // Mostrar script
-        $(document).ready(function() {
-            $('#myTable').on('click', '.view-data', function(e) {
-                e.preventDefault();
-
-                var id = $(this).closest('tr').find('.id').text();
-
-                $.ajax({
-                    type: "POST",
-                    url: "conn_usuarios.php",
-                    data: {
-                        'click-view-btn': true,
-                        'id': id,
-                    },
-                    success: function(response) {
-                        $('.view_user_data').html(response);
-                        $('#viewmodal').modal('show');
-                    }
-                });
-            });
-        });
-
-        // Editar script
-        $(document).ready(function() {
-            $('#myTable').on('click', '.edit-data', function(e) {
-                e.preventDefault();
-
-                var id = $(this).closest('tr').find('.id').text();
-
-                $.ajax({
-                    type: "POST",
-                    url: "conn_usuarios.php",
-                    data: {
-                        'click-edit-btn': true,
-                        'id': id,
-                    },
-                    success: function(response) {
-                        $.each(response, function(Key, value) {
-                            $('#idEdit').val(value['id']);
-                            $('#usuarioEdit').val(value['usuario']);
-                            $('#contrasenaEdit').val(value['contrasena']);
-                            $('#rolEdit').val(value['rol']);
-                        });
-
-                        $('#editmodal').modal('show');
-                    }
-                });
-            });
-        });
-
-        // update script
-
-        //eliminar script
-        $(document).ready(function() {
-            $('#myTable').on('click', '.delete-data', function(e) {
-                e.preventDefault();
-
-                var id = $(this).closest('tr').find('.id').text();
-
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: '¡Esta acción eliminará el usuario permanentemente!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: "conn_usuarios.php",
-                            data: {
-                                "click-delete-btn": true,
-                                "id": id,
-                            },
-                            success: function(response) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El usuario ha sido eliminado correctamente.',
-                                    'success'
-                                ).then(() => {
-                                    location.reload();
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-        });
-    </script>
-
+    <script src="/liceo/script/usuarios.js"></script>
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
-    <script>
-        const input = document.getElementById("contrasena");
-        const info = document.getElementById("info-contrasena");
-        const inputEdit = document.getElementById("contrasenaEdit");
-        const infoEdit = document.getElementById("info-contrasenaEdit");
-
-        input.addEventListener("focus", () => {
-            info.style.display = "block";
-        });
-
-        input.addEventListener("blur", () => {
-            info.style.display = "none";
-        });
-
-        inputEdit.addEventListener("focus", () => {
-            infoEdit.style.display = "block";
-        });
-
-        inputEdit.addEventListener("blur", () => {
-            infoEdit.style.display = "none";
-        });
-    </script>
-
 </body>
 
 </html>

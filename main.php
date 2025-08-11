@@ -54,23 +54,23 @@
         <img src="/liceo/imgs/cuadricula.png" alt="">
     </section>
     <section class="modulos">
-    <div class="modulo" data-url="modulos/usuarios/crud_usuarios.php">
+    <div class="modulo" data-url="modulos/usuarios/index.php">
         <img src="/liceo/imgs/agregar-usuario.png" alt="">
         <h2>Usuarios</h2>
     </div>
-    <div class="modulo" data-url="modulos/estudiantes/crud_estudiantes.php">
+    <div class="modulo" data-url="modulos/estudiantes/index.php">
         <img src="/liceo/imgs/estudiando.png" alt="">
         <h2>Estudiantes</h2>
     </div>
-    <div class="modulo" data-url="modulos/profesores/crud_profesores.php">
+    <div class="modulo" data-url="modulos/profesores/index.php">
         <img src="/liceo/imgs/masculino.png" alt="">
         <h2>Profesores</h2>
     </div>
-    <div class="modulo" data-url="modulos/materias/crud_materia.php">
+    <div class="modulo" data-url="modulos/materias/index.php">
         <img src="/liceo/imgs/libros.png" alt="">
         <h2>Materias</h2>
     </div>
-    <div class="modulo" data-url="modulos/secciones/crud_secciones.php">
+    <div class="modulo" data-url="modulos/secciones/index.php">
         <img src="/liceo/imgs/secciones.png" alt="">
         <h2>Seccion</h2>
     </div>
@@ -78,7 +78,7 @@
         <img src="/liceo/imgs/calendario.png" alt="">
         <h2>Año</h2>
     </div>
-    <div class="modulo" data-url="modulos/asistencia/crud_asistencia.php"">
+    <div class="modulo" data-url="modulos/asistencia/index.php">
         <img src="/liceo/imgs/lista-de-verificacion.png" alt="">
         <h2>Asistencia</h2>
     </div>

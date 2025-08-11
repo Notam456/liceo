@@ -1,61 +1,3 @@
-<?php
-session_start();
-include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
-
-// Conseguir sección actual
-if (isset($_GET['secc'])) {
-    $seccion = $_GET['secc'];
-    $query_horario = "SELECT h.*, m.nombre_materia, p.nombre_profesores 
-                  FROM horario h
-                  JOIN materia m ON h.id_materia = m.id_materia
-                  JOIN profesores p ON h.id_profesores = p.id_profesores
-                  WHERE h.id_seccion = $seccion";
-
-    $result_horario = mysqli_query($conn, $query_horario);
-    $horario_existente = [];
-
-    while ($row = mysqli_fetch_assoc($result_horario)) {
-        $horario_existente[] = $row;
-    }
-} else {
-    echo '<script language="javascript">';
-    echo 'alert("Por favor, seleccione una sección.");';
-    echo 'window.location.href = "../secciones/crud_secciones.php"';
-    echo '</script>';
-}
-
-// Conseguir lista de materias
-$query_materias = "SELECT * FROM materia";
-$result_materias = mysqli_query($conn, $query_materias);
-$materias = [];
-while ($row = mysqli_fetch_assoc($result_materias)) {
-    $materias[] = $row;
-}
-
-// Conseguir lista de profesores
-$query_profesores = "SELECT * FROM profesores";
-$result_profesores = mysqli_query($conn, $query_profesores);
-$profesores = [];
-while ($row = mysqli_fetch_assoc($result_profesores)) {
-    $profesores[] = $row;
-}
-
-// Definir horas y días
-$horas = [
-    "7:20am - 8:10am",
-    "8:10am - 8:50am",
-    "8:50am - 9:05am",
-    "9:05am - 9:45am",
-    "9:45am - 10:25am",
-    "10:25am - 10:30am",
-    "10:30am - 11:45am",
-    "11:45am - 12:10am",
-    "12:10am - 12:50am",
-    "12:50am - 1:30am"
-];
-
-$dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -262,7 +204,7 @@ $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
             $.ajax({
                 type: "POST",
-                url: "guardar_horario.php",
+                url: "index.php?action=save",
                 data: {
                     'materia': materia.value,
                     'profesor': profesor.value,
@@ -278,7 +220,7 @@ $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
         }
     });
     function volver() {
-        window.location = '../secciones/crud_secciones.php';
+        window.location = '../secciones/index.php';
     }
     document.addEventListener('click', function (e) {
         if (e.target.closest('.btn-eliminar')) {
@@ -287,15 +229,13 @@ $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
             const dia = boton.dataset.dia;
             const hora = boton.dataset.hora;
             const seccion = boton.dataset.seccion;
-
            
-
             const td = document.querySelector(`td[data-dia="${dia}"][data-hora="${hora}"]`);
             if (td) td.innerHTML = '';
 
             $.ajax({
                 type: 'POST',
-                url: 'eliminar_horario.php',
+                url: 'index.php?action=delete',
                 data: {
                     seccion: seccion,
                     dia: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes'][parseInt(dia)],
@@ -312,14 +252,9 @@ $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
     });
 </script>
 
-
-
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 
 </body>
-
-
-
 </html>

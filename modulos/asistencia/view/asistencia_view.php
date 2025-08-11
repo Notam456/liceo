@@ -1,7 +1,3 @@
-<?php
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -49,11 +45,7 @@ session_start();
                                 <select class="form-select" id="filtroSeccion">
                                     <option value="">Todas las secciones</option>
                                     <?php
-                                    include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
-                                    $query = "SELECT DISTINCT seccion_estudiante FROM estudiante";
-                                    $result = mysqli_query($conn, $query);
-                                    
-                                    while($row = mysqli_fetch_array($result)) {
+                                    while($row = mysqli_fetch_array($secciones)) {
                                         echo '<option value="'.$row['seccion_estudiante'].'">'.$row['seccion_estudiante'].'</option>';
                                     }
                                     ?>
@@ -82,15 +74,8 @@ session_start();
                             </thead>
                             <tbody>
                                 <?php
-                                $query = "SELECT a.id_asistencia, a.fecha, a.estado, a.justificacion, 
-                                          e.nombre_estudiante, e.apellido_estudiante, e.seccion_estudiante
-                                          FROM asistencia a
-                                          JOIN estudiante e ON a.id_estudiante = e.id_estudiante
-                                          ORDER BY a.fecha DESC";
-                                $result = mysqli_query($conn, $query);
-
-                                if (mysqli_num_rows($result) > 0) {
-                                    while ($row = mysqli_fetch_assoc($result)) {
+                                if (mysqli_num_rows($asistencias) > 0) {
+                                    while ($row = mysqli_fetch_assoc($asistencias)) {
                                         $estado = '';
                                         switch($row['estado']) {
                                             case 'P': $estado = 'Presente'; break;
@@ -137,7 +122,7 @@ session_start();
                     <h1 class="modal-title fs-5" id="registrarAsistenciaLabel">Registrar Asistencia</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="conn_asistencia.php" method="POST" id="formAsistencia">
+                <form action="index.php?action=guardar_asistencia" method="POST" id="formAsistencia">
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -149,10 +134,8 @@ session_start();
                                 <select class="form-select" id="seccionAsistencia" name="seccion" required>
                                     <option value="">Seleccione una sección</option>
                                     <?php
-                                    $query = "SELECT DISTINCT seccion_estudiante FROM estudiante";
-                                    $result = mysqli_query($conn, $query);
-                                    
-                                    while($row = mysqli_fetch_array($result)) {
+                                    mysqli_data_seek($secciones, 0);
+                                    while($row = mysqli_fetch_array($secciones)) {
                                         echo '<option value="'.$row['seccion_estudiante'].'">'.$row['seccion_estudiante'].'</option>';
                                     }
                                     ?>
@@ -180,7 +163,7 @@ session_start();
                     <h1 class="modal-title fs-5" id="editarAsistenciaModalLabel">Editar Asistencia</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="formEditarAsistencia" action="conn_asistencia.php" method="POST">
+                <form id="formEditarAsistencia" action="index.php?action=actualizar_asistencia" method="POST">
                     <div class="modal-body">
                         <input type="hidden" id="id_asistencia_edit" name="id_asistencia">
                         
@@ -226,143 +209,6 @@ session_start();
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 
-    <script>
-        $(document).ready(function() {
-            // Configuración de DataTables
-            $('#tablaAsistencia').DataTable({
-                columnDefs: [
-                    { targets: 0, visible: false },
-                    { targets: -1, orderable: false }
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                }
-            });
-
-            // Mostrar/ocultar nota de justificación
-            $('body').on('change', '.estado-radio', function() {
-                if ($(this).val() === 'J') {
-                    $('.justificado-note').show();
-                    $('#justificacion_edit').prop('required', true);
-                } else {
-                    $('.justificado-note').hide();
-                    $('#justificacion_edit').prop('required', false);
-                }
-            });
-
-            // Cargar estudiantes al seleccionar sección
-            $('#seccionAsistencia').change(function() {
-                var seccion = $(this).val();
-                
-                if(seccion) {
-                    $.ajax({
-                        url: 'conn_asistencia.php',
-                        type: 'POST',
-                        data: { 
-                            'obtener_estudiantes': true,
-                            'seccion': seccion 
-                        },
-                        success: function(response) {
-                            $('#listaEstudiantes').html(response);
-                        }
-                    });
-                } else {
-                    $('#listaEstudiantes').html('<p class="text-muted">Seleccione una sección para ver los estudiantes</p>');
-                }
-            });
-
-            // Aplicar filtros
-            $('#aplicarFiltro').click(function() {
-                var seccion = $('#filtroSeccion').val();
-                var fecha = $('#filtroFecha').val();
-                
-                $.ajax({
-                    url: 'conn_asistencia.php',
-                    type: 'POST',
-                    data: { 
-                        'filtrar_asistencia': true,
-                        'seccion': seccion,
-                        'fecha': fecha
-                    },
-                    success: function(response) {
-                        $('#tablaAsistencia tbody').html(response);
-                    }
-                });
-            });
-
-            // Editar asistencia
-            $('#tablaAsistencia').on('click', '.edit-asistencia', function(e) {
-                e.preventDefault();
-                
-                var id = $(this).closest('tr').find('td:first').text();
-                
-                $.ajax({
-                    url: 'conn_asistencia.php',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        'obtener_asistencia': true,
-                        'id_asistencia': id
-                    },
-                    success: function(response) {
-                        $('#id_asistencia_edit').val(response.id_asistencia);
-                        $('#fecha_edit').val(response.fecha);
-                        $('#estudiante_edit').val(response.nombre_estudiante + ' ' + response.apellido_estudiante);
-                        
-                        // Establecer el estado correcto
-                        $('input[name="estado"][value="' + response.estado + '"]').prop('checked', true);
-                        
-                        // Mostrar/ocultar campo de justificación
-                        if(response.estado === 'J') {
-                            $('.justificado-note').show();
-                            $('#justificacion_edit').val(response.justificacion);
-                        } else {
-                            $('.justificado-note').hide();
-                        }
-                        
-                        $('#editarAsistenciaModal').modal('show');
-                    }
-                });
-            });
-
-            // Eliminar asistencia
-            $('#tablaAsistencia').on('click', '.delete-asistencia', function(e) {
-                e.preventDefault();
-                
-                var id = $(this).siblings('.delete_id_asistencia').val();
-                
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: '¡Esta acción eliminará el registro de asistencia permanentemente!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: 'conn_asistencia.php',
-                            type: 'POST',
-                            data: {
-                                'eliminar_asistencia': true,
-                                'id_asistencia': id
-                            },
-                            success: function(response) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro de asistencia ha sido eliminado correctamente.',
-                                    'success'
-                                ).then(() => {
-                                    location.reload();
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="/liceo/script/asistencia.js"></script>
 </body>
 </html>
