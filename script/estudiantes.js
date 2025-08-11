@@ -21,7 +21,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/estudiantes/index.php",
+            url: "index.php",
             data: {
                 'click-view-btn': true,
                 'id_estudiante': id,
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/estudiantes/index.php",
+            url: "index.php",
             data: {
                 'click-edit-btn': true,
                 'id_estudiante': id,
@@ -87,7 +87,7 @@ $(document).ready(function() {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "../modulos/estudiantes/index.php",
+                    url: "index.php",
                     data: {
                         "click-delete-btn": true,
                         "id_estudiante": id,

@@ -21,7 +21,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/profesores/index.php",
+            url: "index.php",
             data: {
                 'click-view-btn': true,
                 'id_profesores': id,
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/profesores/index.php",
+            url: "index.php",
             data: {
                 'click-edit-btn': true,
                 'id_profesores': id,
@@ -82,7 +82,7 @@ $(document).ready(function() {
             if (willDelete) {
                 $.ajax({
                     type: "POST",
-                    url: "../modulos/profesores/index.php",
+                    url: "index.php",
                     data: {
                         "click-delete-btn": true,
                         "id_profesores": id,

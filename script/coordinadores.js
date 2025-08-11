@@ -21,7 +21,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/coordinadores/index.php",
+            url: "index.php",
             data: {
                 'click-view-btn': true,
                 'id_coordinadores': id,
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../modulos/coordinadores/index.php",
+            url: "index.php",
             data: {
                 'click-edit-btn': true,
                 'id_coordinadores': id,
@@ -75,7 +75,7 @@ $(document).ready(function() {
         if(confirm("¿Estás seguro de que quieres eliminar a este coordinador?")) {
             $.ajax({
                 type: "POST",
-                url: "../modulos/coordinadores/index.php",
+                url: "index.php",
                 data: {
                     "click-delete-btn": true,
                     "id_coordinadores": id,
