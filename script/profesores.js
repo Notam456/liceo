@@ -1,4 +1,4 @@
- // tabla
+// tabla
 new DataTable('#myTable', {
     language: {
         //url: '//cdn.datatables.net/plug-ins/2.1.2/i18n/es-ES.json',
@@ -21,7 +21,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "conn_profesores.php",
+            url: "../modulos/profesores/index.php",
             data: {
                 'click-view-btn': true,
                 'id_profesores': id,
@@ -40,23 +40,23 @@ $(document).ready(function() {
         e.preventDefault()
 
         var id = $(this).closest('tr').find('.id_profesores').text()
-        // var formProfesor = document.querySelector("#formProfesor")
+
         $.ajax({
             type: "POST",
-            url: "conn_profesores.php",
+            url: "../modulos/profesores/index.php",
             data: {
                 'click-edit-btn': true,
                 'id_profesores': id,
             },
             success: function(response) {
                 $.each(response, function(Key, value) {
-                    $('#id_profesores').val(value['id_profesores'])
-                    $('#nombre_profesores').val(value['nombre_profesores'])
-                    $('#apellido_profesores').val(value['apellido_profesores'])
-                    $('#cedula_profesores').val(value['cedula_profesores'])
-                    $('#contacto_profesores').val(value['contacto_profesores'])
-                    $('#materia_impartida').val(value['materia_impartida'])
-                    $('#seccion_profesores').val(value['seccion_profesores'])
+                    $('#edit_id_profesores').val(value['id_profesores'])
+                    $('#edit_nombre_profesores').val(value['nombre_profesores'])
+                    $('#edit_apellido_profesores').val(value['apellido_profesores'])
+                    $('#edit_cedula_profesores').val(value['cedula_profesores'])
+                    $('#edit_contacto_profesores').val(value['contacto_profesores'])
+                    $('#edit_materia_impartida').val(value['materia_impartida'])
+                    $('#edit_seccion_profesores').val(value['seccion_profesores'])
                 })
 
                 $('#editmodal').modal('show')
@@ -64,8 +64,6 @@ $(document).ready(function() {
         })
     })
 })
-
-// update script
 
 //eliminar script
 $(document).ready(function() {
@@ -84,7 +82,7 @@ $(document).ready(function() {
             if (willDelete) {
                 $.ajax({
                     type: "POST",
-                    url: "conn_profesores.php",
+                    url: "../modulos/profesores/index.php",
                     data: {
                         "click-delete-btn": true,
                         "id_profesores": id,

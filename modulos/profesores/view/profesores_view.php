@@ -1,8 +1,3 @@
-<?php
-session_start();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,33 +61,26 @@ session_start();
                             </thead>
                             <tbody>
                                 <?php
-                                include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
-
-                                $fetch_query = "SELECT * FROM profesores";
-                                $fetch_query_run = mysqli_query($conn, $fetch_query);
-
-                                if (mysqli_num_rows($fetch_query_run) > 0) {
-                                    while ($row = mysqli_fetch_array($fetch_query_run)) {
-                                        // echo $row['id_profesores'];
+                                if (mysqli_num_rows($profesores) > 0) {
+                                    while ($row = mysqli_fetch_array($profesores)) {
                                 ?>
                                         <tr>
                                             <td class="id_profesores" style="display: none;"> <?php echo $row['id_profesores'] ?> </td>
                                             <td> <?php echo $row['nombre_profesores'] ?> </td>
                                             <td> <?php echo $row['apellido_profesores'] ?> </td>
                                             <td> <?php echo $row['cedula_profesores'] ?> </td>
-                                            <td> <?php echo $row['cedula_profesores'] ?> </td>
+                                            <td> <?php echo $row['contacto_profesores'] ?> </td>
 
                                             <td>
-                                                <a href="" class="btn btn-warning btn-sm view-data">Consultar</a>
+                                                <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
                                             </td>
 
                                             <td>
-                                                <a href="" class="btn btn-primary btn-sm edit-data">Modificar</a>
+                                                <a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a>
                                             </td>
 
                                             <td>
-                                                <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id_profesores'] ?> ">
-                                                <a href="" id="delete-sala" class="btn btn-danger btn-sm delete-data">Eliminar</a>
+                                                <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
                                         </tr>
                                     <?php
@@ -120,51 +108,49 @@ session_start();
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="conn_profesores.php" method="POST">
+                <form id="edit-form" action="index.php?action=update" method="POST">
                     <div class="modal-body">
 
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="id_profesores" class="form-control" name="id_profesores">
-                        </div>
+                        <input type="hidden" id="edit_id_profesores" name="id_profesores">
 
                         <div class="form-group mb-3">
                             <label for="">Nombres</label>
-                            <input type="text" id="nombre_profesores" class="form-control" name="nombre_profesores"
+                            <input type="text" id="edit_nombre_profesores" class="form-control" name="nombre_profesores"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Nombres del profesores" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Apellidos</label>
-                            <input type="text" id="apellido_profesores" class="form-control" name="apellido_profesores"
+                            <input type="text" id="edit_apellido_profesores" class="form-control" name="apellido_profesores"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Apellidos del profesores" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Cedula del profesores</label>
-                            <input type="text" id="cedula_profesores" class="form-control" name="cedula_profesores"
+                            <input type="text" id="edit_cedula_profesores" class="form-control" name="cedula_profesores"
                                 maxlength="50" minlength="11"
                                 placeholder="Edite la Cedula del profesores" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Contacto del profesores</label>
-                            <input type="text" id="contacto_profesores" class="form-control" name="contacto_profesores"
+                            <input type="text" id="edit_contacto_profesores" class="form-control" name="contacto_profesores"
                                 minlength="12"
                                 placeholder="Cambie el contacto del profesores" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Materia Impartida</label>
-                            <input type="text" id="materia_impartida" class="form-control" name="materia_impartida"
+                            <input type="text" id="edit_materia_impartida" class="form-control" name="materia_impartida"
                                 maxlength="20" minlength="5"
                                 placeholder="Materia Impartida" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Seccion del profesores</label>
-                            <input type="text" id="seccion_profesores" class="form-control" name="seccion_profesores"
+                            <input type="text" id="edit_seccion_profesores" class="form-control" name="seccion_profesores"
                                 placeholder="Edite la Seccion del profesores" required>
 
                         </div>
@@ -172,7 +158,7 @@ session_start();
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
+                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
                     </div>
                 </form>
             </div>
@@ -206,70 +192,46 @@ session_start();
                     <h1 class="modal-title fs-5" id="insertdataLabel">Inscribe a un Nuevo Profesor</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="formProfesor" action="conn_profesores.php" method="POST">
-                    <?php
-
-                    if (isset($_POST['id_profesores'])) {
-
-                        $nombre_profesores = $_POST['nombre_profesores'];
-                        $apellido_profesores = $_POST['apellido_profesores'];
-                        $cedula_profesores = $_POST['cedula_profesores'];
-                        $contacto_profesores = $_POST['contacto_profesores'];
-                        $materia_impartida = $_POST['materia_impartida'];
-                        $seccion_profesores = $_POST['seccion_profesores'];
-
-                        $campos = array();
-
-                        if ($nombre == "") {
-                            array_push($campos, "Este campo no puede estar vacío");
-                        }
-                    }
-
-                    ?>
+                <form id="formProfesor" action="index.php?action=create" method="POST">
                     <div class="modal-body">
-
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="id_profesores" class="form-control" name="id_profesores">
-                        </div>
-
                         <div class="form-group mb-3">
                             <label for="">Nombres</label>
-                            <input type="text" id="nombre_profesores" class="form-control" name="nombre_profesores"
+                            <input type="text" class="form-control" name="nombre_profesores"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Nombres del Profesor" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Apellidos</label>
-                            <input type="text" id="apellido_profesores" class="form-control" name="apellido_profesores"
+                            <input type="text" class="form-control" name="apellido_profesores"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite los Apellidos del Profesor" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Cedula del Profesor</label>
-                            <input type="text" id="cedula_profesores" class="form-control" name="cedula_profesores"
+                            <input type="text" class="form-control" name="cedula_profesores"
                                  maxlength="8" minlength="1"
                                 placeholder="Edite la Cedula del Profesor" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Contacto del Profesor</label>
-                            <input type="text" id="contacto_profesores" class="form-control" name="contacto_profesores"
+                            <input type="text" class="form-control" name="contacto_profesores"
                                  minlength="5"
                                 placeholder="Cambie el contacto del Profesor" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Materia Impartida</label>
-                            <input type="text" id="materia_impartida" class="form-control" name="materia_impartida"
+                            <input type="text" class="form-control" name="materia_impartida"
                                 pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
                                 placeholder="Edite la materia impartida" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="">Secciones a Impartir</label>
-                            <input type="text" id="seccion_profesores" class="form-control" name="seccion_profesores"
+                            <input type="text" class="form-control" name="seccion_profesores"
                              maxlength="50" minlength="5"
                                 placeholder="Edite la Seccion que imparte el Profesor" required>
 
@@ -285,30 +247,7 @@ session_start();
         </div>
     </div>
 
-    <!-- Modudlo delete -->
-    <div class="modal fade" id="deletemodal" tabindex="-1" aria-labelledby="deletemodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="deletemodalLabel">profesores</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" class="form-control" id="confirm_id_sala" name="confirm_id_sala">
-                        <h4>¿Estas seguro de querer eliminar este profesores?</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="delete_data" class="btn btn-primary btn-warning">Eliminar datos</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="load_salas"></div>
-
-    <script src="../../script/profesores.js"></script>
+    <script src="/liceo/script/profesores.js"></script>
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
