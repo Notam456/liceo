@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "liceo");
+include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 
 // INSERTAR DATOS
 if (isset($_POST['save_data'])) {

@@ -61,11 +61,12 @@ session_start();
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
                                     <th scope="col" class="action"></th>
+                                    <th scope="col" class="action">Constancia</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                $conn = mysqli_connect("localhost", "root", "", "liceo");
+                                include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 
                                 $fetch_query = "SELECT * FROM estudiante";
                                 $fetch_query_run = mysqli_query($conn, $fetch_query);
@@ -92,6 +93,11 @@ session_start();
                                             <td>
                                                 <input type="hidden" class="delete_id_sala" value=" <?php echo $row['id_estudiante'] ?> ">
                                                 <a href="" id="delete-sala" class="btn btn-danger btn-sm delete-data">Eliminar</a>
+                                            </td>
+
+                                            <td>
+                                                <a target="_blank" href="constancia.php?id=<?php echo $row['id_estudiante'] ?>" 
+                                                class="btn btn-secondary btn-sm">Generar</a>
                                             </td>
                                         </tr>
                                     <?php

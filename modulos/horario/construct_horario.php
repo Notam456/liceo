@@ -1,6 +1,6 @@
 <?php
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "liceo");
+include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 
 // Conseguir sección actual
 if (isset($_GET['secc'])) {

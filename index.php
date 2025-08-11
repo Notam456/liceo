@@ -107,7 +107,7 @@
 </div>
 
     <div class="portada">
-        <img src="/liceo/imgs/liceo-monterrey.jpeg" alt="">
+        <img src="/liceo/imgs/portada3.jpeg" alt="">
     </div>
     <section class="description">
         <h1>“LICEO PROF.FERNANDO RAMÍREZ”</h1>

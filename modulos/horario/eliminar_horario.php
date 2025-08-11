@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "liceo");
+$conn = include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 if (!$conn) {
     http_response_code(500);
     echo "Error de conexión";

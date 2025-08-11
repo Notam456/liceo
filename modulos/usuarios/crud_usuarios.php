@@ -77,7 +77,7 @@ session_start();
                             </thead>
                             <tbody>
                                 <?php
-                                $conn = mysqli_connect("localhost", "root", "", "liceo");
+                                include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 
                                 $fetch_query = "SELECT * FROM usuario";
                                 $fetch_query_run = mysqli_query($conn, $fetch_query);

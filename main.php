@@ -74,11 +74,11 @@
         <img src="/liceo/imgs/secciones.png" alt="">
         <h2>Seccion</h2>
     </div>
-    <div class="modulo" data-url="">
+    <div class="modulo" data-url="modulos/año_academico/crud_año_academico.php">
         <img src="/liceo/imgs/calendario.png" alt="">
         <h2>Año</h2>
     </div>
-    <div class="modulo" data-url="">
+    <div class="modulo" data-url="modulos/asistencia/crud_asistencia.php"">
         <img src="/liceo/imgs/lista-de-verificacion.png" alt="">
         <h2>Asistencia</h2>
     </div>
