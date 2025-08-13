@@ -80,8 +80,8 @@ switch ($action) {
         $horarios_status = [];
         if ($secciones) {
             // Create a copy of the result set to iterate for horario status
-            $secciones_copy = clone $secciones;
-            while ($row = mysqli_fetch_array($secciones_copy)) {
+            $secciones_copy = mysqli_fetch_array($secciones);
+            while ($row = $secciones_copy) {
                 $horario_result = $seccionModelo->obtenerHorarioPorSeccion($row['id_seccion']);
                 $horarios_status[$row['id_seccion']] = (mysqli_num_rows($horario_result) > 0);
             }
