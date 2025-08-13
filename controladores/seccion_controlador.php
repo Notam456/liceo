@@ -42,7 +42,7 @@ switch ($action) {
             $id = $_POST['id_seccion'];
             $resultado = $seccionModelo->obtenerSeccionPorId($id);
             $data = [];
-            while($row = mysqli_fetch_assoc($resultado)) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -80,13 +80,17 @@ switch ($action) {
         $horarios_status = [];
         if ($secciones) {
             // Create a copy of the result set to iterate for horario status
-            $secciones_copy = mysqli_fetch_array($secciones);
-            while ($row = $secciones_copy) {
+            $secciones_copy = [];
+            while ($row = $secciones->fetch_assoc()) {
+                $secciones_copy[] = $row;
+            }
+            foreach ($secciones_copy as $row) {
+                
                 $horario_result = $seccionModelo->obtenerHorarioPorSeccion($row['id_seccion']);
                 $horarios_status[$row['id_seccion']] = (mysqli_num_rows($horario_result) > 0);
             }
         }
+
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/seccion_vista.php');
         break;
 }
-?>

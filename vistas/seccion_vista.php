@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +54,7 @@ session_start();
                             <tbody>
                                 <?php
                                 if ($secciones && mysqli_num_rows($secciones) > 0) {
-                                    while ($row = mysqli_fetch_array($secciones)) {
+                                    foreach ($secciones_copy as $row) {
                                 ?>
                                         <tr>
                                             <td class="id_seccion" style="display: none;"> <?php echo $row['id_seccion'] ?> </td>
