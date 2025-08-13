@@ -54,31 +54,32 @@
         <img src="/liceo/imgs/cuadricula.png" alt="">
     </section>
     <section class="modulos">
-    <div class="modulo" data-url="modulos/usuarios/crud_usuarios.php">
+    <div class="modulo" data-url="controladores/usuario_controlador.php">
         <img src="/liceo/imgs/agregar-usuario.png" alt="">
         <h2>Usuarios</h2>
     </div>
-    <div class="modulo" data-url="modulos/estudiantes/crud_estudiantes.php">
+    <div class="modulo" data-url="controladores/estudiante_controlador.php">
         <img src="/liceo/imgs/estudiando.png" alt="">
         <h2>Estudiantes</h2>
     </div>
-    <div class="modulo" data-url="modulos/profesores/crud_profesores.php">
+    <div class="modulo" data-url="controladores/profesor_controlador.php">
         <img src="/liceo/imgs/masculino.png" alt="">
         <h2>Profesores</h2>
     </div>
-    <div class="modulo" data-url="modulos/materias/crud_materia.php">
+    <div class="modulo" data-url="controladores/materia_controlador.php">
         <img src="/liceo/imgs/libros.png" alt="">
         <h2>Materias</h2>
     </div>
-    <div class="modulo" data-url="modulos/secciones/crud_secciones.php">
+    <div class="modulo" data-url="controladores/seccion_controlador.php">
         <img src="/liceo/imgs/secciones.png" alt="">
         <h2>Seccion</h2>
     </div>
-    <div class="modulo" data-url="modulos/anio_academico/crud_anio_academico.php">
+
+    <div class="modulo" data-url="controladores/anio_academico_controlador.php">
         <img src="/liceo/imgs/calendario.png" alt="">
         <h2>Año</h2>
     </div>
-    <div class="modulo" data-url="modulos/asistencia/crud_asistencia.php"">
+    <div class="modulo" data-url="controladores/asistencia_controlador.php">
         <img src="/liceo/imgs/lista-de-verificacion.png" alt="">
         <h2>Asistencia</h2>
     </div>
