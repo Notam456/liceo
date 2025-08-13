@@ -106,7 +106,7 @@ session_start();
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar Año Academico</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="conn_año_academico.php" method="POST">
+                <form id="edit-form" action="conn_anio_academico.php" method="POST">
                     <div class="modal-body">
 
                         <div class="form-group mb-3">
@@ -165,7 +165,7 @@ session_start();
                     <h1 class="modal-title fs-5" id="insertdataLabel">Crea un nuevo Año Academico</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="formAnio" action="conn_año_academico.php" method="POST">
+                <form id="formAnio" action="conn_anio_academico.php" method="POST">
                     <?php
                     // Este bloque PHP para validación en el lado del servidor antes de enviar el formulario
                     // no es ideal para este lugar, ya que $_POST['id_profesores'] no estaría definido aquí
@@ -209,7 +209,7 @@ session_start();
                     <h1 class="modal-title fs-5" id="deletemodalLabel">Eliminar Año Academico</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="conn_año_academico.php" method="post">
+                <form action="conn_anio_academico.php" method="post">
                     <div class="modal-body">
                         <input type="text" class="form-control" id="confirm_id_anio" name="confirm_id_anio">
                         <h4>¿Estás seguro de querer eliminar a este Año Academico?</h4>
@@ -246,7 +246,7 @@ session_start();
 
                 $.ajax({
                     type: "POST",
-                    url: "conn_año_academico.php",
+                    url: "conn_anio_academico.php",
                     data: {
                         'click-view-btn': true,
                         'id_anio': id_anio
@@ -265,7 +265,7 @@ session_start();
 
                 $.ajax({
                     type: "POST",
-                    url: "conn_año_academico.php",
+                    url: "conn_anio_academico.php",
                     data: {
                         'click-edit-btn': true,
                         'id_anio': id_anio
@@ -300,7 +300,6 @@ session_start();
 
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
-        <script src="../../script/año_academico.js"></script>
     </footer>
 
 </body>

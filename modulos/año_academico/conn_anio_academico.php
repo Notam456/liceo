@@ -16,10 +16,10 @@ if (isset($_POST['save_data'])) {
 
     if ($insert_query_run) {
         $_SESSION['status'] = "Datos de coordinador ingresados correctamente";
-        header('location: crud_año_academico.php'); // Asegúrate de que esta sea la página correcta
+        header('location: crud_anio_academico.php'); // Asegúrate de que esta sea la página correcta
     } else {
         $_SESSION['status'] = "Datos de coordinador ingresados incorrectamente, vuelva a intentar";
-        header('location: crud_año_academico.php'); // Asegúrate de que esta sea la página correcta
+        header('location: crud_anio_academico.php'); // Asegúrate de que esta sea la página correcta
     }
 }
 
@@ -85,10 +85,10 @@ if(isset($_POST['update-data'])) {
 
     if($update_query_run) {
         $_SESSION['status'] = "Datos del coordinador actualizados correctamente";
-        header('location: crud_año_academico.php'); // Asegúrate de que esta sea la página correcta
+        header('location: crud_anio_academico.php'); // Asegúrate de que esta sea la página correcta
     } else {
         $_SESSION['status'] = "Los datos del coordinador no se pudieron actualizar: " . mysqli_error($conn);
-        header('location: crud_año_academico.php'); // Asegúrate de que esta sea la página correcta
+        header('location: crud_anio_academico.php'); // Asegúrate de que esta sea la página correcta
     }
 }
 

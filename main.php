@@ -74,7 +74,7 @@
         <img src="/liceo/imgs/secciones.png" alt="">
         <h2>Seccion</h2>
     </div>
-    <div class="modulo" data-url="modulos/año_academico/crud_año_academico.php">
+    <div class="modulo" data-url="modulos/anio_academico/crud_anio_academico.php">
         <img src="/liceo/imgs/calendario.png" alt="">
         <h2>Año</h2>
     </div>
