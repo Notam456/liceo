@@ -89,9 +89,9 @@ switch ($action) {
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id_estudiante);
 
             if ($row = mysqli_fetch_array($resultado)) {
-                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modulos/estudiantes/PHPWord-master/src/PhpWord/Autoloader.php');
+                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/PHPWord-master/src/PhpWord/Autoloader.php');
                 \PhpOffice\PhpWord\Autoloader::register();
-                $templatePath = $_SERVER['DOCUMENT_ROOT'] . '/liceo/modulos/estudiantes/estudianteconstancia.docx';
+                $templatePath = $_SERVER['DOCUMENT_ROOT'] . '/liceo/PHPWord-master/estudianteconstancia.docx';
                 $constancia = new \PhpOffice\PhpWord\TemplateProcessor($templatePath);
 
                 $constancia->setValue('nombre_estudiante', $row['nombre_estudiante']);
