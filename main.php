@@ -74,6 +74,7 @@
         <img src="/liceo/imgs/secciones.png" alt="">
         <h2>Seccion</h2>
     </div>
+
     <div class="modulo" data-url="controladores/anio_academico_controlador.php">
         <img src="/liceo/imgs/calendario.png" alt="">
         <h2>Año</h2>
