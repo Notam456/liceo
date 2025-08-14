@@ -303,7 +303,7 @@
                         'id': id,
                     },
                     success: function(response) {
-                        var data = JSON.parse(response);
+                        var data = response;
                         $('#idEdit').val(data.id);
                         $('#usuarioEdit').val(data.usuario);
                         $('#contrasenaEdit').val(data.contrasena);

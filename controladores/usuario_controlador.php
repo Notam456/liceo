@@ -50,8 +50,8 @@ switch ($action) {
             $resultado = $usuarioModelo->obtenerUsuarioPorId($id);
             $array_result = [];
             if (mysqli_num_rows($resultado) > 0) {
-                while ($row = mysqli_fetch_array($resultado)) {
-                    array_push($array_result, $row);
+                while ($row = mysqli_fetch_assoc($resultado)) {
+                    $array_result[] = $row;
                 }
                 header('content-type: application/json');
                 echo json_encode($array_result[0]); // Devuelve solo el primer usuario como un objeto
