@@ -87,6 +87,10 @@
         <img src="/liceo/imgs/asignacion-de-recursos.png" alt="">
         <h2>Asignacion</h2>
     </div>
+    <div class="modulo" data-url="controladores/reporte_controlador.php">
+        <img src="/liceo/imgs/reportes.png" alt="">
+        <h2>Reportes</h2>
+    </div>
 </section>
 <script>
   document.querySelectorAll('.modulo').forEach(modulo => {
