@@ -119,9 +119,6 @@ if (!isset($reporte)) {
     $(document).ready(function() {
         // Configuración de DataTables
         var table = $('#tablaReportes').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-            },
             "order": [[6, "desc"]],
             "dom": '<"top"f>rt<"bottom"lip><"clear">'
         });

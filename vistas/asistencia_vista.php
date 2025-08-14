@@ -225,10 +225,7 @@
                 columnDefs: [
                     { targets: 0, visible: false },
                     { targets: -1, orderable: false }
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                }
+                ]
             });
 
             // Mostrar/ocultar nota de justificación
