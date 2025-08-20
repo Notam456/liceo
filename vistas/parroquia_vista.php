@@ -81,7 +81,7 @@
                             <input type="text" id="parroquia_edit" class="form-control" name="parroquia_edit" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Municipio al que pertenece la parroquia</label>
+                            <label>Municipio al que pertenece la parroquia  (NO FUNCIONA AUN)</label>
                             <input type="text" id="municipio_edit" class="form-control" name="municipio_edit" required>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                             <input type="text" name="parroquia" class="form-control" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Municipio (NO FUNCIONA AUN)</label>
+                            <label>Municipio al que pertenece la parroquia (NO FUNCIONA AUN)</label>
                             <input type="text" name="municipio" class="form-control" required>
                         </div>
                     </div>
