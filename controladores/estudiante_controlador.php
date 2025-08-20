@@ -1,5 +1,7 @@
 <?php
 session_start();
+// jose yajure, ES NECESARIO LA LINEA DEL TIMEZONE PARA QUE LA CONSTANCIA TOME LA FECHA CORRECTA
+date_default_timezone_set('America/Caracas');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php');
 
@@ -82,48 +84,86 @@ switch ($action) {
             include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/estudiante_vista.php');
         }
         break;
-
+        // jose yajure, AÑADIR TCPDF PARA GENERAR EL ARCHIVO EN PDF!!
     case 'generar_constancia':
         if (isset($_GET['id'])) {
             $id_estudiante = $_GET['id'];
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id_estudiante);
 
             if ($row = mysqli_fetch_array($resultado)) {
-                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/PHPWord-master/src/PhpWord/Autoloader.php');
-                \PhpOffice\PhpWord\Autoloader::register();
-                $templatePath = $_SERVER['DOCUMENT_ROOT'] . '/liceo/PHPWord-master/estudianteconstancia.docx';
-                $constancia = new \PhpOffice\PhpWord\TemplateProcessor($templatePath);
-
-                $constancia->setValue('nombre_estudiante', $row['nombre_estudiante']);
-                $constancia->setValue('apellido_estudiante', $row['apellido_estudiante']);
-                $constancia->setValue('cedula_estudiante', $row['cedula_estudiante']);
-                $constancia->setValue('contacto_estudiante', $row['contacto_estudiante']);
-                $constancia->setValue('municipio', $row['Municipio']);
-                $constancia->setValue('parroquia', $row['Parroquia']);
-                $constancia->setValue('año_academico', $row['año_academico']);
-                $constancia->setValue('seccion_estudiante', $row['seccion_estudiante']);
+                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
+    
+                $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+                $pdf->SetCreator(PDF_CREATOR);
+                $pdf->SetAuthor('Liceo');
+                $pdf->SetTitle('Constancia de Estudio');
+                $pdf->SetSubject('Constancia de Estudio para Estudiante');
+                $pdf->setPrintHeader(false);
+                $pdf->setPrintFooter(false);
+                $pdf->AddPage();
 
                 $dias = ["Sunday" => "Domingo", "Monday" => "Lunes", "Tuesday" => "Martes", "Wednesday" => "Miércoles", "Thursday" => "Jueves", "Friday" => "Viernes", "Saturday" => "Sábado"];
                 $dia_actual = $dias[date('l')];
 
-                $constancia->setValue('dia_actual', $dia_actual);
-                $constancia->setValue('fecha_actual', date('d/m/Y'));
+                $fecha_actual = date('d/m/Y');
+                
 
-                $file_name = "Constancia_" . $row['nombre_estudiante'] . "_" . $row['apellido_estudiante'] . ".docx";
-                $constancia->saveAs($file_name);
+                $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
+                $ancho_imagen = 180;
+                $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
 
-                header('Content-Description: File Transfer');
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename=' . basename($file_name));
-                header('Content-Transfer-Encoding: binary');
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate');
-                header('Pragma: public');
-                header('Content-Length: ' . filesize($file_name));
-                flush();
-                readfile($file_name);
-                unlink($file_name);
+                $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
+            
+                $pdf->SetMargins(15, 60, 15);
+                $pdf->SetY(50);
+
+                // jose yajure, EN EL PARRAFO DIRECTOR HAY QUE COLOCAR LA CONSULTA 
+                //QUE NOS TRAIGA EL NOMBRE Y CEDULA DEL DIRECTOR!!
+
+                $html = '
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td colspan="3" style="text-align: center;"><h1>CONSTANCIA DE ESTUDIO</h1></td>
+                        </tr>
+                    </table>
+
+                    '.$pdf->Ln(10).'
+    
+                    <p style="text-align: justify; line-height: 1.5;">
+                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> “NOMBRE del DIRECTOR”, </strong> titular de la Cédula de Identidad 
+                        N° <strong style="text-transform: uppercase;">“ C.I del Director”</strong> Director del 
+                        <strong style="text-transform: uppercase;">LICEO PROFESOR FERNANDO RAMÍREZ</strong> ubicada en el Barrio las Madres detrás del Polideportivo San Felipe Edo. Yaracuy. 
+                        Hace constar por medio de la presente que el (la) Estudiante <strong style="text-transform: uppercase;">' .
+                         $row['nombre_estudiante'] . ' ' . $row['apellido_estudiante'] . '</strong>, titular de la Cédula 
+                         <strong style="text-transform: uppercase;"> ' . 
+                         $row['cedula_estudiante'] . ' </strong>, cursa el Grado ' . $row['seccion_estudiante'] . ' durante el periodo escolar ' . 
+                         $row['año_academico'] . ' de Educación Secundaria y Reside en el Municipio ' . $row['Municipio'] . '
+                    </p>
+                    <br>
+                    <p style="text-align: justify;">
+                        Constancia que se expide en San Felipe, hoy ' . $dia_actual . ' de fecha ' . $fecha_actual . '
+                    </p>
+                    <br>
+                ';
+                
+                $pdf->writeHTML($html, true, false, true, false, '');
+
+                $pdf->Ln(30);
+                // jose yajure, AÑADÍ $html2 YA QUE EL TCPDF NO ME LEE MAS DE UN <br>
+                // TUVE QUE USAR LA FUNCIONA Ln PARA PODER AÑADIR MAS ESPACIO EN DONDE SE FIRMA Y SELLA
+                $html2 = '                    
+                <p style="text-align: center;">__________________________________</p>
+                <p style="text-align: center;">Prof. NOMBRE DIRECTOR</p> 
+                <p style="text-align: center;">Barrio Las Madres</p>
+                <p style="text-align: center;">Municipio San Felipe</p>';
+
+                $pdf->writeHTML($html2, true, false, true, false, '');
+
+                $file_name = "Constancia_" . $row['nombre_estudiante'] . "_" . $row['apellido_estudiante'] . ".pdf";
+                $pdf->Output($file_name, 'I');
                 exit;
+    
             } else {
                 echo "No se encontró el estudiante con el ID proporcionado.";
             }
