@@ -58,11 +58,11 @@
                                     while ($row = mysqli_fetch_array($coordinadores)) {
                                 ?>
                                         <tr>
-                                            <td class="id_coordinadores" style="display: none;"> <?php echo $row['id_coordinadores'] ?> </td>
-                                            <td> <?php echo $row['nombre_coordinadores'] ?> </td>
-                                            <td> <?php echo $row['apellido_coordinadores'] ?> </td>
-                                            <td> <?php echo $row['cedula_coordinadores'] ?> </td>
-                                            <td> <?php echo $row['contacto_coordinadores'] ?> </td>
+                                            <td class="id_coordinador" style="display: none;"> <?php echo $row['id_coordinador'] ?> </td>
+                                            <td> <?php echo $row['nombre_coordinador'] ?> </td>
+                                            <td> <?php echo $row['apellido_coordinador'] ?> </td>
+                                            <td> <?php echo $row['cedula_coordinador'] ?> </td>
+                                            <td> <?php echo $row['contacto_coordinador'] ?> </td>
 
                                             <td>
                                                 <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
@@ -105,36 +105,31 @@
                 <form id="edit-form" action="/liceo/controladores/coordinador_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
                     <div class="modal-body">
-                        <input type="hidden" id="id_coordinadores_edit" class="form-control" name="id_coordinadores">
+                        <input type="hidden" id="id_coordinador_edit" class="form-control" name="id_coordinador">
 
                         <div class="form-group mb-3">
                             <label>Nombres</label>
-                            <input type="text" id="nombre_coordinadores_edit" class="form-control" name="nombre_coordinadores" required>
+                            <input type="text" id="nombre_coordinador_edit" class="form-control" name="nombre_coordinador" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Apellidos</label>
-                            <input type="text" id="apellido_coordinadores_edit" class="form-control" name="apellido_coordinadores" required>
+                            <input type="text" id="apellido_coordinador_edit" class="form-control" name="apellido_coordinador" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Cédula</label>
-                            <input type="text" id="cedula_coordinadores_edit" class="form-control" name="cedula_coordinadores" required>
+                            <input type="text" id="cedula_coordinador_edit" class="form-control" name="cedula_coordinador" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Contacto</label>
-                            <input type="text" id="contacto_coordinadores_edit" class="form-control" name="contacto_coordinadores" required>
+                            <input type="text" id="contacto_coordinador_edit" class="form-control" name="contacto_coordinador" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Área de Coordinación</label>
                             <input type="text" id="area_coordinacion_edit" class="form-control" name="area_coordinacion" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label>Sección Coordinada</label>
-                            <input type="text" id="seccion_coordinadores_edit" class="form-control" name="seccion_coordinadores" required>
                         </div>
 
                     </div>
@@ -154,7 +149,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="view_coordinadores_data"></div>
+                    <div class="view_coordinador_data"></div>
                 </div>
             </div>
         </div>
@@ -172,27 +167,23 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Nombres</label>
-                            <input type="text" class="form-control" name="nombre_coordinadores" required>
+                            <input type="text" class="form-control" name="nombre_coordinador" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Apellidos</label>
-                            <input type="text" class="form-control" name="apellido_coordinadores" required>
+                            <input type="text" class="form-control" name="apellido_coordinador" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Cédula</label>
-                            <input type="text" class="form-control" name="cedula_coordinadores" required>
+                            <input type="text" class="form-control" name="cedula_coordinador" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Contacto</label>
-                            <input type="text" class="form-control" name="contacto_coordinadores" required>
+                            <input type="text" class="form-control" name="contacto_coordinador" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Área de Coordinación</label>
                             <input type="text" class="form-control" name="area_coordinacion" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Sección Coordinada</label>
-                            <input type="text" class="form-control" name="seccion_coordinadores" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -220,13 +211,13 @@
             // Ver
             $(document).on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_coordinadores').text();
+                var id = $(this).closest('tr').find('.id_coordinador').text();
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/coordinador_controlador.php",
-                    data: { 'action': 'ver', 'id_coordinadores': id },
+                    data: { 'action': 'ver', 'id_coordinador': id },
                     success: function(response) {
-                        $('.view_coordinadores_data').html(response);
+                        $('.view_coordinador_data').html(response);
                         $('#viewmodal').modal('show');
                     }
                 });
@@ -235,21 +226,20 @@
             // Cargar para Editar
             $(document).on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_coordinadores').text();
+                var id = $(this).closest('tr').find('.id_coordinador').text();
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/coordinador_controlador.php",
-                    data: { 'action': 'editar', 'id_coordinadores': id },
+                    data: { 'action': 'editar', 'id_coordinador': id },
                     dataType: "json",
                     success: function(response) {
                         var data = response[0];
-                        $('#id_coordinadores_edit').val(data.id_coordinadores);
-                        $('#nombre_coordinadores_edit').val(data.nombre_coordinadores);
-                        $('#apellido_coordinadores_edit').val(data.apellido_coordinadores);
-                        $('#cedula_coordinadores_edit').val(data.cedula_coordinadores);
-                        $('#contacto_coordinadores_edit').val(data.contacto_coordinadores);
+                        $('#id_coordinador_edit').val(data.id_coordinador);
+                        $('#nombre_coordinador_edit').val(data.nombre_coordinador);
+                        $('#apellido_coordinador_edit').val(data.apellido_coordinador);
+                        $('#cedula_coordinador_edit').val(data.cedula_coordinador);
+                        $('#contacto_coordinador_edit').val(data.contacto_coordinador);
                         $('#area_coordinacion_edit').val(data.area_coordinacion);
-                        $('#seccion_coordinadores_edit').val(data.seccion_coordinadores);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -258,7 +248,7 @@
             // Eliminar
             $(document).on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_coordinadores').text();
+                var id = $(this).closest('tr').find('.id_coordinador').text();
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará el registro permanentemente!',
@@ -273,7 +263,7 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/coordinador_controlador.php",
-                            data: { 'action': 'eliminar', 'id_coordinadores': id },
+                            data: { 'action': 'eliminar', 'id_coordinador': id },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
