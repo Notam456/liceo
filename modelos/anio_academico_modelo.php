@@ -48,5 +48,9 @@ class AnioAcademicoModelo {
         $set_query = "UPDATE anio_academico SET estado = 1 WHERE id_anio = $id";
         return mysqli_query($this->conn, $set_query);
     }
+    public function obtenerAnioActivo(){
+        $query = "SELECT * FROM anio_academico WHERE estado = 1";
+        return mysqli_query($this->conn, $query);
+    }
 }
 ?>
