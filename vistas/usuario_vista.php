@@ -57,7 +57,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width: 109.2%;" class="table table-striped" id="myTable">
+                        <table style="margin-left: 40px; width: 100.2%;" class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
