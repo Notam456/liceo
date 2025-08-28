@@ -49,6 +49,7 @@
     <a href="/liceo/controladores/coordinador_controlador.php"><i class="bi bi-person-lines-fill me-2"></i> Coordinadores</a>
     <a href="/liceo/controladores/seccion_controlador.php"><i class="bi bi-diagram-3 me-2"></i> Secciones</a>
     <a href="/liceo/controladores/materia_controlador.php"><i class="bi bi-journal-bookmark me-2"></i> Materias</a>
+    <a href="/liceo/controladores/grado_controlador.php"><i class="bi bi-collection me-2"></i> Grados</a>
     <a href="/liceo/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</a>
 </div>
 

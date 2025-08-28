@@ -55,8 +55,8 @@
                                             <td class="id" style="display: none;"> <?php echo $row['id_grado'] ?> </td>
                                             <td> <?php echo $row['numero_anio'] . '° año'; ?> </td>
                                             <td> <?php echo $data['total']; ?> </td>
-                                            <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
-                                            <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
+                                            <td><a href="#" class="btn btn-warning btn-sm view-datas">Consultar</a></td>
+                                            <td><a href="#" class="btn btn-primary btn-sm edit-datas">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                         </tr>
                                     <?php }
