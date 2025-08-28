@@ -7,31 +7,31 @@ class AnioAcademicoModelo {
         $this->conn = $db;
     }
 
-    public function crearAnioAcademico($anio, $anio_academico) {
-        $anio = mysqli_real_escape_string($this->conn, $anio);
-        $anio_academico = mysqli_real_escape_string($this->conn, $anio_academico);
+    public function crearAnioAcademico($desde, $hasta) {
+        $desde = mysqli_real_escape_string($this->conn, $desde);
+        $hasta = mysqli_real_escape_string($this->conn, $hasta);
 
-        $insert_query = "INSERT INTO anio_academico(anio, anio_academico) VALUES ('$anio', '$anio_academico')";
+        $insert_query = "INSERT INTO anio_academico(desde, hasta) VALUES ('$desde', '$hasta')";
         return mysqli_query($this->conn, $insert_query);
     }
 
     public function obtenerAnioAcademicoPorId($id) {
         $id = (int)$id;
-        $fetch_query = "SELECT * FROM anio_academico WHERE id_anio = '$id'";
+        $fetch_query = "SELECT *,  CONCAT(YEAR(desde), '-', YEAR(hasta)) AS periodo FROM anio_academico WHERE id_anio = '$id'";
         return mysqli_query($this->conn, $fetch_query);
     }
 
     public function obtenerTodosLosAniosAcademicos() {
-        $query = "SELECT * FROM anio_academico";
+        $query = "SELECT *,  CONCAT(YEAR(desde), '-', YEAR(hasta)) AS periodo FROM anio_academico";
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarAnioAcademico($id, $anio, $anio_academico) {
+    public function actualizarAnioAcademico($id, $desde, $hasta) {
         $id = (int)$id;
-        $anio = mysqli_real_escape_string($this->conn, $anio);
-        $anio_academico = mysqli_real_escape_string($this->conn, $anio_academico);
+        $desde = mysqli_real_escape_string($this->conn, $desde);
+        $hasta = mysqli_real_escape_string($this->conn, $hasta);
 
-        $update_query = "UPDATE anio_academico SET anio = '$anio', anio_academico = '$anio_academico' WHERE id_anio = $id";
+        $update_query = "UPDATE anio_academico SET desde = '$desde', hasta = '$hasta' WHERE id_anio = $id";
         return mysqli_query($this->conn, $update_query);
     }
 
@@ -39,6 +39,14 @@ class AnioAcademicoModelo {
         $id = (int)$id;
         $delete_query = "DELETE FROM anio_academico WHERE id_anio ='$id'";
         return mysqli_query($this->conn, $delete_query);
+    }
+
+    public function establecerAnioActivo($id) {
+        $id = (int)$id;
+        $query = "UPDATE anio_academico SET estado = 0 WHERE estado = 1";
+        mysqli_query($this->conn, $query);
+        $set_query = "UPDATE anio_academico SET estado = 1 WHERE id_anio = $id";
+        return mysqli_query($this->conn, $set_query);
     }
 }
 ?>

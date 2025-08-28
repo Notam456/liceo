@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,12 +37,12 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width:100%;" class="table table-striped" id="myTable">
+                        <table style="margin-left: 40px; width:109.2%;" class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
-                                    <th scope="col">Año</th>
-                                    <th scope="col">Año Academico</th>
+                                    <th scope="col">Período</th>
+                                    <th scope="col">Estado</th>
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
                                     <th scope="col" class="action"></th>
@@ -56,8 +55,19 @@
                                 ?>
                                         <tr>
                                             <td class="id_anio" style="display: none;"> <?php echo $row['id_anio'] ?> </td>
-                                            <td> <?php echo $row['anio'] ?> </td>
-                                            <td> <?php echo $row['anio_academico'] ?> </td>
+                                            <td> <?php echo $row['periodo'] ?> </td>
+                                            <td> <?php if ((bool)$row['estado']) {
+                                                        echo "Activo";
+                                                    } else {
+                                                        echo 'Inactivo <br> <a
+    name="btn-set"
+    id="btn-set"
+    class="btn btn-primary btn-sm btn-set"
+    role="button"
+    >Establecer Activo</a
+>
+';
+                                                    } ?> </td>
 
                                             <td>
                                                 <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
@@ -77,6 +87,11 @@
                                     ?>
                                     <tr>
                                         <td colspan="6">No se encontraron registros de Años academicos.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 <?php
                                 }
@@ -106,17 +121,13 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="">Año</label>
-                            <input type="text" id="anio_edit" class="form-control" name="anio"
-                                pattern="[0-9!@#$%^&*()_+\-=\[\]{};':\,.<>/?|`~]+" maxlength="50" minlength="4"
-                                placeholder="Edite el Año requerido del Año Academico" required>
+                            <label for="">Fecha de inicio del año academico</label>
+                            <input type="date" id="inicio_edit" class="form-control" name="inicio" required>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="">Año Academico</label>
-                            <input type="text" id="anio_academico_edit" class="form-control" name="anio_academico"
-                                pattern="[0-9!@#$%^&*()_+\-=\[\]{};':\,.<>/?|`~]+" maxlength="50" minlength="5"
-                                placeholder="Edite el Año Academico" required>
+                            <label for="">Fecha del fin del año academico</label>
+                            <input type="date" id="fin_edit" class="form-control" name="fin" required>
                         </div>
 
                     </div>
@@ -138,6 +149,7 @@
                 <div class="modal-body">
                     <div class="view_anio_data"></div>
                 </div>
+
                 <div class="modal-footer"></div>
             </div>
         </div>
@@ -154,17 +166,13 @@
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3">
-                            <label for="">Año</label>
-                            <input type="text" class="form-control" name="anio"
-                                pattern="[0-9!@#$%^&*()_+\-=\[\]{};':\,.<>/?|`~]+" maxlength="50" minlength="4"
-                                placeholder="Ingrese el Año" required>
+                            <label for="inicio">Fecha de inicio del año académico</label>
+                            <input type="date" class="form-control" name="inicio" required>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="">Año Academico</label>
-                            <input type="text" class="form-control" name="anio_academico"
-                                pattern="[0-9!@#$%^&*()_+\-=\[\]{};':\,.<>/?|`~]+" maxlength="50" minlength="4"
-                                placeholder="Ingrese el Año Academico" required>
+                            <label for="fin">Fecha de fin del año académico</label>
+                            <input type="date" class="form-control" name="fin" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -187,6 +195,7 @@
             },
             columnDefs: [{
                 width: '93px',
+                targets: [3, 4, 5]
             }]
         });
 
@@ -198,7 +207,10 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/anio_academico_controlador.php",
-                    data: { 'action': 'ver', 'id_anio': id_anio },
+                    data: {
+                        'action': 'ver',
+                        'id_anio': id_anio
+                    },
                     success: function(response) {
                         $('.view_anio_data').html(response);
                         $('#viewmodal').modal('show');
@@ -213,14 +225,17 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/anio_academico_controlador.php",
-                    data: { 'action': 'editar', 'id_anio': id_anio },
+                    data: {
+                        'action': 'editar',
+                        'id_anio': id_anio
+                    },
                     dataType: "json",
                     success: function(response) {
                         if (response.length > 0) {
                             var data = response[0];
                             $('#id_anio_edit').val(data.id_anio);
-                            $('#anio_edit').val(data.anio);
-                            $('#anio_academico_edit').val(data.anio_academico);
+                            $('#inicio_edit').val(data.desde);
+                            $('#fin_edit').val(data.hasta);
                             $('#editmodal').modal('show');
                         }
                     }
@@ -245,13 +260,34 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/anio_academico_controlador.php",
-                            data: { 'action': 'eliminar', 'id_anio': id_anio },
+                            data: {
+                                'action': 'eliminar',
+                                'id_anio': id_anio
+                            },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
                         });
                     }
                 });
+            });
+            $(document).on('click', '.btn-set', function(e) {
+                e.preventDefault();
+                var id_anio = $(this).closest('tr').find('.id_anio').text();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/liceo/controladores/anio_academico_controlador.php",
+                    data: {
+                        'action': 'establecerActivo',
+                        'id_anio': id_anio
+                    },
+                    success: function(response) {
+                     location.reload();
+                    }
+                });
+
+
             });
         });
     </script>
@@ -261,4 +297,5 @@
     </footer>
 
 </body>
+
 </html>
