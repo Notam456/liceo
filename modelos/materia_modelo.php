@@ -11,7 +11,7 @@ class MateriaModelo {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $info = mysqli_real_escape_string($this->conn, $info);
 
-        $query = "INSERT INTO materia(nombre_materia, info_materia) VALUES ('$nombre', '$info')";
+        $query = "INSERT INTO materia(nombre, descripcion) VALUES ('$nombre', '$info')";
         return mysqli_query($this->conn, $query);
     }
 
@@ -31,7 +31,7 @@ class MateriaModelo {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $info = mysqli_real_escape_string($this->conn, $info);
 
-        $query = "UPDATE materia SET nombre_materia = '$nombre', info_materia = '$info' WHERE id_materia = $id";
+        $query = "UPDATE materia SET nombre = '$nombre', descripcion = '$info' WHERE id_materia = $id";
         return mysqli_query($this->conn, $query);
     }
 

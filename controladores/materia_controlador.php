@@ -23,8 +23,8 @@ switch ($action) {
             $resultado = $materiaModelo->obtenerMateriaPorId($id);
             if ($row = mysqli_fetch_array($resultado)) {
                 echo '<h6> Id primaria: ' . $row['id_materia'] . '</h6>
-                      <h6> Nombre de la materia: ' . $row['nombre_materia'] . '</h6>
-                      <h6> Descripción: ' . $row['info_materia'] . '</h6>';
+                      <h6> Nombre de la materia: ' . $row['nombre'] . '</h6>
+                      <h6> Descripción: ' . $row['descripcion'] . '</h6>';
             } else {
                 echo '<h4>No se han encontrado datos</h4>';
             }

@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Materia</title>
 </head>
+
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -18,7 +19,8 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']); } ?>
+                <?php unset($_SESSION['status']);
+                } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Materias <img src="/liceo/icons/people.svg">
@@ -46,15 +48,22 @@
                                 ?>
                                         <tr>
                                             <td class="id" style="display: none;"> <?php echo $row['id_materia'] ?> </td>
-                                            <td> <?php echo $row['nombre_materia'] ?> </td>
-                                            <td> <?php echo $row['info_materia'] ?> </td>
+                                            <td> <?php echo $row['nombre'] ?> </td>
+                                            <td> <?php echo $row['descripcion'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr><td colspan="6">No Record Found</td></tr>
+                                    <tr>
+                                        <td style="display: none;"></td>
+                                        <td>No se encontraron registros</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -146,7 +155,10 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-            columnDefs: [{ width: '93px', targets: [3, 4, 5] }]
+            columnDefs: [{
+                width: '93px',
+                targets: [3, 4, 5]
+            }]
         });
 
         $(document).ready(function() {
@@ -157,7 +169,10 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/materia_controlador.php",
-                    data: { 'action': 'ver', 'id': id },
+                    data: {
+                        'action': 'ver',
+                        'id': id
+                    },
                     success: function(response) {
                         $('.view_user_data').html(response);
                         $('#viewmodal').modal('show');
@@ -172,13 +187,16 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/materia_controlador.php",
-                    data: { 'action': 'editar', 'id': id },
+                    data: {
+                        'action': 'editar',
+                        'id': id
+                    },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
                         $('#idEdit').val(data.id_materia);
-                        $('#nombre_materia_edit').val(data.nombre_materia);
-                        $('#info_materia_edit').val(data.info_materia);
+                        $('#nombre_materia_edit').val(data.nombre);
+                        $('#info_materia_edit').val(data.descripcion);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -202,7 +220,10 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/materia_controlador.php",
-                            data: { 'action': 'eliminar', 'id': id },
+                            data: {
+                                'action': 'eliminar',
+                                'id': id
+                            },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -217,4 +238,5 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
+
 </html>
