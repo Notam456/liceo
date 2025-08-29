@@ -173,8 +173,8 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                         <tr class="fila-asignacion">
                                             <td><?= $asignacion['id_asignacion'] ?></td>
                                             <td>
-                                                <strong><?= htmlspecialchars($asignacion['apellido_profesor'] . ', ' . $asignacion['nombre_profesor']) ?></strong>
-                                                <br><small class="text-muted">Cédula: <?= htmlspecialchars($asignacion['cedula_profesor']) ?></small>
+                                                <strong><?= htmlspecialchars($asignacion['apellido'] . ', ' . $asignacion['nombre']) ?></strong>
+                                                <br><small class="text-muted">Cédula: <?= htmlspecialchars($asignacion['cedula']) ?></small>
                                             </td>
                                             <td>
                                                 <strong><?= htmlspecialchars($asignacion['nombre_materia']) ?></strong>
@@ -271,7 +271,7 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                 <option value="">Seleccionar profesor</option>
                                 <?php foreach ($profesores as $profesor): ?>
                                 <option value="<?= $profesor['id_profesor'] ?>">
-                                    <?= htmlspecialchars($profesor['apellido_profesor'] . ', ' . $profesor['nombre_profesor'] . ' (' . $profesor['cedula_profesor'] . ')') ?>
+                                    <?= htmlspecialchars($profesor['apellido'] . ', ' . $profesor['nombre'] . ' (' . $profesor['cedula'] . ')') ?>
                                 </option>
                                 <?php endforeach; ?>
                             </select>
@@ -283,7 +283,7 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                 <option value="">Seleccionar materia</option>
                                 <?php foreach ($materias as $materia): ?>
                                 <option value="<?= $materia['id_materia'] ?>">
-                                    <?= htmlspecialchars($materia['nombre_materia']) ?>
+                                    <?= htmlspecialchars($materia['nombre']) ?>
                                 </option>
                                 <?php endforeach; ?>
                             </select>

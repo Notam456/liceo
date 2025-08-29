@@ -7,25 +7,8 @@ ini_set('display_errors', 1);
 session_start();
 
 // Incluir archivo de configuración de base de datos
-$config_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/config/database.php';
-if (file_exists($config_path)) {
-    require_once($config_path);
-} else {
-    // Crear conexión básica si no existe el archivo de configuración
-    $host = "localhost";
-    $user = "root";
-    $password = "";
-    $database = "liceo";
-    
-    $conn = new mysqli($host, $user, $password, $database);
-    
-    if ($conn->connect_error) {
-        die("Error de conexión a la base de datos: " . $conn->connect_error);
-    }
-    
-    $conn->set_charset("utf8mb4");
-    $db = $conn;
-}
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
+
 
 // Incluir modelo
 $model_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/asigna_materia_modelo.php';
@@ -36,7 +19,7 @@ if (file_exists($model_path)) {
 }
 
 // Crear instancia del modelo
-$modelo = new AsignaMateriaModelo($db);
+$modelo = new AsignaMateriaModelo($conn);
 
 // Manejar acciones
 $action = $_POST['action'] ?? $_GET['action'] ?? '';

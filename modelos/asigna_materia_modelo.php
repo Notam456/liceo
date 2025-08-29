@@ -11,17 +11,17 @@ class AsignaMateriaModelo {
         $query = "SELECT 
                     am.id_asignacion,
                     p.id_profesor,
-                    p.nombre_profesor, 
-                    p.apellido_profesor,
-                    p.cedula_profesor,
+                    p.nombre, 
+                    p.apellido,
+                    p.cedula,
                     m.id_materia,
-                    m.nombre_materia,
+                    m.nombre AS nombre_materia,
                     am.fecha_asignacion,
                     am.estado
                   FROM asigna_materia am
-                  JOIN profesores p ON am.id_profesor = p.id_profesor
+                  JOIN profesor p ON am.id_profesor = p.id_profesor
                   JOIN materia m ON am.id_materia = m.id_materia
-                  ORDER BY p.apellido_profesor, p.nombre_profesor, m.nombre_materia";
+                  ORDER BY p.apellido, p.nombre, m.nombre";
         
         $result = $this->db->query($query);
         
@@ -39,7 +39,7 @@ class AsignaMateriaModelo {
 
     // Obtener todos los profesores
     public function obtenerProfesores() {
-        $query = "SELECT * FROM profesores ORDER BY apellido_profesor, nombre_profesor";
+        $query = "SELECT * FROM profesor ORDER BY apellido, nombre";
         $result = $this->db->query($query);
         
         $profesores = [];
@@ -52,7 +52,7 @@ class AsignaMateriaModelo {
 
     // Obtener todas las materias
     public function obtenerMaterias() {
-        $query = "SELECT * FROM materia ORDER BY nombre_materia";
+        $query = "SELECT * FROM materia ORDER BY nombre";
         $result = $this->db->query($query);
         
         $materias = [];
@@ -124,7 +124,7 @@ class AsignaMateriaModelo {
 
     // Obtener profesores que enseñan una materia específica
     public function obtenerProfesoresPorMateria($id_materia) {
-        $query = "SELECT p.* FROM profesores p
+        $query = "SELECT p.* FROM profesor p
                   JOIN asigna_materia am ON p.id_profesor = am.id_profesor
                   WHERE am.id_materia = ? AND am.estado = 'activa'";
         
