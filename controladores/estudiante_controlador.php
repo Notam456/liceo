@@ -4,9 +4,12 @@ session_start();
 date_default_timezone_set('America/Caracas');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/parroquia_modelo.php');
 
 $estudianteModelo = new EstudianteModelo($conn);
-
+$gradoModelo = new GradoModelo($conn);
+$parroquiaModelo = new ParroquiaModelo($conn);
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
@@ -14,8 +17,8 @@ switch ($action) {
         if (isset($_POST['save_data'])) {
             $resultado = $estudianteModelo->crearEstudiante(
                 $_POST['nombre_estudiante'], $_POST['apellido_estudiante'], $_POST['cedula_estudiante'],
-                $_POST['contacto_estudiante'], $_POST['Municipio'], $_POST['Parroquia'],
-                $_POST['año_academico'], $_POST['seccion_estudiante']
+                $_POST['contacto_estudiante'], $_POST['parroquia'],
+                $_POST['grado']
             );
             $_SESSION['status'] = $resultado ? "Estudiante creado correctamente" : "Error al crear el estudiante";
             header('Location: /liceo/controladores/estudiante_controlador.php');
@@ -29,14 +32,13 @@ switch ($action) {
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id);
             if ($row = mysqli_fetch_array($resultado)) {
                 echo '<h6> Id primaria: '. $row['id_estudiante'] .'</h6>
-                      <h6> Nombres: '. $row['nombre_estudiante'] .'</h6>
-                      <h6> Apellidos: '. $row['apellido_estudiante'] .'</h6>
-                      <h6> C.I: '. $row['cedula_estudiante'] .'</h6>
-                      <h6> Contacto: '. $row['contacto_estudiante'] .'</h6>
-                      <h6> Municipio: '. $row['Municipio'] .'</h6>
-                      <h6> Parroquia: '. $row['Parroquia'] .'</h6>
-                      <h6> Año Academico: '. $row['año_academico'] .'</h6>
-                      <h6> Sección: '. $row['seccion_estudiante'] .'</h6>';
+                      <h6> Nombres: '. $row['nombre'] .'</h6>
+                      <h6> Apellidos: '. $row['apellido'] .'</h6>
+                      <h6> C.I: '. $row['cedula'] .'</h6>
+                      <h6> Contacto: '. $row['contacto'] .'</h6>
+                      <h6> Parroquia: '. $row['id_parroquia'] .'</h6>
+                      <h6> Grado: '. $row['id_grado'] .'</h6>
+                      <h6> Sección: '. $row['id_seccion'] .'</h6>';
             } else {
                 echo '<h4>No se han encontrado datos</h4>';
             }
@@ -60,8 +62,8 @@ switch ($action) {
         if (isset($_POST['update-data'])) {
             $resultado = $estudianteModelo->actualizarEstudiante(
                 $_POST['id_estudiante'], $_POST['nombre_estudiante'], $_POST['apellido_estudiante'],
-                $_POST['cedula_estudiante'], $_POST['contacto_estudiante'], $_POST['Municipio'],
-                $_POST['Parroquia'], $_POST['año_academico'], $_POST['seccion_estudiante']
+                $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
+                $_POST['parroquia'], $_POST['grado']
             );
             $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
             header('Location: /liceo/controladores/estudiante_controlador.php');
@@ -135,10 +137,10 @@ switch ($action) {
                         N° <strong style="text-transform: uppercase;">“ C.I del Director”</strong> Director del 
                         <strong style="text-transform: uppercase;">LICEO PROFESOR FERNANDO RAMÍREZ</strong> ubicada en el Barrio las Madres detrás del Polideportivo San Felipe Edo. Yaracuy. 
                         Hace constar por medio de la presente que el (la) Estudiante <strong style="text-transform: uppercase;">' .
-                         $row['nombre_estudiante'] . ' ' . $row['apellido_estudiante'] . '</strong>, titular de la Cédula 
+                         $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula 
                          <strong style="text-transform: uppercase;"> ' . 
-                         $row['cedula_estudiante'] . ' </strong>, cursa el Grado ' . $row['seccion_estudiante'] . ' durante el periodo escolar ' . 
-                         $row['año_academico'] . ' de Educación Secundaria y Reside en el Municipio ' . $row['Municipio'] . '
+                         $row['cedula'] . ' </strong>, cursa el Grado ' . $row['id_grado'] . ' durante el periodo escolar ' . 
+                         $row['id_grado'] . ' de Educación Secundaria y Reside en el Municipio ' . $row['id_parroquia'] . '
                     </p>
                     <br>
                     <p style="text-align: justify;">
@@ -160,7 +162,7 @@ switch ($action) {
 
                 $pdf->writeHTML($html2, true, false, true, false, '');
 
-                $file_name = "Constancia_" . $row['nombre_estudiante'] . "_" . $row['apellido_estudiante'] . ".pdf";
+                $file_name = "Constancia_" . $row['nombre'] . "_" . $row['apellido'] . ".pdf";
                 $pdf->Output($file_name, 'I');
                 exit;
     

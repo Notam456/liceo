@@ -7,18 +7,16 @@ class EstudianteModelo {
         $this->conn = $db;
     }
 
-    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $municipio, $parroquia, $anio, $seccion) {
+    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $parroquia, $anio) {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
         $contacto = mysqli_real_escape_string($this->conn, $contacto);
-        $municipio = mysqli_real_escape_string($this->conn, $municipio);
         $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
         $anio = mysqli_real_escape_string($this->conn, $anio);
-        $seccion = mysqli_real_escape_string($this->conn, $seccion);
 
-        $query = "INSERT INTO estudiante(nombre_estudiante, apellido_estudiante, cedula_estudiante, contacto_estudiante, Municipio, Parroquia, año_academico, seccion_estudiante)
-                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$municipio', '$parroquia', '$anio', '$seccion')";
+        $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_parroquia, id_grado)
+                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$parroquia', '$anio')";
         return mysqli_query($this->conn, $query);
     }
 
@@ -30,8 +28,6 @@ class EstudianteModelo {
 
     public function obtenerEstudiantesPorSeccion($id_seccion) {
         $id_seccion = (int)$id_seccion;
-        // This assumes the section name is stored in the student table.
-        // A better approach would be to join with the seccion table, but for now, I will keep the logic as is.
         $query = "SELECT * FROM estudiante WHERE seccion_estudiante IN (SELECT nombre FROM seccion WHERE id_seccion = '$id_seccion')";
         return mysqli_query($this->conn, $query);
     }
@@ -41,26 +37,22 @@ class EstudianteModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $municipio, $parroquia, $anio, $seccion) {
+    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $parroquia, $anio) {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
         $contacto = mysqli_real_escape_string($this->conn, $contacto);
-        $municipio = mysqli_real_escape_string($this->conn, $municipio);
         $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
         $anio = mysqli_real_escape_string($this->conn, $anio);
-        $seccion = mysqli_real_escape_string($this->conn, $seccion);
 
         $query = "UPDATE estudiante SET
-                    nombre_estudiante = '$nombre',
-                    apellido_estudiante = '$apellido',
-                    cedula_estudiante = '$cedula',
-                    contacto_estudiante = '$contacto',
-                    Municipio= '$municipio',
-                    Parroquia = '$parroquia',
-                    año_academico = '$anio',
-                    seccion_estudiante = '$seccion'
+                    nombre = '$nombre',
+                    apellido = '$apellido',
+                    cedula = '$cedula',
+                    contacto = '$contacto',
+                    id_parroquia = '$parroquia',
+                    id_grado = '$anio'
                   WHERE id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }

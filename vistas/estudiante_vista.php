@@ -49,10 +49,10 @@
                                 ?>
                                         <tr>
                                             <td class="id_estudiante" style="display: none;"> <?php echo $row['id_estudiante'] ?> </td>
-                                            <td> <?php echo $row['nombre_estudiante'] ?> </td>
-                                            <td> <?php echo $row['apellido_estudiante'] ?> </td>
-                                            <td> <?php echo $row['cedula_estudiante'] ?> </td>
-                                            <td> <?php echo $row['contacto_estudiante'] ?> </td>
+                                            <td> <?php echo $row['nombre'] ?> </td>
+                                            <td> <?php echo $row['apellido'] ?> </td>
+                                            <td> <?php echo $row['cedula'] ?> </td>
+                                            <td> <?php echo $row['contacto'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
@@ -63,7 +63,16 @@
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr><td colspan="9">No se encontraron registros</td></tr>
+                                    <tr><td style="display: none;"> </td>
+                                        <td > No se encontraron registros</td>
+                                        <td > </td>
+                                        <td > </td>
+                                        <td > </td>
+                                        <td > </td>
+                                        <td > </td>
+                                        <td > </td>
+                                        <td > </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -101,21 +110,23 @@
                             <label>Contacto</label>
                             <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required>
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Municipio</label>
-                            <input type="text" id="municipio_edit" class="form-control" name="Municipio" required>
+                       <div class="form-group mb-3"><label>Parroquia</label>
+                         <select id='parroquia_edit' name="parroquia" class="form-control" required>
+                              <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
+                                    while ($row = mysqli_fetch_array($parroquias)){
+                                        echo '<option value="'.$row["id_parroquia"].'"> '.$row["parroquia"];
+                                    }
+                                ?>
+                        </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Parroquia</label>
-                            <input type="text" id="parroquia_edit" class="form-control" name="Parroquia" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Año Académico</label>
-                            <input type="text" id="anio_academico_edit" class="form-control" name="año_academico" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Sección</label>
-                            <input type="text" id="seccion_estudiante_edit" class="form-control" name="seccion_estudiante" required>
+                        <div class="form-group mb-3"><label>Grado a cursar</label>
+                        <select id="grado_edit" name="grado" class="form-control" required>
+                              <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                    while ($row = mysqli_fetch_array($grados)){
+                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
+                                    }
+                                ?>
+                        </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -156,10 +167,24 @@
                         <div class="form-group mb-3"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Municipio</label><input type="text" name="Municipio" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Parroquia</label><input type="text" name="Parroquia" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Año Académico</label><input type="text" name="año_academico" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Sección</label><input type="text" name="seccion_estudiante" class="form-control" required></div>
+                        <div class="form-group mb-3"><label>Parroquia</label>
+                         <select name="parroquia" class="form-control" required>
+                              <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
+                                    while ($row = mysqli_fetch_array($parroquias)){
+                                        echo '<option value="'.$row["id_parroquia"].'"> '.$row["parroquia"];
+                                    }
+                                ?>
+                        </select>
+                        </div>
+                        <div class="form-group mb-3"><label>Grado a cursar</label>
+                        <select name="grado" class="form-control" required>
+                              <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                    while ($row = mysqli_fetch_array($grados)){
+                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
+                                    }
+                                ?>
+                        </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
@@ -210,14 +235,12 @@
                     success: function(response) {
                         var data = response[0];
                         $('#id_estudiante_edit').val(data.id_estudiante);
-                        $('#nombre_estudiante_edit').val(data.nombre_estudiante);
-                        $('#apellido_estudiante_edit').val(data.apellido_estudiante);
-                        $('#cedula_estudiante_edit').val(data.cedula_estudiante);
-                        $('#contacto_estudiante_edit').val(data.contacto_estudiante);
-                        $('#municipio_edit').val(data.Municipio);
-                        $('#parroquia_edit').val(data.Parroquia);
-                        $('#anio_academico_edit').val(data.año_academico);
-                        $('#seccion_estudiante_edit').val(data.seccion_estudiante);
+                        $('#nombre_estudiante_edit').val(data.nombre);
+                        $('#apellido_estudiante_edit').val(data.apellido);
+                        $('#cedula_estudiante_edit').val(data.cedula);
+                        $('#contacto_estudiante_edit').val(data.contacto);
+                        $('#parroquia_edit').val(data.id_parroquia);
+                        $('#grado_edit').val(data.id_grado);
                         $('#editmodal').modal('show');
                     }
                 });

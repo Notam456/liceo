@@ -60,12 +60,18 @@ CREATE TABLE seccion (
 CREATE TABLE estudiante (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
-    id_seccion INT NOT NULL,
+    id_seccion INT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
+    id_parroquia INT,
+    id_grado INT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
