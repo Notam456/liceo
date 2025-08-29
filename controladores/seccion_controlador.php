@@ -2,15 +2,17 @@
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/seccion_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
 
 $seccionModelo = new SeccionModelo($conn);
+$gradoModelo = new GradoModelo($conn);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
-            $resultado = $seccionModelo->crearSeccion($_POST['nombre'], $_POST['año']);
+            $resultado = $seccionModelo->generarSecciones($_POST['cantidad'], $_POST['grado']);
             if ($resultado) {
                 $_SESSION['status'] = "Sección creada correctamente";
             } else {
@@ -27,8 +29,8 @@ switch ($action) {
             $resultado = $seccionModelo->obtenerSeccionPorId($id);
             if ($row = mysqli_fetch_array($resultado)) {
                 echo '<h6> Id primaria: ' . $row['id_seccion'] . '</h6>
-                      <h6> Nombre de la sección: ' . $row['nombre'] . '</h6>
-                      <h6> Año de la sección: ' . $row['año'] . '</h6>
+                      <h6> Nombre de la sección: ' . $row['numero_anio'] . '° '.$row['letra'].'</h6>
+                      <h6> Año de la sección: ' . $row['numero_anio'] . '° año </h6>
                       <a class="btn btn-primary" href="/liceo/controladores/estudiante_controlador.php?action=listarPorSeccion&id_seccion=' . $row['id_seccion'] . '" role="button">Ver listado de estudiantes</a>
                       <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=' .  $row['id_seccion'] . '" role="button">Crear/modificar Horario</a>';
             } else {
@@ -79,7 +81,6 @@ switch ($action) {
         $secciones = $seccionModelo->obtenerTodasLasSecciones();
         $horarios_status = [];
         if ($secciones) {
-            // Create a copy of the result set to iterate for horario status
             $secciones_copy = [];
             while ($row = $secciones->fetch_assoc()) {
                 $secciones_copy[] = $row;

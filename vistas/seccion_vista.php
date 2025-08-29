@@ -59,7 +59,7 @@
                                         <tr>
                                             <td class="id_seccion" style="display: none;"> <?php echo $row['id_seccion'] ?> </td>
                                             <td>
-                                                <?php echo $row['nombre'];
+                                                <?php echo $row['numero_anio']. "° ". $row['letra'];
                                                 if (isset($horarios_status[$row['id_seccion']]) && !$horarios_status[$row['id_seccion']]) {
                                                     echo ' <i class="bi bi-exclamation-triangle-fill text-danger"
                                                         data-bs-toggle="tooltip"
@@ -69,7 +69,7 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td> <?php echo $row['año'] ?> </td>
+                                            <td> <?php echo $row['numero_anio'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
@@ -99,17 +99,18 @@
                     <div class="modal-body">
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
-                            <label>Nombre</label>
+                            <label>Letra de la sección</label>
                             <input type="text" id="nombreEdit" class="form-control" name="nombreEdit" pattern="[A-Z]" maxlength="1" minlength="1" title="Debe ser una sola letra mayúscula" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Año</label>
                             <select class="form-select form-select-lg" name="añoEdit" id="añoEdit">
-                                <option selected value="1">1ero</option>
-                                <option value="2">2do</option>
-                                <option value="3">3ero</option>
-                                <option value="4">4to</option>
-                                <option value="5">5to</option>
+                                <option selected value="">Seleccione el año</option>
+                                <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                    while ($row = mysqli_fetch_array($grados)){
+                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
+                                    }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -141,25 +142,26 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea una nueva sección</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Crear secciones para un grado</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/seccion_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3">
-                            <label>Nombre</label>
-                            <input type="text" class="form-control" name="nombre" pattern="[A-Z]" maxlength="1" minlength="1" title="Debe ser una sola letra mayúscula" required>
+                            <label>Cantidad de secciones a crear</label>
+                            <input type="number" class="form-control" name="cantidad" pattern="" min="1" max="27" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Año</label>
-                            <select class="form-select form-select-lg" name="año" required>
+                            <label>Grado</label>
+                            <select class="form-select form-select-lg" name="grado" required>
+
                                 <option selected value="">Seleccione el año</option>
-                                <option value="1">1ero</option>
-                                <option value="2">2do</option>
-                                <option value="3">3ero</option>
-                                <option value="4">4to</option>
-                                <option value="5">5to</option>
+                                <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                    while ($row = mysqli_fetch_array($grados)){
+                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
+                                    }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -220,8 +222,8 @@
                     success: function(response) {
                         var data = response[0];
                         $('#idEdit').val(data.id_seccion);
-                        $('#nombreEdit').val(data.nombre.slice(-1));
-                        $('#añoEdit').val(data.año);
+                        $('#nombreEdit').val(data.letra);
+                        $('#añoEdit').val(data.numero_anio);
                         $('#editmodal').modal('show');
                     }
                 });
