@@ -37,7 +37,6 @@
                                     <th scope="col">Nombres</th>
                                     <th scope="col">Apellidos</th>
                                     <th scope="col">C.I</th>
-                                    <th scope="col">Contacto</th>
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
                                     <th scope="col" class="action"></th>
@@ -50,10 +49,9 @@
                                 ?>
                                         <tr>
                                             <td class="id_profesor" style="display: none;"> <?php echo $row['id_profesor'] ?> </td>
-                                            <td> <?php echo $row['nombre_profesor'] ?> </td>
-                                            <td> <?php echo $row['apellido_profesor'] ?> </td>
-                                            <td> <?php echo $row['cedula_profesor'] ?> </td>
-                                            <td> <?php echo $row['contacto_profesor'] ?> </td>
+                                            <td> <?php echo $row['nombre'] ?> </td>
+                                            <td> <?php echo $row['apellido'] ?> </td>
+                                            <td> <?php echo $row['cedula'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
@@ -61,7 +59,14 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td colspan="8">No Record Found</td>
+                                        <td style="display: none;"></td>
+                                        <td>No Record Found</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -96,38 +101,7 @@
                             <label>Cédula</label>
                             <input type="text" id="cedula_profesor_edit" class="form-control" name="cedula_profesor" required>
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Contacto</label>
-                            <input type="text" id="contacto_profesor_edit" class="form-control" name="contacto_profesor" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Materia Impartida</label>
-                            <select name="id_materia" id="id_materia_edit" class="form-control" required>
-                                <option value="">Selecciona una materia</option>
-                                <?php
-                                if ($materias) {
-                                    mysqli_data_seek($materias, 0);
-                                    while ($materia = mysqli_fetch_array($materias)) {
-                                        echo '<option value="' . $materia['id_materia'] . '">' . $materia['nombre_materia'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>Sección Impartida</label>
-                            <select name="id_seccion" id="id_seccion_edit" class="form-control" required>
-                                <option value="">Selecciona una sección</option>
-                                <?php
-                                if ($secciones) {
-                                    mysqli_data_seek($secciones, 0);
-                                    while ($seccion = mysqli_fetch_array($secciones)) {
-                                        echo '<option value="' . $seccion['id_seccion'] . '">' . $seccion['nombre'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
+                       
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -175,38 +149,7 @@
                             <label>Cédula</label>
                             <input type="text" class="form-control" name="cedula_profesor" required>
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Contacto</label>
-                            <input type="text" class="form-control" name="contacto_profesor" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Materia Impartida</label>
-                            <select name="id_materia" class="form-control" required>
-                                <option value="">Selecciona una materia</option>
-                                <?php
-                                if ($materias && mysqli_num_rows($materias) > 0) {
-                                    mysqli_data_seek($materias, 0);
-                                    while ($materia = mysqli_fetch_array($materias)) {
-                                        echo '<option value="' . $materia['id_materia'] . '">' . $materia['nombre_materia'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label>Sección Impartida</label>
-                            <select name="id_seccion" class="form-control" required>
-                                <option value="">Selecciona una sección</option>
-                                <?php
-                                if ($secciones && mysqli_num_rows($secciones) > 0) {
-                                    mysqli_data_seek($secciones, 0);
-                                    while ($seccion = mysqli_fetch_array($secciones)) {
-                                        echo '<option value="' . $seccion['id_seccion'] . '">' . $seccion['nombre'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
@@ -228,7 +171,7 @@
             },
             columnDefs: [{
                 width: '93px',
-                targets: [5, 6, 7]
+                targets: [4, 5, 6]
             }]
         });
 
@@ -266,12 +209,9 @@
                     success: function(response) {
                         var data = response[0];
                         $('#id_profesor_edit').val(data.id_profesor);
-                        $('#nombre_profesor_edit').val(data.nombre_profesor);
-                        $('#apellido_profesor_edit').val(data.apellido_profesor);
-                        $('#cedula_profesor_edit').val(data.cedula_profesor);
-                        $('#contacto_profesor_edit').val(data.contacto_profesor);
-                        $('#id_materia_edit').val(data.id_materia);
-                        $('#id_seccion_edit').val(data.id_seccion);
+                        $('#nombre_profesor_edit').val(data.nombre);
+                        $('#apellido_profesor_edit').val(data.apellido);
+                        $('#cedula_profesor_edit').val(data.cedula);
                         $('#editmodal').modal('show');
                     }
                 });

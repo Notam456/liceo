@@ -24,7 +24,7 @@ CREATE TABLE parroquia (
 );
 
 CREATE TABLE profesor (
-    id_personal INT AUTO_INCREMENT PRIMARY KEY,
+    id_profesor INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL
@@ -103,10 +103,10 @@ CREATE TABLE cargo (
 );
 
 CREATE TABLE asigna_cargo (
-    id_personal INT NOT NULL,
+    id_profesor INT NOT NULL,
     id_cargo INT NOT NULL,
-    PRIMARY KEY (id_personal, id_cargo),
-    FOREIGN KEY (id_personal) REFERENCES profesor(id_personal)
+    PRIMARY KEY (id_profesor, id_cargo),
+    FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_cargo) REFERENCES cargo(id_cargo)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -121,7 +121,7 @@ CREATE TABLE asistencia (
     inasistencia BOOLEAN DEFAULT FALSE,
     observacion TEXT,
     justificado BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (id_coordinador) REFERENCES profesor(id_personal)
+    FOREIGN KEY (id_coordinador) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -140,11 +140,11 @@ CREATE TABLE visita (
 
 CREATE TABLE asigna_materia (
     id_asignacion int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    id_personal int(11) NOT NULL,
+    id_profesor int(11) NOT NULL,
     id_materia int(11) NOT NULL,
     fecha_asignacion timestamp NOT NULL DEFAULT current_timestamp(),
     estado enum('activa','inactiva') DEFAULT 'activa',
-    FOREIGN KEY (id_personal) REFERENCES profesor(id_personal)
+    FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_materia) REFERENCES materia(id_materia)
         ON DELETE CASCADE ON UPDATE CASCADE
