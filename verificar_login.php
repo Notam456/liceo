@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "liceo");
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
+
 
 if (isset($_POST)) {
     $usuario = $_POST['usuario'];
