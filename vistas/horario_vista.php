@@ -37,7 +37,7 @@
                                 <select name="profesor" id="profesor" class="form-select">
                                     <option value="">Seleccione...</option>
                                     <?php foreach ($profesores as $prof): ?>
-                                        <option value="<?= htmlspecialchars($prof['id_profesores']) ?>"><?= htmlspecialchars($prof['nombre_profesores']) ?></option>
+                                        <option value="<?= htmlspecialchars($prof['id_profesores']) ?>"><?= htmlspecialchars($prof['nombre_profesor']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -121,7 +121,7 @@
                     if (cell) {
                         cell.innerHTML = `
                             <div class="small fw-bold text-primary">${item.nombre_materia}</div>
-                            <div class="small text-muted">${item.nombre_profesores}</div>
+                            <div class="small text-muted">${item.nombre_profesor}</div>
                             <button class="btn btn-sm btn-danger btn-eliminar mt-1" data-dia="${diaIdx}" data-hora="${h}" title="Eliminar bloque">
                                 <i class="bi bi-trash3"></i>
                             </button>`;
