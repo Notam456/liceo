@@ -23,10 +23,10 @@ class HorarioModelo {
     }
 
     public function getHorarioBySeccion($id_seccion) {
-        $query = "SELECT h.*, m.nombre_materia, p.nombre_profesores
+        $query = "SELECT h.*, m.nombre AS nombre_materia, p.nombre AS nombre_profesor
                   FROM horario h
                   JOIN materia m ON h.id_materia = m.id_materia
-                  JOIN profesores p ON h.id_profesores = p.id_profesores
+                  JOIN profesor p ON h.id_profesor = p.id_profesor
                   WHERE h.id_seccion = ?";
         return $this->executeQuery($query, [$id_seccion], "i");
     }
