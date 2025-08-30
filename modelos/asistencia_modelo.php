@@ -1,12 +1,15 @@
 <?php
-class AsistenciaModelo {
+class AsistenciaModelo
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    private function executeQuery($query, $params = [], $types = "") {
+    private function executeQuery($query, $params = [], $types = "")
+    {
         $stmt = mysqli_prepare($this->conn, $query);
         if ($params) {
             mysqli_stmt_bind_param($stmt, $types, ...$params);
@@ -20,25 +23,42 @@ class AsistenciaModelo {
         return $result;
     }
 
-    public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion) {
-        $query = "INSERT INTO asistencia (id_estudiante, fecha, estado, justificacion) VALUES (?, ?, ?, ?)";
-        return $this->executeQuery($query, [$id_estudiante, $fecha, $estado, $justificacion], "isss");
+    public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion)
+    {
+        $inasistencia = 0;
+        $justificado = 0;
+        if ($estado == 'A') {
+            $inasistencia = 1;
+            $justificado = 0;
+        } else if ($estado == 'J') {
+            $inasistencia = 0;
+            $justificado = 1;
+        } else {
+            $inasistencia = 0;
+            $justificado = 0;
+        }
+        $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion) VALUES (?, ?, ?, ?, ?, ?)";
+        return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion], "isiisi");
     }
 
-    public function obtenerEstudiantesPorSeccion($seccion) {
-        $query = "SELECT id_estudiante, nombre_estudiante, apellido_estudiante FROM estudiante WHERE seccion_estudiante = ? ORDER BY apellido_estudiante, nombre_estudiante";
+    public function obtenerEstudiantesPorSeccion($seccion)
+    {
+        $query = "SELECT id_estudiante, nombre, apellido FROM estudiante WHERE id_seccion = ? ORDER BY apellido, nombre";
         return $this->executeQuery($query, [$seccion], "s");
     }
 
-    public function filtrarAsistencia($seccion, $fecha) {
-        $query = "SELECT a.id_asistencia, a.fecha, a.estado, a.justificacion, e.nombre_estudiante, e.apellido_estudiante, e.seccion_estudiante
+    public function filtrarAsistencia($seccion, $fecha)
+    {
+        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
+                  JOIN seccion s ON a.id_seccion = s.id_seccion
+                  JOIN grado g ON s.id_grado = g.id_grado
                   WHERE 1=1";
         $params = [];
         $types = "";
         if (!empty($seccion)) {
-            $query .= " AND e.seccion_estudiante = ?";
+            $query .= " AND a.id_seccion = ?";
             $params[] = $seccion;
             $types .= "s";
         }
@@ -51,36 +71,54 @@ class AsistenciaModelo {
         return $this->executeQuery($query, $params, $types);
     }
 
-    public function obtenerTodasLasAsistencias() {
-        $query = "SELECT a.id_asistencia, a.fecha, a.estado, a.justificacion, e.nombre_estudiante, e.apellido_estudiante, e.seccion_estudiante
+    public function obtenerTodasLasAsistencias()
+    {
+        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
+                  JOIN seccion s ON a.id_seccion = s.id_seccion
+                  JOIN grado g ON s.id_grado = g.id_grado
                   ORDER BY a.fecha DESC";
         return $this->executeQuery($query);
     }
 
 
-    public function obtenerAsistenciaPorId($id_asistencia) {
-        $query = "SELECT a.*, e.nombre_estudiante, e.apellido_estudiante
+    public function obtenerAsistenciaPorId($id_asistencia)
+    {
+        $query = "SELECT a.*, e.nombre, e.apellido
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   WHERE a.id_asistencia = ?";
         return $this->executeQuery($query, [$id_asistencia], "i");
     }
 
-    public function actualizarAsistencia($id_asistencia, $fecha, $estado, $justificacion) {
-        $query = "UPDATE asistencia SET fecha = ?, estado = ?, justificacion = ? WHERE id_asistencia = ?";
-        return $this->executeQuery($query, [$fecha, $estado, $justificacion, $id_asistencia], "sssi");
+    public function actualizarAsistencia($id_asistencia, $fecha, $estado, $justificacion)
+    {
+        $inasistencia = 0;
+        $justificado = 0;
+        if ($estado == 'A') {
+            $inasistencia = 1;
+            $justificado = 0;
+        } else if ($estado == 'J') {
+            $inasistencia = 0;
+            $justificado = 1;
+        } else {
+            $inasistencia = 0;
+            $justificado = 0;
+        }
+        $query = "UPDATE asistencia SET fecha = ?, inasistencia = ?, justificado = ?, observacion = ? WHERE id_asistencia = ?";
+        return $this->executeQuery($query, [$fecha, $inasistencia, $justificado, $justificacion, $id_asistencia], "siisi");
     }
 
-    public function eliminarAsistencia($id_asistencia) {
+    public function eliminarAsistencia($id_asistencia)
+    {
         $query = "DELETE FROM asistencia WHERE id_asistencia = ?";
         return $this->executeQuery($query, [$id_asistencia], "i");
     }
 
-    public function obtenerSecciones() {
-        $query = "SELECT DISTINCT seccion_estudiante FROM estudiante";
+    public function obtenerSecciones()
+    {
+        $query = "SELECT s.*, a.numero_anio FROM seccion AS s JOIN grado AS a ON s.id_grado = a.id_grado;";
         return $this->executeQuery($query);
     }
 }
-?>

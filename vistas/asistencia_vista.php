@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -48,8 +46,8 @@
                                     <option value="">Todas las secciones</option>
                                     <?php
                                     if ($secciones) {
-                                        while($row = mysqli_fetch_array($secciones)) {
-                                            echo '<option value="'.$row['seccion_estudiante'].'">'.$row['seccion_estudiante'].'</option>';
+                                        while ($row = mysqli_fetch_array($secciones)) {
+                                            echo '<option value="' . $row['id_seccion'] . '">' . $row['numero_anio'] . ' año sección ' . $row['letra'] . '</option>';
                                         }
                                     }
                                     ?>
@@ -64,7 +62,7 @@
                             </div>
                         </div>
 
-                        <table class="table table-striped" id="tablaAsistencia" style="width:100%;">
+                        <table class="table table-striped" id="tablaAsistencia" style="width:125%;">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;">ID</th>
@@ -81,31 +79,39 @@
                                 if ($asistencias && mysqli_num_rows($asistencias) > 0) {
                                     while ($row = mysqli_fetch_assoc($asistencias)) {
                                         $estado = '';
-                                        switch($row['estado']) {
-                                            case 'P': $estado = 'Presente'; break;
-                                            case 'A': $estado = 'Ausente'; break;
-                                            case 'J': $estado = 'Justificado'; break;
+                                        if ((bool)$row['inasistencia']) {
+                                            $estado = "Ausente";
+                                        } else if ((bool)$row['justificado']) {
+                                            $estado = "Justificado";
+                                        } else {
+                                            $estado = "Presente";
                                         }
                                 ?>
                                         <tr>
                                             <td style="display: none;"><?= $row['id_asistencia'] ?></td>
-                                            <td><?= date('d/m/Y', strtotime($row['fecha'])) ?></td>
-                                            <td><?= $row['seccion_estudiante'] ?></td>
-                                            <td><?= $row['nombre_estudiante'].' '.$row['apellido_estudiante'] ?></td>
+                                            <td><?= date('d/m/Y', strtotime($row['fecha'])); ?></td>
+                                            <td><?= $row['numero_anio'] . '   año ' . $row['letra']; ?></td>
+                                            <td><?= $row['nombre'] . ' ' . $row['apellido'] ?></td>
                                             <td><?= $estado ?></td>
-                                            <td><?= $row['justificacion'] ?: 'N/A' ?></td>
+                                            <td><?= $row['observacion'] ?: 'N/A' ?></td>
                                             <td>
                                                 <a href="#" class="btn btn-primary btn-sm edit-asistencia">Modificar</a>
                                                 <input type="hidden" class="delete_id_asistencia" value="<?= $row['id_asistencia'] ?>">
                                                 <a href="#" class="btn btn-danger btn-sm delete-asistencia">Eliminar</a>
                                             </td>
                                         </tr>
-                                <?php
+                                    <?php
                                     }
                                 } else {
-                                ?>
+                                    ?>
                                     <tr>
                                         <td colspan="7">No hay registros de asistencia</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 <?php
                                 }
@@ -142,8 +148,8 @@
                                     // Reset pointer and re-iterate for the modal dropdown
                                     if ($secciones) {
                                         mysqli_data_seek($secciones, 0);
-                                        while($row = mysqli_fetch_array($secciones)) {
-                                            echo '<option value="'.$row['seccion_estudiante'].'">'.$row['seccion_estudiante'].'</option>';
+                                        while ($row = mysqli_fetch_array($secciones)) {
+                                            echo '<option value="' . $row['id_seccion'] . '">' . $row['numero_anio'] . ' año sección ' . $row['letra'] . '</option>';
                                         }
                                     }
                                     ?>
@@ -182,7 +188,7 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="estudiante_edit">Estudiante</label>
+                            <label for="estudiante_edit" disabled>Estudiante</label>
                             <input type="text" class="form-control" id="estudiante_edit" readonly>
                         </div>
 
@@ -223,8 +229,10 @@
             // Configuración de DataTables
             $('#tablaAsistencia').DataTable({
                 columnDefs: [
-                    { targets: 0, visible: false },
-                    { targets: -1, orderable: false }
+                    {
+                        targets: -1,
+                        orderable: false
+                    }
                 ]
             });
 
@@ -244,7 +252,7 @@
             // Cargar estudiantes al seleccionar sección
             $('#seccionAsistencia').change(function() {
                 var seccion = $(this).val();
-                if(seccion) {
+                if (seccion) {
                     $.ajax({
                         url: '/liceo/controladores/asistencia_controlador.php',
                         type: 'POST',
@@ -283,7 +291,9 @@
             // Editar asistencia
             $('#tablaAsistencia').on('click', '.edit-asistencia', function(e) {
                 e.preventDefault();
+
                 var id = $(this).closest('tr').find('td:first').text();
+                console.log(id);
                 $.ajax({
                     url: '/liceo/controladores/asistencia_controlador.php',
                     type: 'POST',
@@ -293,14 +303,20 @@
                         'id_asistencia': id
                     },
                     success: function(response) {
+                        console.log(response);
                         $('#id_asistencia_edit').val(response.id_asistencia);
                         $('#fecha_edit').val(response.fecha);
-                        $('#estudiante_edit').val(response.nombre_estudiante + ' ' + response.apellido_estudiante);
+                        $('#estudiante_edit').val(response.nombre + ' ' + response.apellido);
                         $('input[name="estado"][value="' + response.estado + '"]').prop('checked', true).trigger('change');
-                        if(response.estado === 'J') {
+                        if (response.estado === 'J') {
                             $('#justificacion_edit').val(response.justificacion);
                         }
                         $('#editarAsistenciaModal').modal('show');
+                    },
+                    error: function(request, status, errorThrown) {
+                        console.log(request)
+                        console.log(status)
+                        console.log(errorThrown)
                     }
                 });
             });
@@ -343,4 +359,5 @@
         });
     </script>
 </body>
+
 </html>

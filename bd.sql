@@ -114,7 +114,7 @@ CREATE TABLE asigna_cargo (
 
 CREATE TABLE asistencia (
     id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
-    id_coordinador INT NOT NULL,
+    id_coordinador INT NULL,
     id_estudiante INT NOT NULL,
     id_seccion INT NOT NULL,
     fecha DATE NOT NULL,
