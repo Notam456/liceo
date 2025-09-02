@@ -13,6 +13,7 @@ if (isset($_POST)) {
     $row = mysqli_fetch_array($fetch_query_run);
 
     if (mysqli_num_rows($fetch_query_run) > 0 && $row['contrasena'] == $contrasena) {
+        $_SESSION['rol'] = $row['rol'];
         $_SESSION['usuario'] = $row['usuario'];
         header("Location: main.php");
     } else if (mysqli_num_rows($fetch_query_run) == 0) {

@@ -53,45 +53,50 @@
         <h1>Menu</h1>
         <img src="/liceo/imgs/cuadricula.png" alt="">
     </section>
-    <section class="modulos">
-    <div class="modulo" data-url="controladores/usuario_controlador.php">
-        <img src="/liceo/imgs/agregar-usuario.png" alt="">
-        <h2>Usuarios</h2>
-    </div>
-    <div class="modulo" data-url="controladores/estudiante_controlador.php">
-        <img src="/liceo/imgs/estudiando.png" alt="">
-        <h2>Estudiantes</h2>
-    </div>
-    <div class="modulo" data-url="controladores/profesor_controlador.php">
-        <img src="/liceo/imgs/masculino.png" alt="">
-        <h2>Profesores</h2>
-    </div>
-    <div class="modulo" data-url="controladores/materia_controlador.php">
-        <img src="/liceo/imgs/libros.png" alt="">
-        <h2>Materias</h2>
-    </div>
-    <div class="modulo" data-url="controladores/seccion_controlador.php">
-        <img src="/liceo/imgs/secciones.png" alt="">
-        <h2>Seccion</h2>
-    </div>
+    <?php
+        // Define los módulos visibles para cada rol
+        $modulos_por_rol = [
+            'admin' => [
+                'estudiante' => '/liceo/imgs/estudiando.png',
+                'profesor' => '/liceo/imgs/masculino.png',
+                'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                'usuario' => '/liceo/imgs/agregar-usuario.png',
+                'materia' => '/liceo/imgs/libros.png',
+                'seccion' => '/liceo/imgs/secciones.png',
+                'anio' => '/liceo/imgs/calendario.png',
+                'asignacion' => '/liceo/imgs/asignacion-de-recursos.png',
+                'reportes' => '/liceo/imgs/reportes.png',
+            ],
+            'user' => [
+                'estudiante' => '/liceo/imgs/estudiando.png',
+                'profesor' => '/liceo/imgs/masculino.png',
+                'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+            ],
+            'profesor' => [
+                // Define los módulos específicos del profesor aquí
+            ]
+        ];
 
-    <div class="modulo" data-url="controladores/anio_academico_controlador.php">
-        <img src="/liceo/imgs/calendario.png" alt="">
-        <h2>Año</h2>
-    </div>
-    <div class="modulo" data-url="controladores/asistencia_controlador.php">
-        <img src="/liceo/imgs/lista-de-verificacion.png" alt="">
-        <h2>Asistencia</h2>
-    </div>
-    <div class="modulo" data-url="">
-        <img src="/liceo/imgs/asignacion-de-recursos.png" alt="">
-        <h2>Asignacion</h2>
-    </div>
-    <div class="modulo" data-url="controladores/reporte_controlador.php">
-        <img src="/liceo/imgs/reportes.png" alt="">
-        <h2>Reportes</h2>
-    </div>
-</section>
+        // Obtén el rol del usuario de la sesión
+        $rol_usuario = $_SESSION['rol'];
+
+        // Verifica si el rol existe en la configuración de módulos
+        if (isset($modulos_por_rol[$rol_usuario])) {
+            $modulos_visibles = $modulos_por_rol[$rol_usuario];
+        } else {
+            $modulos_visibles = []; // No hay módulos si el rol no está definido
+        }
+
+        ?>
+
+        <section class="modulos">
+            <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) { ?>
+                <div class="modulo" data-url="controladores/<?php echo $nombre_modulo; ?>_controlador.php">
+                    <img src="<?php echo $imagen_url; ?>" alt="">
+                    <h2><?php echo ucfirst($nombre_modulo); ?></h2>
+                </div>
+            <?php } ?>
+        </section>
 <script>
   document.querySelectorAll('.modulo').forEach(modulo => {
     modulo.addEventListener('click', () => {
