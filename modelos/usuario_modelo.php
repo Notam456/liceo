@@ -20,7 +20,7 @@ class UsuarioModelo {
 
     public function obtenerUsuarioPorId($id) {
         $id = (int)$id;
-        $fetch_query = "SELECT * FROM usuario WHERE `id` = '$id'";
+        $fetch_query = "SELECT * FROM usuario WHERE `id_usuario` = '$id'";
         $fetch_query_run = mysqli_query($this->conn, $fetch_query);
         return $fetch_query_run;
     }
@@ -37,7 +37,7 @@ class UsuarioModelo {
         $contrasena = mysqli_real_escape_string($this->conn, $contrasena);
         $rol = mysqli_real_escape_string($this->conn, $rol);
 
-        $update_query = "UPDATE usuario SET usuario = '$usuario', contrasena = '$contrasena', rol = '$rol' WHERE `id` = $id";
+        $update_query = "UPDATE usuario SET usuario = '$usuario', contrasena = '$contrasena', rol = '$rol' WHERE `id_usuario` = $id";
         $update_query_run = mysqli_query($this->conn, $update_query);
 
         return $update_query_run;
@@ -45,7 +45,7 @@ class UsuarioModelo {
 
     public function eliminarUsuario($id) {
         $id = (int)$id;
-        $delete_query = "DELETE FROM usuario WHERE id ='$id'";
+        $delete_query = "DELETE FROM usuario WHERE id_usuario ='$id'";
         $delete_query_run = mysqli_query($this->conn, $delete_query);
         return $delete_query_run;
     }

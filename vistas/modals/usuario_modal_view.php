@@ -30,7 +30,7 @@
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning" role="alert">
-                    <h4>No se han encontrado datos del profesor.</h4>
+                    <h4>No se han encontrado datos del usuario.</h4>
                 </div>
             </div>
         </div>

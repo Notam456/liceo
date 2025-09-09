@@ -74,7 +74,7 @@
                                     while ($row = mysqli_fetch_array($usuarios)) {
                                 ?>
                                         <tr>
-                                            <td class="id" style="display: none;"> <?php echo $row['id'] ?> </td>
+                                            <td class="id" style="display: none;"> <?php echo $row['id_usuario'] ?> </td>
                                             <td> <?php echo $row['usuario'] ?> </td>
                                             <td> <?php echo $row['rol'] ?> </td>
 
@@ -275,6 +275,7 @@
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
                 var id = $(this).closest('tr').find('.id').text();
+                console.log(id);
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/usuario_controlador.php",
