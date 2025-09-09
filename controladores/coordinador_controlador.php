@@ -27,18 +27,17 @@ switch ($action) {
         if (isset($_POST['id_coordinador'])) {
             $id = $_POST['id_coordinador'];
             $resultado = $coordinadorModelo->obtenerCoordinadorPorId($id);
-            if ($row = mysqli_fetch_array($resultado)) {
-                echo '<h6> Id primaria: '. $row['id_coordinador'] .'</h6>
-                      <h6> Nombres: '. $row['nombre_coordinador'] .'</h6>
-                      <h6> Apellidos: '. $row['apellido_coordinador'] .'</h6>
-                      <h6> C.I: '. $row['cedula_coordinador'] .'</h6>
-                      <h6> Contacto: '. $row['contacto_coordinador'] .'</h6>
-                      <h6> Área de Coordinación: '. $row['area_coordinacion'] .'</h6>';
+            if (mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/coordinador_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/coordinador_modal_view.php');
             }
         }
-        break;
+        break; 
 
     case 'editar':
         if (isset($_POST['id_coordinador'])) {

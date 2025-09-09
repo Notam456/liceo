@@ -22,16 +22,18 @@ switch ($action) {
         if (isset($_POST['id'])) {
             $id = $_POST['id'];
             $resultado = $parroquiaModelo->obtenerParroquiaPorId($id);
-            if ($row = mysqli_fetch_array($resultado)) {
-                echo '<h6> Id primaria: ' . $row['id_parroquia'] . '</h6>
-                      <h6> Nombre de la parroquia: ' . $row['parroquia'] . '</h6>
-                      <h6> Municipio: ' . $row['municipio'] . '</h6>';
+            if (mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/parroquia_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/parroquia_modal_view.php');
             }
         }
-        break;
-
+        break; 
+        
     case 'editar':
         if (isset($_POST['id'])) {
             $id = $_POST['id'];

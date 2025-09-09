@@ -30,16 +30,13 @@ switch ($action) {
             $id = $_POST['id'];
             $resultado = $usuarioModelo->obtenerUsuarioPorId($id);
             if (mysqli_num_rows($resultado) > 0) {
-                while ($row = mysqli_fetch_array($resultado)) {
-                    echo '
-                        <h6> Id primaria: ' . $row['id'] . '</h6>
-                        <h6> Nombre de usuario: ' . $row['usuario'] . '</h6>
-                        <h6> Contraseña: ' . $row['contrasena'] . '</h6>
-                        <h6> Rol: ' . $row['rol'] . '</h6>
-                    ';
-                }
+                $row = mysqli_fetch_array($resultado);
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/usuario_modal_view.php');
             } else {
-                echo '<h4>no se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/usuario_modal_view.php');
             }
         }
         break;

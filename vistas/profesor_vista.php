@@ -113,7 +113,7 @@
 
     <!-- Modulo Mostrar -->
     <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="viewmodalLabel">Datos del Profesor</h1>

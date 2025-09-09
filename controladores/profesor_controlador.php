@@ -28,16 +28,17 @@ switch ($action) {
         if (isset($_POST['id_profesor'])) {
             $id = $_POST['id_profesor'];
             $resultado = $profesorModelo->obtenerProfesorPorId($id);
-            if ($row = mysqli_fetch_array($resultado)) {
-                echo '<h6> Id primaria: '. $row['id_profesor'] .'</h6>
-                      <h6> Nombres: '. $row['nombre'] .'</h6>
-                      <h6> Apellidos: '. $row['apellido'] .'</h6>
-                      <h6> C.I: '. $row['cedula'] .'</h6>';
+            if (mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/profesor_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/profesor_modal_view.php');
             }
         }
-        break;
+        break; 
 
     case 'editar':
         if (isset($_POST['id_profesor'])) {

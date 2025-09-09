@@ -1,11 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
-    <title>Materia</title>
+    <title>Asignar Cargos</title>
 </head>
-
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -19,11 +18,10 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']);
-                } ?>
+                <?php unset($_SESSION['status']); } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Materias <img src="/liceo/icons/people.svg">
+                        <h4>Asignar Cargos <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Crear
                             </button>
@@ -34,8 +32,8 @@
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
-                                    <th scope="col">Materia</th>
-                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Profesor</th>
+                                    <th scope="col">Cargo</th>
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
                                     <th scope="col" class="action"></th>
@@ -43,27 +41,20 @@
                             </thead>
                             <tbody>
                                 <?php
-                                if ($materias && mysqli_num_rows($materias) > 0) {
-                                    while ($row = mysqli_fetch_array($materias)) {
+                                if ($asigna_cargos && mysqli_num_rows($asigna_cargos) > 0) {
+                                    while ($row = mysqli_fetch_array($asigna_cargos)) {
                                 ?>
                                         <tr>
-                                            <td class="id" style="display: none;"> <?php echo $row['id_materia'] ?> </td>
-                                            <td> <?php echo $row['nombre'] ?> </td>
-                                            <td> <?php echo $row['descripcion'] ?> </td>
+                                            <td class="id" style="display: none;"> <?php echo $row['id_asig'] ?> </td>
+                                            <td> <?php echo $row['nombre_profesor'] . ' ' . $row['apellido_profesor'] ?> </td>
+                                            <td> <?php echo $row['cargo_nombre'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr>
-                                        <td style="display: none;"></td>
-                                        <td>No se encontraron registros</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                    <tr><td colspan="6">No Record Found</td></tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -81,17 +72,37 @@
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="/liceo/controladores/materia_controlador.php" method="POST">
+                <form id="edit-form" action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
                     <div class="modal-body">
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
-                            <label>Nombre de la Materia</label>
-                            <input type="text" id="nombre_materia_edit" class="form-control" name="nombre_materia_edit" required>
+                            <label>Id del Profesor</label>
+                            <select name="id_profesor_edit" id="id_profesor_edit" class="form-control" required>
+                                <option value="">Selecciona un Profesor</option>
+                                <?php
+                                if ($profesores) {
+                                    mysqli_data_seek($profesores, 0);
+                                    while ($profesor = mysqli_fetch_array($profesores)) {
+                                        echo '<option value="' . $profesor['id_profesor'] . '">' . $profesor['nombre_profesor'] . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Descripción de la Materia</label>
-                            <input type="text" id="info_materia_edit" class="form-control" name="info_materia_edit" required>
+                            <label>Id del Cargo</label>
+                            <select name="id_cargo_edit" id="id_cargo_edit" class="form-control" required>
+                                <option value="">Selecciona un Cargo</option>
+                                <?php
+                                if ($cargos) {
+                                    mysqli_data_seek($cargos, 0);
+                                    while ($cargo = mysqli_fetch_array($cargos)) {
+                                        echo '<option value="' . $cargos['id_cargo'] . '">' . $cargos['cargo_nombre'] . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -122,19 +133,39 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea una nueva materia</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea una nueva asignación de cargo</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/liceo/controladores/materia_controlador.php" method="POST">
+                <form action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3">
-                            <label>Nombre de la Materia</label>
-                            <input type="text" name="nombre_materia" class="form-control" required>
+                            <label>Id del Profesor</label>
+                            <select name="id_profesor" class="form-control" required>
+                                <option value="">Selecciona un Profesor</option>
+                                <?php
+                                if ($profesores && mysqli_num_rows($profesores) > 0) {
+                                    mysqli_data_seek($profesores, 0);
+                                    while ($profesor = mysqli_fetch_array($profesores)) {
+                                        echo '<option value="' . $profesor['id_profesor'] . '">' . $profesor['nombre_profesor'] . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Descripción de la Materia</label>
-                            <input type="text" name="info_materia" class="form-control" required>
+                            <label>Id del Cargo</label>
+                            <select name="id_cargo" class="form-control" required>
+                                <option value="">Selecciona un Cargo</option>
+                                <?php
+                                if ($cargos && mysqli_num_rows($cargos) > 0) {
+                                    mysqli_data_seek($cargos, 0);
+                                    while ($cargo = mysqli_fetch_array($cargos)) {
+                                        echo '<option value="' . $cargo['id_cargo'] . '">' . $cargo['cargo_nombre'] . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -155,10 +186,7 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-            columnDefs: [{
-                width: '93px',
-                targets: [3, 4, 5]
-            }]
+            columnDefs: [{ width: '93px', targets: [3, 4, 5] }]
         });
 
         $(document).ready(function() {
@@ -168,11 +196,8 @@
                 var id = $(this).closest('tr').find('.id').text();
                 $.ajax({
                     type: "POST",
-                    url: "/liceo/controladores/materia_controlador.php",
-                    data: {
-                        'action': 'ver',
-                        'id': id
-                    },
+                    url: "/liceo/controladores/asigna_cargo_controlador.php",
+                    data: { 'action': 'ver', 'id': id },
                     success: function(response) {
                         $('.view_user_data').html(response);
                         $('#viewmodal').modal('show');
@@ -186,17 +211,14 @@
                 var id = $(this).closest('tr').find('.id').text();
                 $.ajax({
                     type: "POST",
-                    url: "/liceo/controladores/materia_controlador.php",
-                    data: {
-                        'action': 'editar',
-                        'id': id
-                    },
+                    url: "/liceo/controladores/asigna_cargo_controlador.php",
+                    data: { 'action': 'editar', 'id': id },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
-                        $('#idEdit').val(data.id_materia);
-                        $('#nombre_materia_edit').val(data.nombre);
-                        $('#info_materia_edit').val(data.descripcion);
+                        $('#idEdit').val(data.id_asig);
+                        $('#id_profesor_edit').val(data.id_profesor);
+                        $('#id_cargo_edit').val(data.id_cargo);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -219,11 +241,8 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "/liceo/controladores/materia_controlador.php",
-                            data: {
-                                'action': 'eliminar',
-                                'id': id
-                            },
+                            url: "/liceo/controladores/asigna_cargo_controlador.php",
+                            data: { 'action': 'eliminar', 'id': id },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -238,5 +257,4 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
-
 </html>

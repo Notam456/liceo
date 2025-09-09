@@ -30,20 +30,17 @@ switch ($action) {
         if (isset($_POST['id_estudiante'])) {
             $id = $_POST['id_estudiante'];
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id);
-            if ($row = mysqli_fetch_array($resultado)) {
-                echo '<h6> Id primaria: '. $row['id_estudiante'] .'</h6>
-                      <h6> Nombres: '. $row['nombre'] .'</h6>
-                      <h6> Apellidos: '. $row['apellido'] .'</h6>
-                      <h6> C.I: '. $row['cedula'] .'</h6>
-                      <h6> Contacto: '. $row['contacto'] .'</h6>
-                      <h6> Parroquia: '. $row['id_parroquia'] .'</h6>
-                      <h6> Grado: '. $row['id_grado'] .'</h6>
-                      <h6> Sección: '. $row['id_seccion'] .'</h6>';
+            if (mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/estudiante_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/estudiante_modal_view.php');
             }
         }
-        break;
+        break; 
 
     case 'editar':
         if (isset($_POST['id_estudiante'])) {

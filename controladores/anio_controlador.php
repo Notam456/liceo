@@ -25,16 +25,16 @@ switch ($action) {
             $resultado = $anioAcademicoModelo->obtenerAnioAcademicoPorId($id);
             if (mysqli_num_rows($resultado) > 0) {
                 $row = mysqli_fetch_array($resultado);
-                echo '<h6> Id primaria: '. $row['id_anio'] .'</h6>
-                      <h6> Periodo: '. $row['periodo'] .'</h6>
-                      <h6> Fecha de inicio del año académico: '. $row['desde'] .'</h6>
-                      <h6> Fecha de fin del año académico: '. $row['hasta'] .'</h6>';
+                
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/anio_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/anio_modal_view.php');
             }
         }
-        break;
-
+        break; 
+        
     case 'editar':
         if (isset($_POST['id_anio'])) {
             $id = $_POST['id_anio'];
