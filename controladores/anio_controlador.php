@@ -14,7 +14,7 @@ switch ($action) {
             $hasta = $_POST['fin'];
             $resultado = $anioAcademicoModelo->crearAnioAcademico($desde, $hasta);
             $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error al crear el año académico";
-            header('Location: /liceo/controladores/anio_controlador.php');
+            header('Location: /liceo/controladores/anio_academico_controlador.php');
             exit();
         }
         break;
@@ -57,7 +57,7 @@ switch ($action) {
             $hasta = $_POST['fin'];
             $resultado = $anioAcademicoModelo->actualizarAnioAcademico($id, $desde, $hasta);
             $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
-            header('Location: /liceo/controladores/anio_controlador.php');
+            header('Location: /liceo/controladores/anio_academico_controlador.php');
             exit();
         }
         break;
@@ -88,3 +88,4 @@ switch ($action) {
         break;
 }
 ?>
+

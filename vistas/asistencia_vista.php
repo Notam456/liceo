@@ -39,65 +39,79 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="filtroSeccion" class="form-label">Filtrar por Sección:</label>
-                                <select class="form-select" id="filtroSeccion">
-                                    <option value="">Todas las secciones</option>
-                                    <?php
-                                    if ($secciones) {
-                                        while ($row = mysqli_fetch_array($secciones)) {
-                                            echo '<option value="' . $row['id_seccion'] . '">' . $row['numero_anio'] . ' año sección ' . $row['letra'] . '</option>';
-                                        }
-                                    }
-                                    ?>
-                                </select>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-funnel"></i> Filtros de Búsqueda
+                                    <button class="btn btn-sm btn-outline-secondary float-end" type="button" onclick="limpiarFiltros()">
+                                        <i class="bi bi-arrow-clockwise"></i> Limpiar
+                                    </button>
+                                </h6>
                             </div>
-                            <div class="col-md-4">
-                                <label for="filtroFecha" class="form-label">Filtrar por Fecha:</label>
-                                <input type="date" class="form-control" id="filtroFecha">
-                            </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button class="btn btn-primary" id="aplicarFiltro">Aplicar Filtro</button>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="filtroFecha" class="form-label">Fecha:</label>
+                                        <input type="date" class="form-control" id="filtroFecha">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="filtroGrado" class="form-label">Grado:</label>
+                                        <select class="form-select" id="filtroGrado">
+                                            <option value="">Todos los grados</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="filtroSeccion" class="form-label">Sección:</label>
+                                        <select class="form-select" id="filtroSeccion" disabled>
+                                            <option value="">Todas las secciones</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button class="btn btn-primary w-100" id="aplicarFiltro">
+                                            <i class="bi bi-search"></i> Buscar
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <table class="table table-striped" id="tablaAsistencia" style="width:125%;">
+                        <table class="table table-striped" id="tablaAsistencia" style="width:100%;">
                             <thead>
                                 <tr class="table-secondary">
-                                    <th style="display: none;">ID</th>
                                     <th>Fecha</th>
                                     <th>Sección</th>
-                                    <th>Estudiante</th>
-                                    <th>Estado</th>
-                                    <th>Justificación</th>
-                                    <th class="action">Acción</th>
+                                    <th>Grado</th>
+                                    <th>Total Estudiantes</th>
+                                    <th>Presentes</th>
+                                    <th>Ausentes</th>
+                                    <th>Justificados</th>
+                                    <th class="action">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 if ($asistencias && mysqli_num_rows($asistencias) > 0) {
                                     while ($row = mysqli_fetch_assoc($asistencias)) {
-                                        $estado = '';
-                                        if ((bool)$row['inasistencia']) {
-                                            $estado = "Ausente";
-                                        } else if ((bool)$row['justificado']) {
-                                            $estado = "Justificado";
-                                        } else {
-                                            $estado = "Presente";
-                                        }
+                                        $presentes = $row['total_estudiantes'] - $row['ausentes'] - $row['justificados'];
                                 ?>
                                         <tr>
-                                            <td style="display: none;"><?= $row['id_asistencia'] ?></td>
                                             <td><?= date('d/m/Y', strtotime($row['fecha'])); ?></td>
-                                            <td><?= $row['numero_anio'] . '   año ' . $row['letra']; ?></td>
-                                            <td><?= $row['nombre'] . ' ' . $row['apellido'] ?></td>
-                                            <td><?= $estado ?></td>
-                                            <td><?= $row['observacion'] ?: 'N/A' ?></td>
+                                            <td><?= $row['numero_anio'] . '° ' . $row['letra']; ?></td>
+                                            <td><?= $row['numero_anio'] . '° año'; ?></td>
+                                            <td><span class="badge bg-info"><?= $row['total_estudiantes'] ?></span></td>
+                                            <td><span class="badge bg-success"><?= $presentes ?></span></td>
+                                            <td><span class="badge bg-danger"><?= $row['ausentes'] ?></span></td>
+                                            <td><span class="badge bg-warning"><?= $row['justificados'] ?></span></td>
                                             <td>
-                                                <a href="#" class="btn btn-primary btn-sm edit-asistencia">Modificar</a>
-                                                <input type="hidden" class="delete_id_asistencia" value="<?= $row['id_asistencia'] ?>">
-                                                <a href="#" class="btn btn-danger btn-sm delete-asistencia">Eliminar</a>
+                                                <button class="btn btn-warning btn-sm" onclick="consultarDetalle('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')" title="Ver detalle">
+                                                    <i class="bi bi-eye"></i> Consultar
+                                                </button>
+                                                <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')" title="Modificar">
+                                                    <i class="bi bi-pencil"></i> Modificar
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" onclick="eliminarAsistenciaFecha('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>)" title="Eliminar">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php
@@ -105,13 +119,7 @@
                                 } else {
                                     ?>
                                     <tr>
-                                        <td colspan="7">No hay registros de asistencia</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td colspan="8" class="text-center">No hay registros de asistencia</td>
                                     </tr>
                                 <?php
                                 }
@@ -136,23 +144,20 @@
                     <input type="hidden" name="action" value="registrar">
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="fechaAsistencia" class="form-label">Fecha:</label>
                                 <input type="date" class="form-control" id="fechaAsistencia" name="fecha" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <label for="gradoAsistencia" class="form-label">Grado:</label>
+                                <select class="form-select" id="gradoAsistencia" required>
+                                    <option value="">Seleccione un grado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
                                 <label for="seccionAsistencia" class="form-label">Sección:</label>
-                                <select class="form-select" id="seccionAsistencia" name="seccion" required>
+                                <select class="form-select" id="seccionAsistencia" name="seccion" required disabled>
                                     <option value="">Seleccione una sección</option>
-                                    <?php
-                                    // Reset pointer and re-iterate for the modal dropdown
-                                    if ($secciones) {
-                                        mysqli_data_seek($secciones, 0);
-                                        while ($row = mysqli_fetch_array($secciones)) {
-                                            echo '<option value="' . $row['id_seccion'] . '">' . $row['numero_anio'] . ' año sección ' . $row['letra'] . '</option>';
-                                        }
-                                    }
-                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -220,6 +225,54 @@
         </div>
     </div>
 
+    <!-- Modal Consultar Detalle -->
+    <div class="modal fade" id="consultarDetalleModal" tabindex="-1" aria-labelledby="consultarDetalleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="consultarDetalleModalLabel">Detalle de Asistencia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detalleInfo" class="alert alert-info mb-3"></div>
+                    <div id="detalleContainer">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modificar Asistencia Masiva -->
+    <div class="modal fade" id="modificarAsistenciaModal" tabindex="-1" aria-labelledby="modificarAsistenciaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modificarAsistenciaModalLabel">Modificar Asistencia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modificarInfo" class="alert alert-info mb-3"></div>
+                    <div id="modificarContainer">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="guardarCambios">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
@@ -249,16 +302,51 @@
                 }
             });
 
+            // Cargar grados al abrir modal
+            $('#registrarAsistencia').on('show.bs.modal', function() {
+                $.ajax({
+                    url: '/liceo/controladores/asistencia_controlador.php',
+                    type: 'POST',
+                    data: { 'action': 'obtener_grados' },
+                    success: function(response) {
+                        $('#gradoAsistencia').html(response);
+                    }
+                });
+            });
+
+            // Cargar secciones al seleccionar grado
+            $('#gradoAsistencia').change(function() {
+                var grado = $(this).val();
+                if (grado) {
+                    $.ajax({
+                        url: '/liceo/controladores/asistencia_controlador.php',
+                        type: 'POST',
+                        data: {
+                            'action': 'obtener_secciones_por_grado',
+                            'id_grado': grado
+                        },
+                        success: function(response) {
+                            $('#seccionAsistencia').html(response).prop('disabled', false);
+                        }
+                    });
+                } else {
+                    $('#seccionAsistencia').html('<option value="">Seleccione una sección</option>').prop('disabled', true);
+                    $('#listaEstudiantes').html('<p class="text-muted">Seleccione una sección para ver los estudiantes</p>');
+                }
+            });
+
             // Cargar estudiantes al seleccionar sección
             $('#seccionAsistencia').change(function() {
                 var seccion = $(this).val();
+                var fecha = $('#fechaAsistencia').val();
                 if (seccion) {
                     $.ajax({
                         url: '/liceo/controladores/asistencia_controlador.php',
                         type: 'POST',
                         data: {
                             'action': 'obtener_estudiantes',
-                            'seccion': seccion
+                            'seccion': seccion,
+                            'fecha': fecha
                         },
                         success: function(response) {
                             $('#listaEstudiantes').html(response);
@@ -269,10 +357,72 @@
                 }
             });
 
+            // Mostrar/ocultar justificación al seleccionar radio
+            $('body').on('change', '.justificado-radio', function() {
+                var textarea = $(this).closest('tr').find('.justificado-note');
+                if ($(this).is(':checked')) {
+                    textarea.show().prop('required', true);
+                } else {
+                    textarea.hide().prop('required', false).val('');
+                }
+            });
+
+            // Manejar el botón Guardar Cambios
+            $('#guardarCambios').click(function() {
+                var formData = $('#formModificarAsistencia').serialize();
+                formData += '&action=actualizar_asistencia_masiva';
+                
+                $.ajax({
+                    url: '/liceo/controladores/asistencia_controlador.php',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire('¡Actualizado!', response, 'success').then(() => {
+                            $('#modificarAsistenciaModal').modal('hide');
+                            location.reload();
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'No se pudo actualizar la asistencia', 'error');
+                    }
+                });
+            });
+
+            // Cargar grados para filtros al cargar la página
+            $.ajax({
+                url: '/liceo/controladores/asistencia_controlador.php',
+                type: 'POST',
+                data: { 'action': 'obtener_grados' },
+                success: function(response) {
+                    $('#filtroGrado').html('<option value="">Todos los grados</option>' + response.replace('<option value="">Seleccione un grado</option>', ''));
+                }
+            });
+
+            // Cargar secciones al seleccionar grado en filtros
+            $('#filtroGrado').change(function() {
+                var grado = $(this).val();
+                if (grado) {
+                    $.ajax({
+                        url: '/liceo/controladores/asistencia_controlador.php',
+                        type: 'POST',
+                        data: {
+                            'action': 'obtener_secciones_por_grado',
+                            'id_grado': grado
+                        },
+                        success: function(response) {
+                            $('#filtroSeccion').html('<option value="">Todas las secciones</option>' + response.replace('<option value="">Seleccione una sección</option>', '')).prop('disabled', false);
+                        }
+                    });
+                } else {
+                    $('#filtroSeccion').html('<option value="">Todas las secciones</option>').prop('disabled', true);
+                }
+            });
+
             // Aplicar filtros
             $('#aplicarFiltro').click(function() {
                 var seccion = $('#filtroSeccion').val();
                 var fecha = $('#filtroFecha').val();
+                var grado = $('#filtroGrado').val();
 
                 $.ajax({
                     url: '/liceo/controladores/asistencia_controlador.php',
@@ -280,7 +430,8 @@
                     data: {
                         'action': 'filtrar',
                         'seccion': seccion,
-                        'fecha': fecha
+                        'fecha': fecha,
+                        'grado': grado
                     },
                     success: function(response) {
                         $('#tablaAsistencia tbody').html(response);
@@ -357,6 +508,137 @@
                 });
             });
         });
+
+        // Función para consultar detalle (definida fuera del document.ready)
+        function consultarDetalle(fecha, idSeccion, nombreSeccion) {
+                $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+                $('#consultarDetalleModal').modal('show');
+                
+                $.ajax({
+                    url: '/liceo/controladores/asistencia_controlador.php',
+                    type: 'POST',
+                    data: {
+                        'action': 'consultar_detalle',
+                        'fecha': fecha,
+                        'id_seccion': idSeccion
+                    },
+                    success: function(response) {
+                        $('#detalleContainer').html(response);
+                    }
+                });
+            }
+
+            // Función para modificar asistencia
+            function modificarAsistencia(fecha, idSeccion, nombreSeccion) {
+                $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+                $('#modificarAsistenciaModal').modal('show');
+                
+                // Cargar estudiantes para modificar (versión editable)
+                $.ajax({
+                    url: '/liceo/controladores/asistencia_controlador.php',
+                    type: 'POST',
+                    data: {
+                        'action': 'consultar_detalle_editable',
+                        'fecha': fecha,
+                        'id_seccion': idSeccion
+                    },
+                    success: function(response) {
+                        $('#modificarContainer').html(response);
+                    }
+                });
+            }
+
+            // Función para eliminar asistencia por fecha
+            function eliminarAsistenciaFecha(fecha, idSeccion) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará todos los registros de asistencia de esta fecha y sección!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/liceo/controladores/asistencia_controlador.php',
+                            type: 'POST',
+                            data: {
+                                'action': 'eliminar_por_fecha',
+                                'fecha': fecha,
+                                'id_seccion': idSeccion
+                            },
+                            success: function(response) {
+                                Swal.fire('¡Eliminado!', response, 'success').then(() => {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+        // Función para modificar asistencia (definida fuera del document.ready)
+        function modificarAsistencia(fecha, idSeccion, nombreSeccion) {
+            $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+            $('#modificarAsistenciaModal').modal('show');
+            
+            // Cargar estudiantes para modificar (versión editable)
+            $.ajax({
+                url: '/liceo/controladores/asistencia_controlador.php',
+                type: 'POST',
+                data: {
+                    'action': 'consultar_detalle_editable',
+                    'fecha': fecha,
+                    'id_seccion': idSeccion
+                },
+                success: function(response) {
+                    $('#modificarContainer').html(response);
+                }
+            });
+        }
+
+        // Función para eliminar asistencia por fecha (definida fuera del document.ready)
+        function eliminarAsistenciaFecha(fecha, idSeccion) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¡Esta acción eliminará todos los registros de asistencia de esta fecha y sección!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/liceo/controladores/asistencia_controlador.php',
+                        type: 'POST',
+                        data: {
+                            'action': 'eliminar_por_fecha',
+                            'fecha': fecha,
+                            'id_seccion': idSeccion
+                        },
+                        success: function(response) {
+                            Swal.fire('¡Eliminado!', response, 'success').then(() => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // Función para limpiar filtros
+        function limpiarFiltros() {
+            $('#filtroFecha').val('');
+            $('#filtroGrado').val('');
+            $('#filtroSeccion').html('<option value="">Todas las secciones</option>').prop('disabled', true);
+            
+            // Recargar tabla completa
+            location.reload();
+        }
     </script>
 </body>
 

@@ -29,9 +29,38 @@ switch ($action) {
         header("Location: /liceo/controladores/asistencia_controlador.php");
         exit();
 
+    case 'obtener_grados':
+        $grados = $asistenciaModelo->obtenerGrados();
+        $options = '<option value="">Seleccione un grado</option>';
+        while ($row = mysqli_fetch_assoc($grados)) {
+            $options .= '<option value="' . $row['id_grado'] . '">' . $row['numero_anio'] . '° año</option>';
+        }
+        echo $options;
+        exit();
+
+    case 'obtener_secciones_por_grado':
+        if (isset($_POST['id_grado'])) {
+            $id_grado = $_POST['id_grado'];
+            $secciones = $asistenciaModelo->obtenerSeccionesPorGrado($id_grado);
+            $options = '<option value="">Seleccione una sección</option>';
+            while ($row = mysqli_fetch_assoc($secciones)) {
+                $options .= '<option value="' . $row['id_seccion'] . '">' . $row['numero_anio'] . '° ' . $row['letra'] . '</option>';
+            }
+            echo $options;
+        }
+        exit();
+
     case 'obtener_estudiantes':
         if (isset($_POST['seccion'])) {
             $seccion = $_POST['seccion'];
+            $fecha = $_POST['fecha'] ?? '';
+            
+            // Verificar si ya existe asistencia para esta fecha y sección
+            if (!empty($fecha) && $asistenciaModelo->verificarAsistenciaExistente($fecha, $seccion)) {
+                echo '<div class="alert alert-warning">Ya existe un registro de asistencia para esta fecha y sección.</div>';
+                exit();
+            }
+            
             $result = $asistenciaModelo->obtenerEstudiantesPorSeccion($seccion);
 
             if (mysqli_num_rows($result) > 0) {
@@ -49,7 +78,7 @@ switch ($action) {
                     echo '</div>';
                     echo '</td>';
                     echo '<td>';
-                    echo '<textarea class="form-control justificado-note" name="asistencia[' . $row['id_estudiante'] . '][justificacion]" rows="2"></textarea>';
+                    echo '<textarea class="form-control justificado-note" name="asistencia[' . $row['id_estudiante'] . '][justificacion]" rows="2" style="display:none;"></textarea>';
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -60,38 +89,150 @@ switch ($action) {
         }
         exit();
 
-    case 'filtrar':
-        if (isset($_POST['seccion']) || isset($_POST['fecha'])) {
-            $seccion = $_POST['seccion'];
+    case 'consultar_detalle':
+        if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
             $fecha = $_POST['fecha'];
-            $result = $asistenciaModelo->filtrarAsistencia($seccion, $fecha);
-
+            $id_seccion = $_POST['id_seccion'];
+            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha, $id_seccion);
+            
             if (mysqli_num_rows($result) > 0) {
+                echo '<table class="table table-striped">';
+                echo '<thead><tr><th>Estudiante</th><th>C.I</th><th>Estado</th><th>Observación</th></tr></thead>';
+                echo '<tbody>';
                 while ($row = mysqli_fetch_assoc($result)) {
                     $estado = '';
                     if ((bool)$row['inasistencia']) {
-                        $estado = "Ausente";
+                        $estado = '<span class="badge bg-danger">Ausente</span>';
                     } else if ((bool)$row['justificado']) {
-                        $estado = "Justificado";
+                        $estado = '<span class="badge bg-warning">Justificado</span>';
                     } else {
-                        $estado = "Presente";
+                        $estado = '<span class="badge bg-success">Presente</span>';
                     }
                     echo '<tr>';
-                    echo '<td style="display: none;">' . $row['id_asistencia'] . '</td>';
-                    echo '<td>' . date('d/m/Y', strtotime($row['fecha'])) . '</td>';
-                    echo '<td>' . $row['numero_anio'] . '   año ' . $row['letra'] . '</td>';
                     echo '<td>' . $row['nombre'] . ' ' . $row['apellido'] . '</td>';
+                    echo '<td>' . $row['cedula'] . '</td>';
                     echo '<td>' . $estado . '</td>';
                     echo '<td>' . ($row['observacion'] ?: 'N/A') . '</td>';
+                    echo '</tr>';
+                }
+                echo '</tbody></table>';
+            } else {
+                echo '<p class="text-muted">No hay registros para esta fecha y sección</p>';
+            }
+        }
+        exit();
+
+    case 'filtrar':
+        if (isset($_POST['seccion']) || isset($_POST['fecha']) || isset($_POST['grado'])) {
+            $seccion = $_POST['seccion'] ?? '';
+            $fecha = $_POST['fecha'] ?? '';
+            $grado = $_POST['grado'] ?? '';
+            
+            $result = $asistenciaModelo->filtrarAsistenciasAgrupadas($seccion, $fecha, $grado);
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $presentes = $row['total_estudiantes'] - $row['ausentes'] - $row['justificados'];
+                    echo '<tr>';
+                    echo '<td>' . date('d/m/Y', strtotime($row['fecha'])) . '</td>';
+                    echo '<td>' . $row['numero_anio'] . '° ' . $row['letra'] . '</td>';
+                    echo '<td>' . $row['numero_anio'] . '° año</td>';
+                    echo '<td><span class="badge bg-info">' . $row['total_estudiantes'] . '</span></td>';
+                    echo '<td><span class="badge bg-success">' . $presentes . '</span></td>';
+                    echo '<td><span class="badge bg-danger">' . $row['ausentes'] . '</span></td>';
+                    echo '<td><span class="badge bg-warning">' . $row['justificados'] . '</span></td>';
                     echo '<td>';
-                    echo '<a href="#" class="btn btn-primary btn-sm edit-asistencia">Modificar</a> ';
-                    echo '<input type="hidden" class="delete_id_asistencia" value="' . $row['id_asistencia'] . '">';
-                    echo '<a href="#" class="btn btn-danger btn-sm delete-asistencia">Eliminar</a>';
+                    echo '<button class="btn btn-warning btn-sm" onclick="consultarDetalle(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')" title="Ver detalle">';
+                    echo '<i class="bi bi-eye"></i> Consultar</button> ';
+                    echo '<button class="btn btn-primary btn-sm" onclick="modificarAsistencia(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')" title="Modificar">';
+                    echo '<i class="bi bi-pencil"></i> Modificar</button> ';
+                    echo '<button class="btn btn-danger btn-sm" onclick="eliminarAsistenciaFecha(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . '\')" title="Eliminar">';
+                    echo '<i class="bi bi-trash"></i> Eliminar</button>';
                     echo '</td>';
                     echo '</tr>';
                 }
             } else {
-                echo '<tr><td colspan="7">No hay registros de asistencia con estos filtros</td></tr>';
+                echo '<tr><td colspan="8" class="text-center">No hay registros de asistencia con estos filtros</td></tr>';
+            }
+        }
+        exit();
+
+    case 'consultar_detalle_editable':
+        if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
+            $fecha = $_POST['fecha'];
+            $id_seccion = $_POST['id_seccion'];
+            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha, $id_seccion);
+
+            if (mysqli_num_rows($result) > 0) {
+                echo '<form id="formModificarAsistencia">';
+                echo '<input type="hidden" name="fecha" value="' . $fecha . '">';
+                echo '<input type="hidden" name="id_seccion" value="' . $id_seccion . '">';
+                echo '<div class="table-responsive">';
+                echo '<table class="table table-sm">';
+                echo '<thead><tr><th>Estudiante</th><th>Estado</th><th>Observación</th></tr></thead>';
+                echo '<tbody>';
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo '<tr>';
+                    echo '<td>' . $row['nombre'] . ' ' . $row['apellido'] . '</td>';
+                    echo '<td>';
+                    echo '<input type="hidden" name="id_asistencia[]" value="' . $row['id_asistencia'] . '">';
+                    
+                    $presente = !$row['inasistencia'] && !$row['justificado'];
+                    $ausente = $row['inasistencia'] && !$row['justificado'];
+                    $justificado = $row['justificado'];
+                    
+                    echo '<div class="form-check form-check-inline">';
+                    echo '<input class="form-check-input estado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="P"' . ($presente ? ' checked' : '') . '>';
+                    echo '<label class="form-check-label">P</label>';
+                    echo '</div>';
+                    echo '<div class="form-check form-check-inline">';
+                    echo '<input class="form-check-input estado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="A"' . ($ausente ? ' checked' : '') . '>';
+                    echo '<label class="form-check-label">A</label>';
+                    echo '</div>';
+                    echo '<div class="form-check form-check-inline">';
+                    echo '<input class="form-check-input estado-radio justificado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="J"' . ($justificado ? ' checked' : '') . '>';
+                    echo '<label class="form-check-label">J</label>';
+                    echo '</div>';
+                    echo '</td>';
+                    echo '<td>';
+                    echo '<textarea class="form-control form-control-sm justificado-note" name="observacion_' . $row['id_asistencia'] . '" rows="2"' . (!$justificado ? ' style="display:none;"' : '') . '>' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+                echo '</tbody></table>';
+                echo '</div>';
+                echo '</form>';
+            } else {
+                echo '<p class="text-muted">No hay registros para esta fecha y sección</p>';
+            }
+        }
+        exit();
+
+    case 'actualizar_asistencia_masiva':
+        if (isset($_POST['fecha']) && isset($_POST['id_seccion']) && isset($_POST['id_asistencia'])) {
+            $fecha = $_POST['fecha'];
+            $id_seccion = $_POST['id_seccion'];
+            $ids_asistencia = $_POST['id_asistencia'];
+            
+            $success = true;
+            
+            foreach ($ids_asistencia as $id_asistencia) {
+                $estado = $_POST['estado_' . $id_asistencia] ?? 'P';
+                $observacion = $_POST['observacion_' . $id_asistencia] ?? '';
+                
+                $inasistencia = ($estado === 'A') ? 1 : 0;
+                $justificado = ($estado === 'J') ? 1 : 0;
+                
+                $result = $asistenciaModelo->actualizarAsistencia($id_asistencia, $inasistencia, $justificado, $observacion);
+                if (!$result) {
+                    $success = false;
+                }
+            }
+            
+            if ($success) {
+                echo "Asistencia actualizada correctamente";
+            } else {
+                echo "Error al actualizar la asistencia";
             }
         }
         exit();
@@ -126,10 +267,19 @@ switch ($action) {
         }
         exit();
 
+    case 'eliminar_por_fecha':
+        if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
+            $fecha = $_POST['fecha'];
+            $id_seccion = $_POST['id_seccion'];
+            $result = $asistenciaModelo->eliminarAsistenciaPorFechaSeccion($fecha, $id_seccion);
+            echo $result ? "Registros eliminados correctamente" : "Error al eliminar los registros";
+        }
+        exit();
+
     case 'listar':
     default:
         $secciones = $asistenciaModelo->obtenerSecciones();
-        $asistencias = $asistenciaModelo->obtenerTodasLasAsistencias();
+        $asistencias = $asistenciaModelo->obtenerAsistenciasAgrupadasPorFecha();
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/asistencia_vista.php');
         break;
 }

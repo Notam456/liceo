@@ -72,7 +72,7 @@
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="/liceo/controladores/materia_controlador.php" method="POST">
+                <form id="edit-form" action="/liceo/controladores/parroquia_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
                     <div class="modal-body">
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
@@ -81,8 +81,13 @@
                             <input type="text" id="parroquia_edit" class="form-control" name="parroquia_edit" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Municipio al que pertenece la parroquia  (NO FUNCIONA AUN)</label>
-                            <input type="text" id="municipio_edit" class="form-control" name="municipio_edit" required>
+                            <label>Municipio</label>
+                            <select id="id_municipio_edit" class="form-select" name="id_municipio_edit" required>
+                                <option value="">Seleccione un municipio</option>
+                                <?php if (isset($municipios)) { mysqli_data_seek($municipios, 0); while($m = mysqli_fetch_array($municipios)) { ?>
+                                    <option value="<?php echo $m['id_municipio']; ?>"><?php echo $m['municipio']; ?></option>
+                                <?php } } ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -124,8 +129,13 @@
                             <input type="text" name="parroquia" class="form-control" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Municipio al que pertenece la parroquia (NO FUNCIONA AUN)</label>
-                            <input type="text" name="municipio" class="form-control" required>
+                            <label>Municipio</label>
+                            <select name="id_municipio" class="form-select" required>
+                                <option value="">Seleccione un municipio</option>
+                                <?php if (isset($municipios)) { mysqli_data_seek($municipios, 0); while($m2 = mysqli_fetch_array($municipios)) { ?>
+                                    <option value="<?php echo $m2['id_municipio']; ?>"><?php echo $m2['municipio']; ?></option>
+                                <?php } } ?>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -178,7 +188,7 @@
                         var data = response[0];
                         $('#idEdit').val(data.id_parroquia);
                         $('#parroquia_edit').val(data.parroquia);
-                        $('#municipio_edit').val(data.municipio);
+                        $('#id_municipio_edit').val(data.id_municipio);
                         $('#editmodal').modal('show');
                     }
                 });

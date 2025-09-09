@@ -137,6 +137,32 @@
         </div>
     </div>
 
+    <!-- Modal Asignación de Estudiantes -->
+    <div class="modal fade" id="asignacionModal" tabindex="-1" aria-labelledby="asignacionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="asignacionModalLabel">Asignar Estudiantes a Sección</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="seccion-info" class="alert alert-info mb-3"></div>
+                    <div id="estudiantes-container">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnAsignar" onclick="asignarEstudiantesSeleccionados()">Asignar Seleccionados</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- modulo crear -->
     <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -256,6 +282,83 @@
                 });
             });
         });
+
+        // Función para abrir modal de asignación de estudiantes
+        function abrirAsignacionEstudiantes(idSeccion, nombreSeccion) {
+            $('#seccion-info').html('<strong>Sección seleccionada:</strong> ' + nombreSeccion);
+            $('#asignacionModal').modal('show');
+            
+            // Cargar estudiantes sin sección
+            $.ajax({
+                type: "POST",
+                url: "/liceo/controladores/asignacion_estudiantes_controlador.php",
+                data: { 'action': 'obtener_estudiantes', 'id_seccion': idSeccion },
+                success: function(response) {
+                    $('#estudiantes-container').html(response);
+                    
+                    // Funcionalidad para seleccionar todos
+                    $('#selectAll').change(function() {
+                        $('.estudiante-checkbox').prop('checked', this.checked);
+                    });
+                    
+                    // Actualizar estado del checkbox "Seleccionar todos"
+                    $('.estudiante-checkbox').change(function() {
+                        var total = $('.estudiante-checkbox').length;
+                        var checked = $('.estudiante-checkbox:checked').length;
+                        $('#selectAll').prop('checked', total === checked);
+                    });
+                }
+            });
+        }
+
+        // Función para asignar estudiantes seleccionados
+        function asignarEstudiantesSeleccionados() {
+            var estudiantesSeleccionados = [];
+            $('.estudiante-checkbox:checked').each(function() {
+                estudiantesSeleccionados.push($(this).val());
+            });
+            
+            if (estudiantesSeleccionados.length === 0) {
+                Swal.fire('Atención', 'Debe seleccionar al menos un estudiante', 'warning');
+                return;
+            }
+            
+            var idSeccion = $('#seccion_asignar').val();
+            
+            Swal.fire({
+                title: '¿Confirmar asignación?',
+                text: 'Se asignarán ' + estudiantesSeleccionados.length + ' estudiante(s) a esta sección',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, asignar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/liceo/controladores/asignacion_estudiantes_controlador.php",
+                        data: { 
+                            'action': 'asignar_masiva', 
+                            'estudiantes': estudiantesSeleccionados,
+                            'id_seccion': idSeccion
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire('¡Éxito!', 'Estudiantes asignados correctamente', 'success').then(() => {
+                                    $('#asignacionModal').modal('hide');
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', 'Hubo un problema al asignar los estudiantes', 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        }
     </script>
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>

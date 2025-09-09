@@ -63,9 +63,11 @@
                 'usuario' => '/liceo/imgs/agregar-usuario.png',
                 'materia' => '/liceo/imgs/libros.png',
                 'seccion' => '/liceo/imgs/secciones.png',
-                'anio' => '/liceo/imgs/calendario.png',
+                'anio_academico' => '/liceo/imgs/calendario.png',
                 'asignacion' => '/liceo/imgs/asignacion-de-recursos.png',
                 'reportes' => '/liceo/imgs/reportes.png',
+                'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
+                'parroquia' => '/liceo/imgs/marcador-de-posicion.png',
             ],
             'user' => [
                 'estudiante' => '/liceo/imgs/estudiando.png',

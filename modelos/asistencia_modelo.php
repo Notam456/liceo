@@ -92,22 +92,10 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$id_asistencia], "i");
     }
 
-    public function actualizarAsistencia($id_asistencia, $fecha, $estado, $justificacion)
+    public function actualizarAsistencia($id_asistencia, $inasistencia, $justificado, $observacion)
     {
-        $inasistencia = 0;
-        $justificado = 0;
-        if ($estado == 'A') {
-            $inasistencia = 1;
-            $justificado = 0;
-        } else if ($estado == 'J') {
-            $inasistencia = 0;
-            $justificado = 1;
-        } else {
-            $inasistencia = 0;
-            $justificado = 0;
-        }
-        $query = "UPDATE asistencia SET fecha = ?, inasistencia = ?, justificado = ?, observacion = ? WHERE id_asistencia = ?";
-        return $this->executeQuery($query, [$fecha, $inasistencia, $justificado, $justificacion, $id_asistencia], "siisi");
+        $query = "UPDATE asistencia SET inasistencia = ?, justificado = ?, observacion = ? WHERE id_asistencia = ?";
+        return $this->executeQuery($query, [$inasistencia, $justificado, $observacion, $id_asistencia], "iisi");
     }
 
     public function eliminarAsistencia($id_asistencia)
@@ -121,4 +109,116 @@ class AsistenciaModelo
         $query = "SELECT s.*, a.numero_anio FROM seccion AS s JOIN grado AS a ON s.id_grado = a.id_grado;";
         return $this->executeQuery($query);
     }
+
+    public function obtenerGrados()
+    {
+        $query = "SELECT * FROM grado ORDER BY numero_anio";
+        return $this->executeQuery($query);
+    }
+
+    public function obtenerSeccionesPorGrado($id_grado)
+    {
+        $query = "SELECT s.*, g.numero_anio FROM seccion s 
+                  JOIN grado g ON s.id_grado = g.id_grado 
+                  WHERE s.id_grado = ? ORDER BY s.letra";
+        return $this->executeQuery($query, [$id_grado], "i");
+    }
+
+    public function obtenerAsistenciasAgrupadasPorFecha()
+    {
+        $query = "SELECT 
+                    a.fecha,
+                    s.id_seccion,
+                    s.letra,
+                    g.numero_anio,
+                    COUNT(a.id_asistencia) as total_estudiantes,
+                    SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) as ausentes,
+                    SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END) as justificados
+                  FROM asistencia a
+                  JOIN seccion s ON a.id_seccion = s.id_seccion
+                  JOIN grado g ON s.id_grado = g.id_grado
+                  GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
+                  ORDER BY a.fecha DESC, g.numero_anio, s.letra";
+        return $this->executeQuery($query);
+    }
+
+    public function obtenerDetalleAsistencia($fecha, $id_seccion)
+    {
+        $query = "SELECT 
+                    a.id_asistencia,
+                    a.fecha,
+                    a.inasistencia,
+                    a.justificado,
+                    a.observacion,
+                    e.id_estudiante,
+                    e.nombre,
+                    e.apellido,
+                    e.cedula,
+                    s.letra,
+                    g.numero_anio
+                  FROM asistencia a
+                  JOIN estudiante e ON a.id_estudiante = e.id_estudiante
+                  JOIN seccion s ON a.id_seccion = s.id_seccion
+                  JOIN grado g ON s.id_grado = g.id_grado
+                  WHERE a.fecha = ? AND a.id_seccion = ?
+                  ORDER BY e.apellido, e.nombre";
+        return $this->executeQuery($query, [$fecha, $id_seccion], "si");
+    }
+
+    public function verificarAsistenciaExistente($fecha, $id_seccion)
+    {
+        $query = "SELECT COUNT(*) as count FROM asistencia WHERE fecha = ? AND id_seccion = ?";
+        $result = $this->executeQuery($query, [$fecha, $id_seccion], "si");
+        $row = mysqli_fetch_assoc($result);
+        return $row['count'] > 0;
+    }
+
+    public function eliminarAsistenciaPorFechaSeccion($fecha, $id_seccion)
+    {
+        $query = "DELETE FROM asistencia WHERE fecha = ? AND id_seccion = ?";
+        return $this->executeQuery($query, [$fecha, $id_seccion], "si");
+    }
+
+    public function filtrarAsistenciasAgrupadas($seccion, $fecha, $grado)
+    {
+        $query = "SELECT 
+                    a.fecha,
+                    s.id_seccion,
+                    s.letra,
+                    g.numero_anio,
+                    COUNT(a.id_asistencia) as total_estudiantes,
+                    SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) as ausentes,
+                    SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END) as justificados
+                  FROM asistencia a
+                  JOIN seccion s ON a.id_seccion = s.id_seccion
+                  JOIN grado g ON s.id_grado = g.id_grado
+                  WHERE 1=1";
+        
+        $params = [];
+        $types = "";
+        
+        if (!empty($fecha)) {
+            $query .= " AND a.fecha = ?";
+            $params[] = $fecha;
+            $types .= "s";
+        }
+        
+        if (!empty($seccion)) {
+            $query .= " AND a.id_seccion = ?";
+            $params[] = $seccion;
+            $types .= "i";
+        }
+        
+        if (!empty($grado)) {
+            $query .= " AND g.id_grado = ?";
+            $params[] = $grado;
+            $types .= "i";
+        }
+        
+        $query .= " GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
+                   ORDER BY a.fecha DESC, g.numero_anio, s.letra";
+        
+        return $this->executeQuery($query, $params, $types);
+    }
+
 }

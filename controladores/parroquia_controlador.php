@@ -49,7 +49,7 @@ switch ($action) {
         if (isset($_POST['update-data'])) {
             $id = $_POST['idEdit'];
             $parroquia = $_POST['parroquia_edit'];
-            $municipio = $_POST['municipio_edit'];
+            $municipio = $_POST['id_municipio_edit'];
             $resultado = $parroquiaModelo->actualizarParroquia($id, $parroquia, $municipio);
             $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
             header('Location: /liceo/controladores/parroquia_controlador.php');
@@ -68,6 +68,7 @@ switch ($action) {
     case 'listar':
     default:
         $materias = $parroquiaModelo->obtenerTodasLasParroquias();
+        $municipios = mysqli_query($conn, "SELECT id_municipio, municipio FROM municipio ORDER BY municipio");
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/parroquia_vista.php');
         break;
 }

@@ -32,7 +32,8 @@ switch ($action) {
                       <h6> Nombre de la sección: ' . $row['numero_anio'] . '° '.$row['letra'].'</h6>
                       <h6> Año de la sección: ' . $row['numero_anio'] . '° año </h6>
                       <a class="btn btn-primary" href="/liceo/controladores/estudiante_controlador.php?action=listarPorSeccion&id_seccion=' . $row['id_seccion'] . '" role="button">Ver listado de estudiantes</a>
-                      <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=' .  $row['id_seccion'] . '" role="button">Crear/modificar Horario</a>';
+                      <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=' .  $row['id_seccion'] . '" role="button">Crear/modificar Horario</a>
+                      <button class="btn btn-success" onclick="abrirAsignacionEstudiantes(' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')">Asignar Estudiantes</button>';
             } else {
                 echo '<h4>No se han encontrado datos</h4>';
             }

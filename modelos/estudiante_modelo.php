@@ -62,5 +62,33 @@ class EstudianteModelo {
         $query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
         return mysqli_query($this->conn, $query);
     }
+
+    public function obtenerEstudiantesSinSeccion() {
+        $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function asignarSeccion($id_estudiante, $id_seccion) {
+        $id_estudiante = (int)$id_estudiante;
+        $id_seccion = (int)$id_seccion;
+        
+        $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function asignarSeccionMasiva($estudiantes_ids, $id_seccion) {
+        $id_seccion = (int)$id_seccion;
+        $success = true;
+        
+        foreach ($estudiantes_ids as $id_estudiante) {
+            $id_estudiante = (int)$id_estudiante;
+            $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
+            if (!mysqli_query($this->conn, $query)) {
+                $success = false;
+            }
+        }
+        
+        return $success;
+    }
 }
 ?>
