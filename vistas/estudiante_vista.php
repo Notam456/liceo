@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Estudiantes</title>
 </head>
+
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -18,7 +19,8 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']); } ?>
+                <?php unset($_SESSION['status']);
+                } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Estudiantes <img src="/liceo/icons/people.svg">
@@ -58,21 +60,22 @@
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                             <td>
                                                 <a target="_blank" href="/liceo/controladores/estudiante_controlador.php?action=generar_constancia&id=<?php echo $row['id_estudiante'] ?>"
-                                                class="btn btn-secondary btn-sm">Generar</a>
+                                                    class="btn btn-secondary btn-sm">Generar</a>
                                             </td>
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr><td style="display: none;"> </td>
-                                        <td > No se encontraron registros</td>
-                                        <td > </td>
-                                        <td > </td>
-                                        <td > </td>
-                                        <td > </td>
-                                        <td > </td>
-                                        <td > </td>
-                                        <td > </td>
-                                </tr>
+                                    <tr>
+                                        <td style="display: none;"> </td>
+                                        <td> No se encontraron registros</td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -110,23 +113,27 @@
                             <label>Contacto</label>
                             <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required>
                         </div>
-                       <div class="form-group mb-3"><label>Parroquia</label>
-                         <select id='parroquia_edit' name="parroquia" class="form-control" required>
-                              <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
-                                    while ($row = mysqli_fetch_array($parroquias)){
-                                        echo '<option value="'.$row["id_parroquia"].'"> '.$row["parroquia"];
-                                    }
+                        <div class="form-group mb-3">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3"><label>Parroquia</label>
+                            <select id='parroquia_edit' name="parroquia" class="form-control" required>
+                                <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
+                                while ($row = mysqli_fetch_array($parroquias)) {
+                                    echo '<option value="' . $row["id_parroquia"] . '"> ' . $row["parroquia"];
+                                }
                                 ?>
-                        </select>
+                            </select>
                         </div>
                         <div class="form-group mb-3"><label>Grado a cursar</label>
-                        <select id="grado_edit" name="grado" class="form-control" required>
-                              <?php $grados = $gradoModelo->obtenerTodosLosGrados();
-                                    while ($row = mysqli_fetch_array($grados)){
-                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
-                                    }
+                            <select id="grado_edit" name="grado" class="form-control" required>
+                                <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                while ($row = mysqli_fetch_array($grados)) {
+                                    echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
+                                }
                                 ?>
-                        </select>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -167,23 +174,24 @@
                         <div class="form-group mb-3"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required></div>
+                        <div class="form-group mb-3"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Parroquia</label>
-                         <select name="parroquia" class="form-control" required>
-                              <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
-                                    while ($row = mysqli_fetch_array($parroquias)){
-                                        echo '<option value="'.$row["id_parroquia"].'"> '.$row["parroquia"];
-                                    }
+                            <select name="parroquia" class="form-control" required>
+                                <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
+                                while ($row = mysqli_fetch_array($parroquias)) {
+                                    echo '<option value="' . $row["id_parroquia"] . '"> ' . $row["parroquia"];
+                                }
                                 ?>
-                        </select>
+                            </select>
                         </div>
                         <div class="form-group mb-3"><label>Grado a cursar</label>
-                        <select name="grado" class="form-control" required>
-                              <?php $grados = $gradoModelo->obtenerTodosLosGrados();
-                                    while ($row = mysqli_fetch_array($grados)){
-                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
-                                    }
+                            <select name="grado" class="form-control" required>
+                                <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                while ($row = mysqli_fetch_array($grados)) {
+                                    echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
+                                }
                                 ?>
-                        </select>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -204,7 +212,10 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-            columnDefs: [{ width: '93px', targets: [5, 6, 7, 8] }]
+            columnDefs: [{
+                width: '93px',
+                targets: [5, 6, 7, 8]
+            }]
         });
 
         $(document).ready(function() {
@@ -215,7 +226,10 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/estudiante_controlador.php",
-                    data: { 'action': 'ver', 'id_estudiante': id },
+                    data: {
+                        'action': 'ver',
+                        'id_estudiante': id
+                    },
                     success: function(response) {
                         $('.view_estudiante_data').html(response);
                         $('#viewmodal').modal('show');
@@ -230,7 +244,10 @@
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/estudiante_controlador.php",
-                    data: { 'action': 'editar', 'id_estudiante': id },
+                    data: {
+                        'action': 'editar',
+                        'id_estudiante': id
+                    },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
@@ -241,6 +258,8 @@
                         $('#contacto_estudiante_edit').val(data.contacto);
                         $('#parroquia_edit').val(data.id_parroquia);
                         $('#grado_edit').val(data.id_grado);
+                        $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
+                        console.log(data.fecha_nacimiento);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -264,7 +283,10 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/estudiante_controlador.php",
-                            data: { 'action': 'eliminar', 'id_estudiante': id },
+                            data: {
+                                'action': 'eliminar',
+                                'id_estudiante': id
+                            },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -279,4 +301,5 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
+
 </html>

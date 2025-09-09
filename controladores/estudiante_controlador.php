@@ -18,7 +18,7 @@ switch ($action) {
             $resultado = $estudianteModelo->crearEstudiante(
                 $_POST['nombre_estudiante'], $_POST['apellido_estudiante'], $_POST['cedula_estudiante'],
                 $_POST['contacto_estudiante'], $_POST['parroquia'],
-                $_POST['grado']
+                $_POST['grado'], $_POST['fecha_nacimiento']
             );
             $_SESSION['status'] = $resultado ? "Estudiante creado correctamente" : "Error al crear el estudiante";
             header('Location: /liceo/controladores/estudiante_controlador.php');
@@ -60,7 +60,7 @@ switch ($action) {
             $resultado = $estudianteModelo->actualizarEstudiante(
                 $_POST['id_estudiante'], $_POST['nombre_estudiante'], $_POST['apellido_estudiante'],
                 $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
-                $_POST['parroquia'], $_POST['grado']
+                $_POST['parroquia'], $_POST['grado'], $_POST['fecha_nacimiento']
             );
             $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
             header('Location: /liceo/controladores/estudiante_controlador.php');

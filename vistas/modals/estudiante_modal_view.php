@@ -24,16 +24,16 @@
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Parroquia:</strong> <?= htmlspecialchars($row['id_parroquia']) ?>
+                        <strong>Parroquia:</strong> <?= htmlspecialchars($row['parroquia']) ?>
                     </div>
                     <div class="col-md-6">
-                        <strong>Fecha de Nacimiento:</strong> <?= htmlspecialchars($row['fecha_nacimiento']) ?>
+                        <strong>Fecha de Nacimiento:</strong> <?= $row['fecha_nacimiento']?>
                     </div>
                     <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Seccion:</strong> <?= htmlspecialchars($row['id_seccion']) ?>
+                        <strong>Seccion:</strong> <?= htmlspecialchars($row['numero_anio'])."°".htmlspecialchars($row['letra']); ?>
                     </div>
                 </div>
             </div>
