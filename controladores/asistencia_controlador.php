@@ -12,6 +12,7 @@ switch ($action) {
         if (isset($_POST['guardar_asistencia'])) {
             $fecha = $_POST['fecha'];
             $seccion = $_POST['seccion'];
+            $profesor = $_SESSION['profesor'];
 
             if (empty($fecha) || empty($seccion)) {
                 $_SESSION['status'] = "Fecha y sección son requeridas";
@@ -19,7 +20,7 @@ switch ($action) {
                 foreach ($_POST['asistencia'] as $id_estudiante => $datos) {
                     $estado = $datos['estado'];
                     $justificacion = isset($datos['justificacion']) ? $datos['justificacion'] : '';
-                    $asistenciaModelo->registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion);
+                    $asistenciaModelo->registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion, $profesor);
                 }
                 $_SESSION['status'] = "Asistencia registrada correctamente";
             } else {

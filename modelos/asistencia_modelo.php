@@ -23,8 +23,9 @@ class AsistenciaModelo
         return $result;
     }
 
-    public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion)
+    public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion, $profesor)
     {
+        $profesor = $profesor == 'Administrador' ? '0' : $profesor;
         $inasistencia = 0;
         $justificado = 0;
         if ($estado == 'A') {
@@ -37,8 +38,8 @@ class AsistenciaModelo
             $inasistencia = 0;
             $justificado = 0;
         }
-        $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion) VALUES (?, ?, ?, ?, ?, ?)";
-        return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion], "isiisi");
+        $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion, id_coordinador) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion, $profesor], "isiisii");
     }
 
     public function obtenerEstudiantesPorSeccion($seccion)
@@ -49,11 +50,12 @@ class AsistenciaModelo
 
     public function filtrarAsistencia($seccion, $fecha)
     {
-        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio
+        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
+                   JOIN profesor p ON a.id_coordinador = p.id_profesor
                   WHERE 1=1";
         $params = [];
         $types = "";
@@ -73,11 +75,12 @@ class AsistenciaModelo
 
     public function obtenerTodasLasAsistencias()
     {
-        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio
+        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
+                  JOIN profesor p ON a.id_coordinador = p.id_profesor
                   ORDER BY a.fecha DESC";
         return $this->executeQuery($query);
     }
@@ -131,12 +134,15 @@ class AsistenciaModelo
                     s.id_seccion,
                     s.letra,
                     g.numero_anio,
+                    p.nombre AS nombre_prof, 
+                    p.apellido AS apellido_prof,
                     COUNT(a.id_asistencia) as total_estudiantes,
                     SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) as ausentes,
                     SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END) as justificados
                   FROM asistencia a
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
+                  JOIN profesor p ON a.id_coordinador = p.id_profesor
                   GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
                   ORDER BY a.fecha DESC, g.numero_anio, s.letra";
         return $this->executeQuery($query);

@@ -14,6 +14,7 @@ if (isset($_POST)) {
 
     if (mysqli_num_rows($fetch_query_run) > 0 && $row['contrasena'] == $contrasena) {
         $_SESSION['rol'] = $row['rol'];
+        $_SESSION['profesor'] = empty($row['id_profesor']) ? 'Administrador' : $row['id_profesor'];
         $_SESSION['usuario'] = $row['usuario'];
         header("Location: main.php");
     } else if (mysqli_num_rows($fetch_query_run) == 0) {

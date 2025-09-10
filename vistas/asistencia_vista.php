@@ -103,10 +103,10 @@
                                             <td><span class="badge bg-danger"><?= $row['ausentes'] ?></span></td>
                                             <td><span class="badge bg-warning"><?= $row['justificados'] ?></span></td>
                                             <td>
-                                                <button class="btn btn-warning btn-sm" onclick="consultarDetalle('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')" title="Ver detalle">
+                                                <button class="btn btn-warning btn-sm" onclick="consultarDetalle('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof']. ' '. $row['apellido_prof'] ?>')" title="Ver detalle">
                                                     <i class="bi bi-eye"></i> Consultar
                                                 </button>
-                                                <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')" title="Modificar">
+                                                <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof'].' '. $row['apellido_prof'] ?>')" title="Modificar">
                                                     <i class="bi bi-pencil"></i> Modificar
                                                 </button>
                                                 <button class="btn btn-danger btn-sm" onclick="eliminarAsistenciaFecha('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>)" title="Eliminar">
@@ -119,7 +119,14 @@
                                 } else {
                                     ?>
                                     <tr>
-                                        <td colspan="8" class="text-center">No hay registros de asistencia</td>
+                                        <td class="text-center">No hay registros de asistencia</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 <?php
                                 }
@@ -510,8 +517,8 @@
         });
 
         // Función para consultar detalle (definida fuera del document.ready)
-        function consultarDetalle(fecha, idSeccion, nombreSeccion) {
-                $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+        function consultarDetalle(fecha, idSeccion, nombreSeccion, profesor) {
+                $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
                 $('#consultarDetalleModal').modal('show');
                 
                 $.ajax({
@@ -529,8 +536,8 @@
             }
 
             // Función para modificar asistencia
-            function modificarAsistencia(fecha, idSeccion, nombreSeccion) {
-                $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+            function modificarAsistencia(fecha, idSeccion, nombreSeccion, profesor) {
+                $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion + ' - <strong>Cargada por:</strong> ' + profesor);
                 $('#modificarAsistenciaModal').modal('show');
                 
                 // Cargar estudiantes para modificar (versión editable)
@@ -580,8 +587,8 @@
             }
 
         // Función para modificar asistencia (definida fuera del document.ready)
-        function modificarAsistencia(fecha, idSeccion, nombreSeccion) {
-            $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion);
+        function modificarAsistencia(fecha, idSeccion, nombreSeccion, profesor) {
+            $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
             $('#modificarAsistenciaModal').modal('show');
             
             // Cargar estudiantes para modificar (versión editable)
