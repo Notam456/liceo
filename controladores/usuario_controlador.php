@@ -2,8 +2,10 @@
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/usuario_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
 
 $usuarioModelo = new UsuarioModelo($conn);
+$profesorModelo = new ProfesorModelo($conn);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
@@ -13,7 +15,9 @@ switch ($action) {
             $usuario = $_POST['usuario'];
             $contrasena = $_POST['contrasena'];
             $rol = $_POST['rol'];
-            $resultado = $usuarioModelo->crearUsuario($usuario, $contrasena, $rol);
+
+            $profesor = isset($_POST['profesor']) ? $_POST['profesor'] : NULL;
+            $resultado = $usuarioModelo->crearUsuario($usuario, $contrasena, $rol, $profesor);
 
             if ($resultado) {
                 $_SESSION['status'] = "Datos ingresados correctamente";
@@ -64,7 +68,9 @@ switch ($action) {
             $usuario = $_POST['usuario'];
             $contrasena = $_POST['contrasena'];
             $rol = $_POST['rol'];
-            $resultado = $usuarioModelo->actualizarUsuario($id, $usuario, $contrasena, $rol);
+            print_r($_POST);
+            $profesor = isset($_POST['profesor']) ? $_POST['profesor'] : NULL;
+            $resultado = $usuarioModelo->actualizarUsuario($id, $usuario, $contrasena, $rol, $profesor);
 
             if ($resultado) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
@@ -91,6 +97,8 @@ switch ($action) {
     case 'listar':
     default:
         $usuarios = $usuarioModelo->obtenerTodosLosUsuarios();
+        $query = $profesorModelo->obtenerTodosLosProfesores();
+        $profesores = $query->fetch_all(MYSQLI_ASSOC);
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/usuario_vista.php');
         break;
 }

@@ -2,13 +2,6 @@
 CREATE DATABASE liceoo;
 USE liceoo;
 
-CREATE TABLE usuario (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(255) NOT NULL,
-    contrasena VARCHAR(255) NOT NULL,
-    rol VARCHAR(255) NOT NULL
-
-);
 
 CREATE TABLE municipio (
     id_municipio INT AUTO_INCREMENT PRIMARY KEY,
@@ -151,3 +144,13 @@ CREATE TABLE asigna_materia (
   
 ) 
 
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    rol VARCHAR(255) NOT NULL,
+    id_profesor int(11) NULL,
+    FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
+        ON DELETE CASCADE
+
+);

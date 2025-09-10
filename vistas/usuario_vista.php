@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -94,7 +93,9 @@
                                     }
                                 } else {
                                     ?>
-                                    <tr><td colspan="6">No se encontraron registros</td></tr>
+                                    <tr>
+                                        <td colspan="6">No se encontraron registros</td>
+                                    </tr>
                                 <?php
                                 }
                                 ?>
@@ -159,7 +160,20 @@
                             </select>
                         </div>
 
-
+                        <div class="form-group mb-3" name="profesor-group">
+                            <label for="">Profesor</label>
+                            <select
+                                class="form-select form-select-lg"
+                                name="profesor"
+                                id="profesorEdit">
+                                <option selected value="">Seleccione un profesor...</option>
+                                <?php
+                                foreach ($profesores as $row){
+                                ?>
+                                    <option value="<?php echo $row['id_profesor']; ?>"><?php echo $row['nombre'] . " " . $row['apellido']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -242,6 +256,20 @@
                             </select>
                         </div>
 
+                        <div class="form-group mb-3" name="profesor-group">
+                            <label for="">Profesor</label>
+                            <select
+                                class="form-select form-select-lg"
+                                name="profesor"
+                                id="profesor">
+                                <option selected value="">Seleccione un profesor...</option>
+                                <?php
+                                foreach ($profesores as $row) {
+                                ?>
+                                    <option value="<?php echo $row['id_profesor']; ?>"><?php echo $row['nombre'] . " " . $row['apellido']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
 
                     </div>
                     <div class="modal-footer">
@@ -269,7 +297,28 @@
                 targets: [3, 4, 5]
             }]
         });
-
+        $('#rol').on('change', function() {
+            console.log('LOOL')
+            if ($('#rol option:selected').val() == 'user') {
+                $('select[name="profesor"').prop('required', true);
+                $('div[name="profesor-group"').show();
+            } else {
+                $('select[name="profesor"').prop('required', false);
+                $('div[name="profesor-group"').hide();
+                $('select[name="profesor"').val("");
+            }
+        }).trigger("change");
+        $('#rolEdit').on('change', function() {
+            console.log('LOOL')
+            if ($('#rolEdit option:selected').val() == 'user') {
+                $('select[name="profesor"').prop('required', true);
+                $('div[name="profesor-group"').show();
+            } else {
+                $('select[name="profesor"').prop('required', false);
+                $('div[name="profesor-group"').hide();
+                $('select[name="profesor"').val("");
+            }
+        }).trigger("change");
         // Mostrar script
         $(document).ready(function() {
             $('#myTable').on('click', '.view-data', function(e) {
@@ -305,10 +354,11 @@
                     },
                     success: function(response) {
                         var data = response;
-                        $('#idEdit').val(data.id);
+                        $('#idEdit').val(data.id_usuario);
                         $('#usuarioEdit').val(data.usuario);
                         $('#contrasenaEdit').val(data.contrasena);
-                        $('#rolEdit').val(data.rol);
+                        $('#rolEdit').val(data.rol).trigger('change');
+                        $('#profesorEdit').val(data.id_profesor);
                         $('#editmodal').modal('show');
                     }
                 });
