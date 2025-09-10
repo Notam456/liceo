@@ -95,6 +95,11 @@
                                     ?>
                                     <tr>
                                         <td colspan="6">No se encontraron registros</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 <?php
                                 }
