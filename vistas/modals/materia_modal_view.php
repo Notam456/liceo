@@ -25,7 +25,7 @@
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning" role="alert">
-                    <h4>No se han encontrado datos del estudiante.</h4>
+                    <h4>No se han encontrado datos de la materia.</h4>
                 </div>
             </div>
         </div>
