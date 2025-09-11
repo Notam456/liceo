@@ -11,7 +11,7 @@ if (!isset($row)) {
     <div class="row">
         <div class="col-md-6">
             <h4>Datos del Estudiante</h4>
-            <table class="table table-bordered">
+            <table class="table table-borderless">
                 <tbody>
                     <tr>
                         <th>Nombre Completo</th>
@@ -42,12 +42,9 @@ if (!isset($row)) {
         </div>
         <div class="col-md-6">
             <h4>Datos de la Visita</h4>
-            <table class="table table-bordered">
+            <table class="table table-borderless">
                 <tbody>
-                    <tr>
-                        <th>ID de la Visita</th>
-                        <td><?php echo htmlspecialchars($row['id_visita']); ?></td>
-                    </tr>
+
                     <tr>
                         <th>Fecha de la Visita</th>
                         <td><?php echo date("d/m/Y", strtotime($row['fecha_visita'])); ?></td>

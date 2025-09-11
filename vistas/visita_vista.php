@@ -26,7 +26,7 @@
                         <h4>Visitas Agendadas <i class="bi bi-calendar-check"></i></h4>
                     </div>
                     <div class="card-body">
-                        <table style="width:100%;" class="table table-striped" id="myTable">
+                        <table style="width:100%; margin-left:40px;" class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;">#</th>
@@ -34,7 +34,8 @@
                                     <th>Cédula</th>
                                     <th>Fecha de Visita</th>
                                     <th>Estado</th>
-                                    <th class="action" colspan="2">Acciones</th>
+                                    <th>Accion</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,7 +56,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <a href="#" class="btn btn-info btn-sm view-data">Consultar</a>
+                                                <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
                                             </td>
                                             <td>
                                                 <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
@@ -64,7 +65,14 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td colspan="7" class="text-center">No hay visitas agendadas.</td>
+                                        <td class="text-center">No hay visitas agendadas.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="display: none;"></td>
+                                        
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -99,7 +107,11 @@
                 infoFiltered: '(se han encontrado _MAX_ resultados)',
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
-            }
+            },
+             columnDefs: [{
+                width: '93px',
+                targets: [5,6]
+            }]
         });
 
         $(document).ready(function() {
