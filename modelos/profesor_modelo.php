@@ -50,6 +50,42 @@ class ProfesorModelo {
         return mysqli_query($this->conn, $query);
     }
 
+    public function obtenerCargosPorProfesor($id_profesor) {
+        $query = "SELECT c.nombre FROM cargo c
+                  JOIN asigna_cargo ac ON c.id_cargo = ac.id_cargo
+                  WHERE ac.id_profesor = ? AND ac.estado = 'activa'";
 
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_profesor);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $cargos = [];
+        while ($row = $result->fetch_assoc()) {
+            $cargos[] = $row;
+        }
+
+        return $cargos;
+    }
+
+    public function obtenerMateriasPorProfesor($id_profesor) {
+        $query = "SELECT m.nombre FROM materia m
+                  JOIN asigna_materia am ON m.id_materia = am.id_materia
+                  WHERE am.id_profesor = ? AND am.estado = 'activa'";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_profesor);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $materias = [];
+        while ($row = $result->fetch_assoc()) {
+            $materias[] = $row;
+        }
+
+        return $materias;
+    }
 }
 ?>

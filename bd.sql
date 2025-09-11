@@ -96,9 +96,11 @@ CREATE TABLE cargo (
 );
 
 CREATE TABLE asigna_cargo (
-    id_profesor INT NOT NULL,
-    id_cargo INT NOT NULL,
-    PRIMARY KEY (id_profesor, id_cargo),
+    id_asignacion int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_profesor int(11) NOT NULL,
+    id_cargo int(11) NOT NULL,
+    fecha_asignacion timestamp NOT NULL DEFAULT current_timestamp(),
+    estado enum('activa','inactiva') DEFAULT 'activa',
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_cargo) REFERENCES cargo(id_cargo)
