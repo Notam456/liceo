@@ -1,36 +1,5 @@
 <?php
     session_start();
-    /*
-    if($_POST){
-        include_once '../configuraciones/bd.php';
-        $conexionBD=BD::crearInstancia(); 
-
-        $sentencia=$conexionBD->prepare("SELECT *,count(*) as n_usuarios
-        FROM `usuario` 
-        WHERE `usuario` =:usuario 
-        AND `contrasena` =:password
-        ");
-
-        $usuario=$_POST['usuario'];
-        $password=$_POST['password'];
-
-        $sentencia->bindParam(':usuario',$usuario);
-        $sentencia->bindParam(':password',$password);
-
-        $sentencia->execute();
-        
-        $registro=$sentencia->fetch(PDO::FETCH_LAZY);
-        if($registro["n_usuarios"]>0){
-            $_SESSION['usuario']=$registro["usuario"];
-            $_SESSION['rol']=$registro["rol"];
-            $_SESSION['logged']=true;
-            header("Location:/app/mainmenu/index.php");
-        } else{     
-            $mensaje="Usuario o contraseña incorrectos";
-        }
-    } 
-    */
-
     define('ROOT_PATH', __DIR__ . '/');
 ?>
 
@@ -57,23 +26,23 @@
         // Define los módulos visibles para cada rol
         $modulos_por_rol = [
             'admin' => [
-                'estudiante' => '/liceo/imgs/estudiando.png',
                 'profesor' => '/liceo/imgs/masculino.png',
-                'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
                 'usuario' => '/liceo/imgs/agregar-usuario.png',
-                'materia' => '/liceo/imgs/libros.png',
-                'seccion' => '/liceo/imgs/secciones.png',
                 'anio_academico' => '/liceo/imgs/calendario.png',
-                'asignacion' => '/liceo/imgs/asignacion-de-recursos.png',
-                'reporte' => '/liceo/imgs/reporte.png',
                 'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
                 'parroquia' => '/liceo/imgs/pueblo.png',
                 'municipio' => '/liceo/imgs/cataluna.png',
+                'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
             ],
             'user' => [
                 'estudiante' => '/liceo/imgs/estudiando.png',
                 'profesor' => '/liceo/imgs/masculino.png',
                 'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                'reporte' => '/liceo/imgs/reporte.png',
+                'materia' => '/liceo/imgs/libros.png',
+                'seccion' => '/liceo/imgs/secciones.png',
+                'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+                'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
             ],
             'profesor' => [
                 // Define los módulos específicos del profesor aquí
