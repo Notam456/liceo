@@ -3,9 +3,11 @@ session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/seccion_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php');
 
 $seccionModelo = new SeccionModelo($conn);
 $gradoModelo = new GradoModelo($conn);
+$estudianteModelo = new EstudianteModelo($conn);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
@@ -28,14 +30,12 @@ switch ($action) {
             $id = $_POST['id_seccion'];
             $resultado = $seccionModelo->obtenerSeccionPorId($id);
             if ($row = mysqli_fetch_array($resultado)) {
-                echo '<h6> Id primaria: ' . $row['id_seccion'] . '</h6>
-                      <h6> Nombre de la sección: ' . $row['numero_anio'] . '° '.$row['letra'].'</h6>
-                      <h6> Año de la sección: ' . $row['numero_anio'] . '° año </h6>
-                      <a class="btn btn-primary" href="/liceo/controladores/estudiante_controlador.php?action=listarPorSeccion&id_seccion=' . $row['id_seccion'] . '" role="button">Ver listado de estudiantes</a>
-                      <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=' .  $row['id_seccion'] . '" role="button">Crear/modificar Horario</a>
-                      <button class="btn btn-success" onclick="abrirAsignacionEstudiantes(' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')">Asignar Estudiantes</button>';
+                $estudiantes = $estudianteModelo->obtenerEstudiantesPorSeccion($id);
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/seccion_modal_view.php');
             } else {
-                echo '<h4>No se han encontrado datos</h4>';
+                $row = [];
+                $estudiantes = false;
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/seccion_modal_view.php');
             }
         }
         break;

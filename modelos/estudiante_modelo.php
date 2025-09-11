@@ -25,15 +25,15 @@ class EstudianteModelo {
         $id = (int)$id;
         $query = "SELECT e.*, p.parroquia, s.letra, g.numero_anio FROM estudiante e
         JOIN parroquia p ON e.id_parroquia = p.id_parroquia
-        JOIN seccion s ON e.id_seccion = s.id_seccion
-        JOIN grado g ON s.id_grado = g.id_grado 
+        LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+        LEFT JOIN grado g ON s.id_grado = g.id_grado 
         WHERE id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
     public function obtenerEstudiantesPorSeccion($id_seccion) {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM estudiante WHERE seccion_estudiante IN (SELECT nombre FROM seccion WHERE id_seccion = '$id_seccion')";
+        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' ORDER BY apellido, nombre";
         return mysqli_query($this->conn, $query);
     }
 

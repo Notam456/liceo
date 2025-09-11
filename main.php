@@ -65,9 +65,10 @@
                 'seccion' => '/liceo/imgs/secciones.png',
                 'anio_academico' => '/liceo/imgs/calendario.png',
                 'asignacion' => '/liceo/imgs/asignacion-de-recursos.png',
-                'reportes' => '/liceo/imgs/reportes.png',
+                'reporte' => '/liceo/imgs/reporte.png',
                 'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
-                'parroquia' => '/liceo/imgs/marcador-de-posicion.png',
+                'parroquia' => '/liceo/imgs/pueblo.png',
+                'municipio' => '/liceo/imgs/cataluna.png',
             ],
             'user' => [
                 'estudiante' => '/liceo/imgs/estudiando.png',
@@ -92,8 +93,12 @@
         ?>
 
         <section class="modulos">
-            <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) { ?>
-                <div class="modulo" data-url="controladores/<?php echo $nombre_modulo; ?>_controlador.php">
+            <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) { 
+                $ruta = isset($rutas_controladores[$nombre_modulo]) 
+                    ? $rutas_controladores[$nombre_modulo] 
+                    : 'controladores/' . $nombre_modulo . '_controlador.php';
+            ?>
+                <div class="modulo" data-url="<?php echo $ruta; ?>">
                     <img src="<?php echo $imagen_url; ?>" alt="">
                     <h2><?php echo ucfirst($nombre_modulo); ?></h2>
                 </div>

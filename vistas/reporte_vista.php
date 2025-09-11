@@ -12,7 +12,7 @@ if (!isset($reporte)) {
     <title>Reporte de Ausencias</title>
     <style>
         .card-alumno {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             transition: all 0.3s;
         }
         .card-alumno.alert {
@@ -29,10 +29,21 @@ if (!isset($reporte)) {
             margin-bottom: 20px;
         }
         .tabla-ausencias {
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .tabla-ausencias th {
             white-space: nowrap;
+        }
+        .resumen {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .resumen .stat {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px 12px;
         }
     </style>
 </head>
@@ -55,34 +66,55 @@ if (!isset($reporte)) {
                 <?php endif; ?>
 
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h4><i class="bi bi-clipboard2-pulse"></i> Reporte de Ausencias</h4>
+                    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0"><i class="bi bi-clipboard2-pulse"></i> Reporte de Ausencias</h4>
+                        <span class="small">Período actual</span>
                     </div>
                     <div class="card-body">
+                        <?php 
+                            $totalEstudiantes = count($reporte);
+                            $totalAusencias = array_sum(array_map(fn($i)=>$i['ausencias'], $reporte));
+                            $totalJustificados = array_sum(array_map(fn($i)=>$i['justificadas'], $reporte));
+                        ?>
+                        <div class="resumen">
+                            <div class="stat">
+                                Total estudiantes: <span class="badge bg-secondary"><?php echo $totalEstudiantes; ?></span>
+                            </div>
+                            <div class="stat">
+                                Ausencias: <span class="badge bg-danger"><?php echo $totalAusencias; ?></span>
+                            </div>
+                            <div class="stat">
+                                Justificados: <span class="badge bg-warning text-dark"><?php echo $totalJustificados; ?></span>
+                            </div>
+                        </div>
+
                         <div class="filtros">
-                            <div class="row">
-                                <div class="col-md-6">
+                            <div class="row g-3">
+                                <div class="col-md-4">
                                     <label for="filtroCedula" class="form-label">Buscar por cédula:</label>
                                     <input type="text" class="form-control" id="filtroCedula" placeholder="Ej: 30426270">
+                                </div>
+                                <div class="col-md-8 d-flex align-items-end">
+                                    <div class="text-muted small">Sugerencia: haga clic en los encabezados para ordenar</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="alert alert-danger" id="alert-ausencias" style="display: none;">
-                            <h5><i class="bi bi-exclamation-triangle-fill"></i> Alerta: Estudiantes con 3 o más ausencias</h5>
+                            <h6 class="mb-1"><i class="bi bi-exclamation-triangle-fill"></i> Estudiantes con 3 o más ausencias</h6>
                             <div id="lista-alertas" class="mt-2"></div>
                         </div>
 
                         <div class="table-responsive tabla-ausencias">
-                            <table class="table table-striped table-hover" id="tablaReportes">
+                            <table class="table table-striped table-hover align-middle" id="tablaReportes">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Estudiante</th>
                                         <th>Sección</th>
                                         <th>Contacto</th>
                                         <th>Cédula</th>
-                                        <th>Ausencias</th>
-                                        <th>Justificadas</th>
+                                        <th title="Inasistencias"><i class="bi bi-person-dash-fill"></i> Ausencias</th>
+                                        <th title="Justificados"><i class="bi bi-journal-check"></i> Justificados</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -93,10 +125,10 @@ if (!isset($reporte)) {
                                         <td><?= htmlspecialchars($item['seccion']) ?></td>
                                         <td><?= htmlspecialchars($item['contacto']) ?></td>
                                         <td><?= htmlspecialchars($item['cedula']) ?></td>
-                                        <td><span class="badge bg-danger"><?= $item['ausencias'] ?></span></td>
-                                        <td><span class="badge bg-warning text-dark"><?= $item['justificadas'] ?></span></td>
+                                        <td><span class="badge bg-danger" title="Ausencias no justificadas"><?= $item['ausencias'] ?></span></td>
+                                        <td><span class="badge bg-warning text-dark" title="Ausencias justificadas"><?= $item['justificadas'] ?></span></td>
                                         <td>
-                                            <span class="badge <?= $item['total'] >= 3 ? 'bg-danger' : 'bg-secondary' ?>">
+                                            <span class="badge <?= $item['total'] >= 3 ? 'bg-danger' : 'bg-secondary' ?>" title="Total de inasistencias (A + J)">
                                                 <?= $item['total'] ?>
                                             </span>
                                         </td>
@@ -117,18 +149,22 @@ if (!isset($reporte)) {
 
     <script>
     $(document).ready(function() {
-        // Configuración de DataTables
         var table = $('#tablaReportes').DataTable({
-            "order": [[6, "desc"]],
-            "dom": '<"top"f>rt<"bottom"lip><"clear">'
+            order: [[6, 'desc']],
+            dom: '<"top"f>rt<"bottom"lip><"clear">',
+            language: {
+                search: 'Buscar:',
+                lengthMenu: 'Mostrar _MENU_ registros',
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' }
+            }
         });
 
-        // Filtro por cédula
         $('#filtroCedula').keyup(function() {
             table.column(3).search(this.value).draw();
         });
 
-        // Mostrar alertas para estudiantes con 3+ ausencias
         var alertas = <?= json_encode(array_filter($reporte, function($item) { return $item['total'] >= 3; })) ?>;
         if (alertas.length > 0) {
             $('#alert-ausencias').show();

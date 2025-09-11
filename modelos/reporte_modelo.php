@@ -8,20 +8,18 @@ class ReporteModelo {
 
     public function obtenerReporteAusencias() {
         $query = "SELECT 
-                    CONCAT(e.nombre_estudiante, ' ', e.apellido_estudiante) as nombre_completo,
-                    e.seccion_estudiante as seccion,
-                    e.contacto_estudiante as contacto,
-                    e.cedula_estudiante as cedula,
-                    COALESCE((SELECT COUNT(*) FROM asistencia a 
-                             WHERE a.id_estudiante = e.id_estudiante 
-                             AND a.estado = 'A'), 0) as ausencias,
-                    COALESCE((SELECT COUNT(*) FROM asistencia a 
-                             WHERE a.id_estudiante = e.id_estudiante 
-                             AND a.estado = 'J'), 0) as justificadas,
-                    COALESCE((SELECT COUNT(*) FROM asistencia a 
-                             WHERE a.id_estudiante = e.id_estudiante 
-                             AND (a.estado = 'A' OR a.estado = 'J')), 0) as total
-                 FROM estudiante e";
+                    CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
+                    CONCAT(COALESCE(g.numero_anio, ''), CASE WHEN g.numero_anio IS NULL THEN '' ELSE '° ' END, COALESCE(s.letra, '')) AS seccion,
+                    e.contacto AS contacto,
+                    e.cedula AS cedula,
+                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
+                    COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
+                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
+                 FROM estudiante e
+                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante
+                 LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                 LEFT JOIN grado g ON s.id_grado = g.id_grado
+                 GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula";
 
         $result = $this->db->query($query);
 

@@ -61,7 +61,7 @@ class SeccionModelo {
     }
 
     public function generarSecciones($cantidad, $id_grado) {
-          for ($i = 0; $i <= $cantidad; $i++) {
+          for ($i = 0; $i < $cantidad; $i++) {
             $this->crearSeccion(self::$letras[$i], $id_grado);
         }
         return "success";

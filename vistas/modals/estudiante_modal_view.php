@@ -33,7 +33,12 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Seccion:</strong> <?= htmlspecialchars($row['numero_anio'])."°".htmlspecialchars($row['letra']); ?>
+                        <strong>Seccion:</strong>
+                        <?php if (!empty($row['numero_anio']) && !empty($row['letra'])): ?>
+                            <?= htmlspecialchars($row['numero_anio'])."°".htmlspecialchars($row['letra']); ?>
+                        <?php else: ?>
+                            Sin sección asignada
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

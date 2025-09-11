@@ -1,11 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
-    <title>Grado</title>
+    <title>Municipio</title>
 </head>
-
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -19,11 +18,10 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']);
-                } ?>
+                <?php unset($_SESSION['status']); } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Grado <img src="/liceo/icons/people.svg">
+                        <h4>Municipios <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Crear
                             </button>
@@ -34,8 +32,7 @@
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
-                                    <th scope="col">Grado</th>
-                                    <th scope="col">Cantidad de secciones</th>
+                                    <th scope="col">Municipio</th>
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
                                     <th scope="col" class="action"></th>
@@ -43,27 +40,19 @@
                             </thead>
                             <tbody>
                                 <?php
-                                if ($materias && mysqli_num_rows($materias) > 0) {
-                                    while ($row = mysqli_fetch_array($materias)) {
-                                        $id_grado = $row['id_grado'];
-
-                                        $sql = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = $id_grado";
-                                        $result = mysqli_query($conn, $sql);
-                                        $data = mysqli_fetch_assoc($result);
+                                if ($municipios && mysqli_num_rows($municipios) > 0) {
+                                    while ($row = mysqli_fetch_array($municipios)) {
                                 ?>
                                         <tr>
-                                            <td class="id" style="display: none;"> <?php echo $row['id_grado'] ?> </td>
-                                            <td> <?php echo $row['numero_anio'] . '° año'; ?> </td>
-                                            <td> <?php echo $data['total']; ?> </td>
+                                            <td class="id" style="display: none;"> <?php echo $row['id_municipio'] ?> </td>
+                                            <td> <?php echo $row['municipio'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr>
-                                        <td colspan="6">No Record Found</td>
-                                    </tr>
+                                    <tr><td colspan="5">No Record Found</td></tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -81,13 +70,13 @@
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="edit-form" action="/liceo/controladores/grado_controlador.php" method="POST">
+                <form id="edit-form" action="/liceo/controladores/municipio_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
                     <div class="modal-body">
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
-                            <label>Grado (número de año)</label>
-                            <input type="number" id="numero_anio_edit" class="form-control" name="numero_anio_edit" min="1" max="6" required>
+                            <label>Nombre del municipio</label>
+                            <input type="text" id="municipio_edit" class="form-control" name="municipio_edit" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -118,15 +107,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Generar grados para el año académico actual</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea un nuevo municipio</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/liceo/controladores/grado_controlador.php" method="POST">
+                <form action="/liceo/controladores/municipio_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3">
-                            <label>Cantidad de grados</label>
-                            <input type="number" name="cantidad" class="form-control" value="5" required>
+                            <label>Nombre del municipio</label>
+                            <input type="text" name="municipio" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -147,10 +136,7 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-            columnDefs: [{
-                width: '93px',
-                targets: [3, 4, 5]
-            }]
+            columnDefs: [{ width: '93px', targets: [2, 3, 4] }]
         });
 
         $(document).ready(function() {
@@ -160,11 +146,8 @@
                 var id = $(this).closest('tr').find('.id').text();
                 $.ajax({
                     type: "POST",
-                    url: "/liceo/controladores/grado_controlador.php",
-                    data: {
-                        'action': 'ver',
-                        'id': id
-                    },
+                    url: "/liceo/controladores/municipio_controlador.php",
+                    data: { 'action': 'ver', 'id': id },
                     success: function(response) {
                         $('.view_user_data').html(response);
                         $('#viewmodal').modal('show');
@@ -178,16 +161,13 @@
                 var id = $(this).closest('tr').find('.id').text();
                 $.ajax({
                     type: "POST",
-                    url: "/liceo/controladores/grado_controlador.php",
-                    data: {
-                        'action': 'editar',
-                        'id': id
-                    },
+                    url: "/liceo/controladores/municipio_controlador.php",
+                    data: { 'action': 'editar', 'id': id },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
-                        $('#idEdit').val(data.id_grado);
-                        $('#numero_anio_edit').val(data.numero_anio);
+                        $('#idEdit').val(data.id_municipio);
+                        $('#municipio_edit').val(data.municipio);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -199,7 +179,7 @@
                 var id = $(this).closest('tr').find('.id').text();
                 Swal.fire({
                     title: '¿Estás seguro?',
-                    text: '¡Esta acción eliminará el grado permanentemente!',
+                    text: '¡Esta acción eliminará el municipio permanentemente!',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -210,11 +190,8 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "/liceo/controladores/grado_controlador.php",
-                            data: {
-                                'action': 'eliminar',
-                                'id': id
-                            },
+                            url: "/liceo/controladores/municipio_controlador.php",
+                            data: { 'action': 'eliminar', 'id': id },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -229,5 +206,4 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
-
 </html>

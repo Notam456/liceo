@@ -151,6 +151,6 @@ CREATE TABLE usuario (
     rol VARCHAR(255) NOT NULL,
     id_profesor int(11) NULL,
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
-        ON DELETE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE
 
 );

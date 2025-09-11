@@ -33,12 +33,11 @@ class GradoModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarParroquia($id, $parroquia, $municipio) {
+    public function actualizarGrado($id, $numero_anio) {
         $id = (int)$id;
-        $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
-        $municipio = mysqli_real_escape_string($this->conn, $municipio);
+        $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
 
-        $query = "UPDATE parroquia SET parroquia = '$parroquia', id_municipio = '$municipio' WHERE id_parroquia = $id";
+        $query = "UPDATE grado SET numero_anio = '$numero_anio' WHERE id_grado = $id";
         return mysqli_query($this->conn, $query);
     }
 

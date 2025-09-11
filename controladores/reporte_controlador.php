@@ -9,7 +9,7 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     header('Content-Type: application/json');
     
     try {
-        $modelo = new ReporteModelo($db);
+        $modelo = new ReporteModelo($conn);
         $reporte = $modelo->obtenerReporteAusencias();
         
         echo json_encode([

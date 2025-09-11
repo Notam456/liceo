@@ -19,13 +19,19 @@ class AsistenciaModelo
             die("Error en la consulta: " . mysqli_stmt_error($stmt));
         }
         $result = mysqli_stmt_get_result($stmt);
+        // Si no hay result set (INSERT/UPDATE/DELETE), devolver true para indicar éxito
+        if ($result === false) {
+            $affected = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+            return $affected >= 0; // true si ejecutó correctamente
+        }
         mysqli_stmt_close($stmt);
         return $result;
     }
 
     public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion, $profesor)
     {
-        $profesor = $profesor == 'Administrador' ? '0' : $profesor;
+        // Mapear estado a flags
         $inasistencia = 0;
         $justificado = 0;
         if ($estado == 'A') {
@@ -38,8 +44,21 @@ class AsistenciaModelo
             $inasistencia = 0;
             $justificado = 0;
         }
-        $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion, id_coordinador) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion, $profesor], "isiisii");
+
+        // Determinar id_coordinador válido (entero) o NULL si no aplica (p.ej., Administrador)
+        $idCoordinador = null;
+        if (is_numeric($profesor) && (int)$profesor > 0) {
+            $idCoordinador = (int)$profesor;
+        }
+
+        if ($idCoordinador === null) {
+            // Omitir la columna id_coordinador para no violar la FK
+            $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion) VALUES (?, ?, ?, ?, ?, ?)";
+            return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion], "isiisi");
+        } else {
+            $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion, id_coordinador) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion, $idCoordinador], "isiisii");
+        }
     }
 
     public function obtenerEstudiantesPorSeccion($seccion)
@@ -142,7 +161,7 @@ class AsistenciaModelo
                   FROM asistencia a
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
-                  JOIN profesor p ON a.id_coordinador = p.id_profesor
+                  LEFT JOIN profesor p ON a.id_coordinador = p.id_profesor
                   GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
                   ORDER BY a.fecha DESC, g.numero_anio, s.letra";
         return $this->executeQuery($query);
