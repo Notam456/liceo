@@ -14,7 +14,6 @@ $modulos_por_rol = [
         'parroquia' => 'bi-geo-alt',
         'municipio' => 'bi-geo-alt',
         'asigna_cargo' => 'bi-box-arrow-in-down-right',
-        'visita' => 'bi-calendar-check',
         'cargo' => 'bi-briefcase',
     ],
     'user' => [
