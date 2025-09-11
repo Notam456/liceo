@@ -94,7 +94,15 @@ if (!isset($reporte)) {
                                     <label for="filtroCedula" class="form-label">Buscar por cédula:</label>
                                     <input type="text" class="form-control" id="filtroCedula" placeholder="Ej: 30426270">
                                 </div>
-                                <div class="col-md-8 d-flex align-items-end">
+                                <div class="col-md-4">
+                                    <label for="filtroFecha" class="form-label">Filtrar por fecha:</label>
+                                    <select class="form-select" id="filtroFecha">
+                                        <option value="semana" selected>Esta semana</option>
+                                        <option value="mes">Este mes</option>
+                                        <option value="todas">Todas</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
                                     <div class="text-muted small">Sugerencia: haga clic en los encabezados para ordenar</div>
                                 </div>
                             </div>
@@ -135,7 +143,11 @@ if (!isset($reporte)) {
                                         </td>
                                         <td>
                                             <?php if ($item['total'] >= 3): ?>
-                                                <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
+                                                <?php if ($item['tiene_visita_agendada']): ?>
+                                                    <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
+                                                <?php else: ?>
+                                                    <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -183,7 +195,10 @@ if (!isset($reporte)) {
                             ${item.nombre} (${item.cedula}) -
                             <span class="badge bg-danger">${item.total} ausencias</span>
                         </div>
-                        <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>
+                        ${item.tiene_visita_agendada
+                            ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
+                            : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
+                        }
                     </div>`
                 ).join('')
             );
@@ -192,6 +207,76 @@ if (!isset($reporte)) {
         $(document).on('click', '.schedule-visit', function() {
             var studentId = $(this).data('id-estudiante');
             $('#visitaModal #id_estudiante_visita').val(studentId);
+        });
+
+        $('#filtroFecha').change(function() {
+            var filtro = $(this).val();
+            var url = '/liceo/controladores/reporte_controlador.php?filtro=' + filtro;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        var table = $('#tablaReportes').DataTable();
+                        table.clear();
+
+                        var alertas = [];
+
+                        response.data.forEach(function(item) {
+                            if (item.total >= 3) {
+                                alertas.push(item);
+                            }
+
+                            var actionButton = '';
+                            if (item.total >= 3) {
+                                if (item.tiene_visita_agendada) {
+                                    actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
+                                } else {
+                                    actionButton = '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
+                                }
+                            }
+
+                            table.row.add([
+                                item.nombre,
+                                item.seccion,
+                                item.contacto,
+                                item.cedula,
+                                '<span class="badge bg-danger">' + item.ausencias + '</span>',
+                                '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>',
+                                '<span class="badge ' + (item.total >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>',
+                                actionButton
+                            ]).draw(false);
+                        });
+
+                        if (alertas.length > 0) {
+                            $('#alert-ausencias').show();
+                            $('#lista-alertas').html(
+                                alertas.map(item =>
+                                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
+                                        <div>
+                                            ${item.nombre} (${item.cedula}) -
+                                            <span class="badge bg-danger">${item.total} ausencias</span>
+                                        </div>
+                                        ${item.tiene_visita_agendada
+                                            ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
+                                            : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
+                                        }
+                                    </div>`
+                                ).join('')
+                            );
+                        } else {
+                            $('#alert-ausencias').hide();
+                        }
+                    } else {
+                        console.error('Error fetching report data:', response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                }
+            });
         });
     });
     </script>

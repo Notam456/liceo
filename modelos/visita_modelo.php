@@ -28,6 +28,17 @@ class VisitaModelo {
         return false; // No absence found for the student.
     }
 
+    public function tieneVisitaAgendada($id_estudiante) {
+        $id_estudiante = (int)$id_estudiante;
+        $query = "SELECT 1
+                  FROM visita v
+                  JOIN asistencia a ON v.id_asistencia = a.id_asistencia
+                  WHERE a.id_estudiante = $id_estudiante AND v.estado = 'agendada'
+                  LIMIT 1";
+        $result = mysqli_query($this->conn, $query);
+        return mysqli_num_rows($result) > 0;
+    }
+
     public function obtenerVisitas() {
         $query = "SELECT v.id_visita, v.fecha_visita, v.estado, e.nombre, e.apellido, e.cedula
                   FROM visita v

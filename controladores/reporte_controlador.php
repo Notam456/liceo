@@ -9,8 +9,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     header('Content-Type: application/json');
     
     try {
+        $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : 'semana';
         $modelo = new ReporteModelo($conn);
-        $reporte = $modelo->obtenerReporteAusencias();
+        $reporte = $modelo->obtenerReporteAusencias($filtro);
         
         echo json_encode([
             'success' => true,
@@ -27,8 +28,9 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
 }
 
 
+$filtro = isset($_GET['filtro']) ? $_GET['filtro'] : 'semana';
 $modelo = new ReporteModelo($conn);
-$reporte = $modelo->obtenerReporteAusencias();
+$reporte = $modelo->obtenerReporteAusencias($filtro);
 
 include($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/reporte_vista.php');
 ?>
