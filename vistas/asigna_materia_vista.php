@@ -163,7 +163,6 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                         <th>Profesor</th>
                                         <th>Materia</th>
                                         <th>Fecha Asignación</th>
-                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -181,11 +180,7 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                                 <br><small class="text-muted">ID: <?= $asignacion['id_materia'] ?></small>
                                             </td>
                                             <td><?= date('d/m/Y H:i', strtotime($asignacion['fecha_asignacion'])) ?></td>
-                                            <td>
-                                                <span class="badge <?= $asignacion['estado'] == 'activa' ? 'badge-activa' : 'badge-inactiva' ?>">
-                                                    <?= ucfirst($asignacion['estado']) ?>
-                                                </span>
-                                            </td>
+                                           
                                             <td>
                                                 <a href="asigna_materia_controlador.php?action=eliminar&id=<?= $asignacion['id_asignacion'] ?>" 
                                                    class="btn btn-danger btn-sm"
