@@ -24,7 +24,7 @@ class GradoModelo {
 
     public function obtenerGradoPorId($id) {
         $id = (int)$id;
-        $query = "SELECT * FROM grado WHERE id_grado = '$id'";
+        $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id'";
         return mysqli_query($this->conn, $query);
     }
 

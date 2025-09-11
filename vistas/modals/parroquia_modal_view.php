@@ -9,7 +9,7 @@
                         <strong>Parroquia:</strong> <?= htmlspecialchars($row['parroquia']) ?>
                     </div>
                     <div class="col-md-6">
-                        <strong>ID Municipio:</strong> <?= htmlspecialchars($row['id_municipio']) ?>
+                        <strong>Municipio:</strong> <?= htmlspecialchars($row['municipio']) ?>
                     </div>
                 </div>
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->

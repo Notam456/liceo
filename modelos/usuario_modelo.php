@@ -31,7 +31,12 @@ class UsuarioModelo
     public function obtenerUsuarioPorId($id)
     {
         $id = (int)$id;
-        $fetch_query = "SELECT * FROM usuario WHERE `id_usuario` = '$id'";
+        $fetch_query = "
+        SELECT u.*, p.nombre, p.apellido
+        FROM usuario u
+        LEFT JOIN profesor p ON u.id_profesor = p.id_profesor
+        WHERE u.id_usuario = '$id'
+    ";
         $fetch_query_run = mysqli_query($this->conn, $fetch_query);
         return $fetch_query_run;
     }

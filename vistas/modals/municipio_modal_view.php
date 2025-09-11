@@ -7,9 +7,6 @@
                     <div class="col-md-6">
                         <strong>Municipio:</strong> <?= htmlspecialchars($row['municipio']) ?>
                     </div>
-                    <div class="col-md-6">
-                        <strong>ID:</strong> <?= htmlspecialchars($row['id_municipio']) ?>
-                    </div>
                 </div>
             </div>
         </div>

@@ -6,18 +6,14 @@
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>ID Grado:</strong> <?= htmlspecialchars($row['id_grado']) ?>
+                        <strong>Numero de Año:</strong> <?= htmlspecialchars($row['numero_anio']) ?>
                     </div>
+                    
                     <div class="col-md-6">
-                        <strong>ID Año:</strong> <?= htmlspecialchars($row['id_anio']) ?>
+                        <strong>Año Académico:</strong> <?= htmlspecialchars($row['periodo']) ?>
                     </div>
                 </div>
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Numero de Año:</strong> <?= htmlspecialchars($row['numero_anio']) ?>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
