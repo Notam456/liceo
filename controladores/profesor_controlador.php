@@ -30,6 +30,8 @@ switch ($action) {
             $resultado = $profesorModelo->obtenerProfesorPorId($id);
             if (mysqli_num_rows($resultado) > 0) {
                 $row = mysqli_fetch_array($resultado);
+                $cargos = $profesorModelo->obtenerCargosPorProfesor($id);
+                $materias = $profesorModelo->obtenerMateriasPorProfesor($id);
                 
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/profesor_modal_view.php');
             } else {
@@ -38,7 +40,7 @@ switch ($action) {
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/profesor_modal_view.php');
             }
         }
-        break; 
+        break;
 
     case 'editar':
         if (isset($_POST['id_profesor'])) {
