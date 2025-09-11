@@ -3,15 +3,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Definimos módulos visibles por rol
 $modulos_por_rol = [
     'admin' => [
         'usuario' => 'bi-people',
         'profesor' => 'bi-person-workspace',
-        'seccion' => 'bi bi-diagram-3',
+        'seccion' => 'bi-diagram-3',
         'materia' => 'bi-journal-bookmark',
         'grado' => 'bi-collection',
-        'anio_academico' => ' bi-calendar',
+        'anio_academico' => 'bi-calendar',
         'parroquia' => 'bi-geo-alt',
         'municipio' => 'bi-geo-alt',
         'asigna_cargo' => 'bi-box-arrow-in-down-right',
@@ -26,12 +25,16 @@ $modulos_por_rol = [
         'asigna_materia' => 'bi-box-arrow-in-down-right',
         'grado' => 'bi-collection',
     ],
-    'profesor' => [
-        // aquí defines si el profesor verá algo en el sidebar
-    ]
+    'profesor' => []
 ];
 
-// Obtenemos el rol desde la sesión
+// Excepciones de nombres más legibles
+$nombre_legible = [
+    'anio_academico' => 'Año académico',
+    'asigna_cargo' => 'Asignación de cargo',
+    'asigna_materia' => 'Asignación de materia'
+];
+
 $rol_usuario = $_SESSION['rol'] ?? null;
 $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
 ?>
@@ -82,15 +85,23 @@ $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
 <div id="sidebar" class="sidebar">
     <a href="/liceo/main.php"><i class="bi bi-house-door me-2"></i> Inicio</a>
 
-    <?php foreach ($modulos_visibles as $nombre_modulo => $icono) {
+    <?php foreach ($modulos_visibles as $nombre_modulo => $icono):
         $ruta = isset($rutas_controladores[$nombre_modulo])
             ? $rutas_controladores[$nombre_modulo]
             : '/liceo/controladores/' . $nombre_modulo . '_controlador.php';
+
+        // Si existe un nombre legible definido, úsalo
+        if (isset($nombre_legible[$nombre_modulo])) {
+            $texto = $nombre_legible[$nombre_modulo];
+        } else {
+            // Si no, reemplaza guiones bajos y capitaliza
+            $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
+        }
     ?>
         <a href="<?php echo $ruta; ?>">
-            <i class="bi <?php echo $icono ?> me-2"></i> <?php echo ucfirst($nombre_modulo); ?>
+            <i class="bi <?php echo $icono ?> me-2"></i> <?php echo $texto; ?>
         </a>
-    <?php } ?>
+    <?php endforeach; ?>
 
     <a href="/liceo/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</a>
 </div>

@@ -1,6 +1,6 @@
 <?php
-    session_start();
-    define('ROOT_PATH', __DIR__ . '/');
+session_start();
+define('ROOT_PATH', __DIR__ . '/');
 ?>
 
 <!doctype html>
@@ -11,18 +11,19 @@
     <link rel="stylesheet" href="/liceo/css/Estilos.css">
     <title>Liceo Profesor Fernando Ramirez</title>
 </head>
-<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70">
-<div id="mainContent">
-    <nav>
-        <?php include(ROOT_PATH . 'includes/navbar.php') ?>
-    </nav>
-    <?php include(ROOT_PATH . 'includes/sidebar.php') ?>
 
-     <section class="cabecera">
-        <h1>Menu</h1>
-        <img src="/liceo/imgs/cuadricula.png" alt="">
-    </section>
-    <?php
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70">
+    <div id="mainContent">
+        <nav>
+            <?php include(ROOT_PATH . 'includes/navbar.php') ?>
+        </nav>
+        <?php include(ROOT_PATH . 'includes/sidebar.php') ?>
+
+        <section class="cabecera">
+            <h1>Menu</h1>
+            <img src="/liceo/imgs/cuadricula.png" alt="">
+        </section>
+        <?php
         // Define los módulos visibles para cada rol
         $modulos_por_rol = [
             'admin' => [
@@ -48,7 +49,11 @@
                 // Define los módulos específicos del profesor aquí
             ]
         ];
-
+        $nombre_legible = [
+            'anio_academico' => 'Año académico',
+            'asigna_cargo' => 'Asignación de cargo',
+            'asigna_materia' => 'Asignación de materia'
+        ];
         // Obtén el rol del usuario de la sesión
         $rol_usuario = $_SESSION['rol'];
 
@@ -62,31 +67,37 @@
         ?>
 
         <section class="modulos">
-            <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) { 
-                $ruta = isset($rutas_controladores[$nombre_modulo]) 
-                    ? $rutas_controladores[$nombre_modulo] 
+            <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) {
+                $ruta = isset($rutas_controladores[$nombre_modulo])
+                    ? $rutas_controladores[$nombre_modulo]
                     : 'controladores/' . $nombre_modulo . '_controlador.php';
+                if (isset($nombre_legible[$nombre_modulo])) {
+                    $texto = $nombre_legible[$nombre_modulo];
+                } else {
+                    // Si no, reemplaza guiones bajos y capitaliza
+                    $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
+                }
             ?>
                 <div class="modulo" data-url="<?php echo $ruta; ?>">
                     <img src="<?php echo $imagen_url; ?>" alt="">
-                    <h2><?php echo ucfirst($nombre_modulo); ?></h2>
+                    <h2><?php echo $texto; ?></h2>
                 </div>
             <?php } ?>
         </section>
-<script>
-  document.querySelectorAll('.modulo').forEach(modulo => {
-    modulo.addEventListener('click', () => {
-      const destino = modulo.getAttribute('data-url');
-      if (destino) {
-        window.location.href = destino;
-      }
-    });
-  });
-</script>
-<footer>
-    <?php include(ROOT_PATH . 'includes/footer.php') ?>
-</footer>
-</div>
+        <script>
+            document.querySelectorAll('.modulo').forEach(modulo => {
+                modulo.addEventListener('click', () => {
+                    const destino = modulo.getAttribute('data-url');
+                    if (destino) {
+                        window.location.href = destino;
+                    }
+                });
+            });
+        </script>
+        <footer>
+            <?php include(ROOT_PATH . 'includes/footer.php') ?>
+        </footer>
+    </div>
 </body>
 
 </html>
