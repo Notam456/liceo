@@ -34,7 +34,7 @@
                                     <th>Cédula</th>
                                     <th>Fecha de Visita</th>
                                     <th>Estado</th>
-                                    <th class="action">Acciones</th>
+                                    <th class="action" colspan="2">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,18 +55,36 @@
                                                 </select>
                                             </td>
                                             <td>
+                                                <a href="#" class="btn btn-info btn-sm view-data">Consultar</a>
+                                            </td>
+                                            <td>
                                                 <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
                                         </tr>
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td colspan="6" class="text-center">No hay visitas agendadas.</td>
+                                        <td colspan="7" class="text-center">No hay visitas agendadas.</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modulo Ver -->
+    <div class="modal fade" id="viewVisitaModal" tabindex="-1" aria-labelledby="viewVisitaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="viewVisitaModalLabel">Datos de la Visita</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="view_visita_data"></div>
                 </div>
             </div>
         </div>
@@ -85,6 +103,24 @@
         });
 
         $(document).ready(function() {
+            // Show view modal
+            $('#myTable').on('click', '.view-data', function(e) {
+                e.preventDefault();
+                var id = $(this).closest('tr').find('.id_visita').text();
+                $.ajax({
+                    type: "POST",
+                    url: "/liceo/controladores/visita_controlador.php",
+                    data: {
+                        'action': 'ver',
+                        'id_visita': id
+                    },
+                    success: function(response) {
+                        $('.view_visita_data').html(response);
+                        $('#viewVisitaModal').modal('show');
+                    }
+                });
+            });
+
             // Update status
             $('#myTable').on('change', '.estado-visita', function(e) {
                 e.preventDefault();

@@ -24,6 +24,19 @@ switch ($action) {
         }
         break;
 
+    case 'ver':
+        if (isset($_POST['id_visita'])) {
+            $id = $_POST['id_visita'];
+            $resultado = $visitaModelo->obtenerVisitaPorId($id);
+            if ($resultado && mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/visita_ver_modal.php');
+            } else {
+                echo "No se encontraron datos para la visita con el ID proporcionado.";
+            }
+        }
+        break;
+
     case 'editar':
         if (isset($_POST['id_visita'])) {
             $id = $_POST['id_visita'];

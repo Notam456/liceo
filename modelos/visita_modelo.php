@@ -46,12 +46,27 @@ class VisitaModelo {
 
     public function obtenerVisitaPorId($id) {
         $id = (int)$id;
-        $query = "SELECT v.id_visita, v.fecha_visita, v.estado, e.id_estudiante, e.nombre, e.apellido, e.cedula
+        $query = "SELECT
+                    v.id_visita,
+                    v.fecha_visita,
+                    v.estado,
+                    e.id_estudiante,
+                    e.nombre,
+                    e.apellido,
+                    e.cedula,
+                    e.contacto,
+                    e.fecha_nacimiento,
+                    p.parroquia,
+                    g.numero_anio,
+                    s.letra AS letra_seccion
                   FROM visita v
                   JOIN asistencia a ON v.id_asistencia = a.id_asistencia
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
+                  LEFT JOIN parroquia p ON e.id_parroquia = p.id_parroquia
+                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                  LEFT JOIN grado g ON s.id_grado = g.id_grado
                   WHERE v.id_visita = $id";
-        return mysqli_query($this.conn, $query);
+        return mysqli_query($this->conn, $query);
     }
 
     public function eliminarVisita($id) {
