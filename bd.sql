@@ -142,7 +142,7 @@ CREATE TABLE asigna_materia (
     FOREIGN KEY (id_materia) REFERENCES materia(id_materia)
         ON DELETE CASCADE ON UPDATE CASCADE
   
-) 
+);
 
 CREATE TABLE usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
