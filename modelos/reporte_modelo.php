@@ -8,6 +8,7 @@ class ReporteModelo {
 
     public function obtenerReporteAusencias() {
         $query = "SELECT 
+                    e.id_estudiante,
                     CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
                     CONCAT(COALESCE(g.numero_anio, ''), CASE WHEN g.numero_anio IS NULL THEN '' ELSE '° ' END, COALESCE(s.letra, '')) AS seccion,
                     e.contacto AS contacto,
@@ -16,7 +17,7 @@ class ReporteModelo {
                     COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
                     COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
                  FROM estudiante e
-                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante
+                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante AND YEARWEEK(a.fecha, 1) = YEARWEEK(CURDATE(), 1)
                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
                  GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula";
@@ -30,6 +31,7 @@ class ReporteModelo {
         $reporte = [];
         while ($row = $result->fetch_assoc()) {
             $reporte[] = [
+                'id_estudiante' => $row['id_estudiante'],
                 'nombre' => $row['nombre_completo'],
                 'seccion' => $row['seccion'],
                 'contacto' => $row['contacto'],
