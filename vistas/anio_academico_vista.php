@@ -37,10 +37,10 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width:109.2%;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
-                                    <th style="display: none;" scope="col">#</th>
+                                    <th scope="col">#</th>
                                     <th scope="col">Período</th>
                                     <th scope="col">Estado</th>
                                     <th scope="col" class="action">Acción</th>
@@ -54,7 +54,7 @@
                                     while ($row = mysqli_fetch_array($anios_academicos)) {
                                 ?>
                                         <tr>
-                                            <td class="id_anio" style="display: none;"> <?php echo $row['id_anio'] ?> </td>
+                                            <td class="id_anio"> <?php echo $row['id_anio'] ?> </td>
                                             <td> <?php echo $row['periodo'] ?> </td>
                                             <td> <?php if ((bool)$row['estado']) {
                                                         echo "Activo";
@@ -86,8 +86,9 @@
                                 } else {
                                     ?>
                                     <tr>
-                                        <td colspan="6">No se encontraron registros de Años academicos.</td>
+
                                         <td></td>
+                                        <td>No se encontraron registros de Años academicos.</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -194,16 +195,30 @@
                 zeroRecords: '0 resultados encontrados'
             },
             columnDefs: [{
-                width: '93px',
-                targets: [3, 4, 5]
-            }]
+                    width: '93px',
+                    targets: [3, 4, 5]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Ver
             $(document).on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id_anio = $(this).closest('tr').find('.id_anio').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                // id_anio está en la primera columna (índice 0)
+                var id_anio = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/anio_academico_controlador.php",
@@ -221,7 +236,16 @@
             // Cargar para editar
             $(document).on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id_anio = $(this).closest('tr').find('.id_anio').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                // id_anio está en la primera columna (índice 0)
+                var id_anio = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/anio_academico_controlador.php",
@@ -245,7 +269,16 @@
             // Eliminar
             $(document).on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id_anio = $(this).closest('tr').find('.id_anio').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                // id_anio está en la primera columna (índice 0)
+                var id_anio = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará el registro permanentemente!',
@@ -273,8 +306,16 @@
             });
             $(document).on('click', '.btn-set', function(e) {
                 e.preventDefault();
-                var id_anio = $(this).closest('tr').find('.id_anio').text();
+                var tabla = $('#myTable').DataTable();
 
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                // id_anio está en la primera columna (índice 0)
+                var id_anio = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/anio_academico_controlador.php",
@@ -283,7 +324,7 @@
                         'id_anio': id_anio
                     },
                     success: function(response) {
-                     location.reload();
+                        location.reload();
                     }
                 });
 

@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Secciones</title>
@@ -17,6 +17,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -30,7 +31,8 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']); } ?>
+                <?php unset($_SESSION['status']);
+                } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Secciones <img src="/liceo/icons/people.svg">
@@ -40,7 +42,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width:130%;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
@@ -59,14 +61,14 @@
                                         <tr>
                                             <td class="id_seccion" style="display: none;"> <?php echo $row['id_seccion'] ?> </td>
                                             <td>
-                                                <?php echo $row['numero_anio']. "° ". $row['letra'];
-                                                if (isset($horarios_status[$row['id_seccion']]) && !$horarios_status[$row['id_seccion']]) {
+                                                <?php echo $row['numero_anio'] . "° " . $row['letra'];
+                                                /*if (isset($horarios_status[$row['id_seccion']]) && !$horarios_status[$row['id_seccion']]) {
                                                     echo ' <i class="bi bi-exclamation-triangle-fill text-danger"
                                                         data-bs-toggle="tooltip"
                                                         data-bs-placement="top"
                                                         title="Esta sección no cuenta con un horario. Por favor, pulse el botón consultar y posteriormente Agregar Horario">
                                                         </i>';
-                                                }
+                                                }*/
                                                 ?>
                                             </td>
                                             <td> <?php echo $row['numero_anio'] ?> </td>
@@ -76,7 +78,14 @@
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr><td colspan="6">No Record Found</td></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>No se encontraron registros de secciones.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -107,9 +116,9 @@
                             <select class="form-select form-select-lg" name="añoEdit" id="añoEdit">
                                 <option selected value="">Seleccione el año</option>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
-                                    while ($row = mysqli_fetch_array($grados)){
-                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
-                                    }
+                                while ($row = mysqli_fetch_array($grados)) {
+                                    echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
+                                }
                                 ?>
                             </select>
                         </div>
@@ -184,9 +193,9 @@
 
                                 <option selected value="">Seleccione el año</option>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
-                                    while ($row = mysqli_fetch_array($grados)){
-                                        echo '<option value="'.$row["id_grado"].'"> '.$row["numero_anio"].'° año';
-                                    }
+                                while ($row = mysqli_fetch_array($grados)) {
+                                    echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
+                                }
                                 ?>
                             </select>
                         </div>
@@ -209,8 +218,16 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados',
             },
-            columnDefs: [{ width: '93px', targets: [2, 3, 4] }],
-            order: [[2, 'asc']]
+            columnDefs: [{
+                    width: '93px',
+                    targets: [2, 3, 4]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ],
+            order: [2, 'asc'],
         });
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -224,11 +241,23 @@
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_seccion').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/seccion_controlador.php",
-                    data: { 'action': 'ver', 'id_seccion': id },
+                    data: {
+                        'action': 'ver',
+                        'id_seccion': id
+                    },
                     success: function(response) {
                         $('.view_seccion_data').html(response);
                         $('#viewmodal').modal('show');
@@ -239,11 +268,23 @@
             // Cargar para Editar
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_seccion').text();
+                 var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/seccion_controlador.php",
-                    data: { 'action': 'editar', 'id_seccion': id },
+                    data: {
+                        'action': 'editar',
+                        'id_seccion': id
+                    },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
@@ -258,7 +299,16 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_seccion').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará la sección permanentemente!',
@@ -273,7 +323,10 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/seccion_controlador.php",
-                            data: { 'action': 'eliminar', 'id_seccion': id },
+                            data: {
+                                'action': 'eliminar',
+                                'id_seccion': id
+                            },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -287,20 +340,23 @@
         function abrirAsignacionEstudiantes(idSeccion, nombreSeccion) {
             $('#seccion-info').html('<strong>Sección seleccionada:</strong> ' + nombreSeccion);
             $('#asignacionModal').modal('show');
-            
+
             // Cargar estudiantes sin sección
             $.ajax({
                 type: "POST",
                 url: "/liceo/controladores/asignacion_estudiantes_controlador.php",
-                data: { 'action': 'obtener_estudiantes', 'id_seccion': idSeccion },
+                data: {
+                    'action': 'obtener_estudiantes',
+                    'id_seccion': idSeccion
+                },
                 success: function(response) {
                     $('#estudiantes-container').html(response);
-                    
+
                     // Funcionalidad para seleccionar todos
                     $('#selectAll').change(function() {
                         $('.estudiante-checkbox').prop('checked', this.checked);
                     });
-                    
+
                     // Actualizar estado del checkbox "Seleccionar todos"
                     $('.estudiante-checkbox').change(function() {
                         var total = $('.estudiante-checkbox').length;
@@ -317,14 +373,14 @@
             $('.estudiante-checkbox:checked').each(function() {
                 estudiantesSeleccionados.push($(this).val());
             });
-            
+
             if (estudiantesSeleccionados.length === 0) {
                 Swal.fire('Atención', 'Debe seleccionar al menos un estudiante', 'warning');
                 return;
             }
-            
+
             var idSeccion = $('#seccion_asignar').val();
-            
+
             Swal.fire({
                 title: '¿Confirmar asignación?',
                 text: 'Se asignarán ' + estudiantesSeleccionados.length + ' estudiante(s) a esta sección',
@@ -339,8 +395,8 @@
                     $.ajax({
                         type: "POST",
                         url: "/liceo/controladores/asignacion_estudiantes_controlador.php",
-                        data: { 
-                            'action': 'asignar_masiva', 
+                        data: {
+                            'action': 'asignar_masiva',
                             'estudiantes': estudiantesSeleccionados,
                             'id_seccion': idSeccion
                         },
@@ -364,4 +420,5 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
+
 </html>

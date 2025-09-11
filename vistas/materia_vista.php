@@ -30,7 +30,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width: 109.2%;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
@@ -58,7 +58,7 @@
                                 } else { ?>
                                     <tr>
                                         <td style="display: none;"></td>
-                                        <td>No se encontraron registros</td>
+                                        <td>No se encontraron registros de materias.</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -156,16 +156,30 @@
                 zeroRecords: '0 resultados encontrados'
             },
             columnDefs: [{
-                width: '93px',
-                targets: [3, 4, 5]
-            }]
+                    width: '93px',
+                    targets: [3, 4, 5]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/materia_controlador.php",
@@ -183,7 +197,16 @@
             // Cargar para Editar
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/materia_controlador.php",
@@ -205,7 +228,16 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará la materia permanentemente!',

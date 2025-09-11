@@ -30,10 +30,10 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width: 109.2%;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
-                                    <th style="display: none;" scope="col">#</th>
+                                    <th s scope="col">#</th>
                                     <th scope="col">Cargo</th>
                                     <th scope="col" class="action">Acción</th>
                                     <th scope="col" class="action"></th>
@@ -55,7 +55,11 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td colspan="5">No Record Found</td>
+                                        <td ></td>
+                                        <td >No se encontraron registros de cargos.</td>
+                                        <td ></td>
+                                        <td ></td>
+                                        <td ></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -143,14 +147,27 @@
             columnDefs: [{
                 width: '93px',
                 targets: [2, 3, 4]
-            }]
+            },
+                {
+                    visible: false,
+                    target: 0
+                }]
         });
 
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+               var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/cargo_controlador.php",
@@ -168,7 +185,16 @@
             // Cargar para Editar
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/cargo_controlador.php",
@@ -189,7 +215,16 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                 var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará el cargo permanentemente!',

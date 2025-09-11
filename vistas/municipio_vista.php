@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Municipio</title>
 </head>
+
 <body>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
@@ -18,7 +19,8 @@
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']); } ?>
+                <?php unset($_SESSION['status']);
+                } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Municipios <img src="/liceo/icons/people.svg">
@@ -28,7 +30,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width: 109.2%;" class="table table-striped" id="myTable">
+                        <table  class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
@@ -52,7 +54,13 @@
                                         </tr>
                                     <?php }
                                 } else { ?>
-                                    <tr><td colspan="5">No Record Found</td></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>No se encontraron registros de municipios.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -136,18 +144,38 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-            columnDefs: [{ width: '93px', targets: [2, 3, 4] }]
+            columnDefs: [{
+                    width: '93px',
+                    targets: [2, 3, 4]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/municipio_controlador.php",
-                    data: { 'action': 'ver', 'id': id },
+                    data: {
+                        'action': 'ver',
+                        'id': id
+                    },
                     success: function(response) {
                         $('.view_user_data').html(response);
                         $('#viewmodal').modal('show');
@@ -158,11 +186,23 @@
             // Cargar para Editar
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/municipio_controlador.php",
-                    data: { 'action': 'editar', 'id': id },
+                    data: {
+                        'action': 'editar',
+                        'id': id
+                    },
                     dataType: 'json',
                     success: function(response) {
                         var data = response[0];
@@ -176,7 +216,16 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará el municipio permanentemente!',
@@ -191,7 +240,10 @@
                         $.ajax({
                             type: "POST",
                             url: "/liceo/controladores/municipio_controlador.php",
-                            data: { 'action': 'eliminar', 'id': id },
+                            data: {
+                                'action': 'eliminar',
+                                'id': id
+                            },
                             success: function(response) {
                                 Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
                             }
@@ -206,4 +258,5 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
 </body>
+
 </html>

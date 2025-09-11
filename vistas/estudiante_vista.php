@@ -30,10 +30,10 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width:100%;" class="table table-striped" id="myTable">
+                        <table  class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
-                                    <th style="display: none;" scope="col">#</th>
+                                    <th scope="col">#</th>
                                     <th scope="col">Nombres</th>
                                     <th scope="col">Apellidos</th>
                                     <th scope="col">C.I</th>
@@ -50,7 +50,7 @@
                                     while ($row = mysqli_fetch_array($estudiantes)) {
                                 ?>
                                         <tr>
-                                            <td class="id_estudiante" style="display: none;"> <?php echo $row['id_estudiante'] ?> </td>
+                                            <td class="id_estudiante"> <?php echo $row['id_estudiante'] ?> </td>
                                             <td> <?php echo $row['nombre'] ?> </td>
                                             <td> <?php echo $row['apellido'] ?> </td>
                                             <td> <?php echo $row['cedula'] ?> </td>
@@ -66,7 +66,7 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td style="display: none;"> </td>
+                                        <td> </td>
                                         <td> No se encontraron registros</td>
                                         <td> </td>
                                         <td> </td>
@@ -213,16 +213,30 @@
                 zeroRecords: '0 resultados encontrados'
             },
             columnDefs: [{
-                width: '93px',
-                targets: [5, 6, 7, 8]
-            }]
+                    width: '93px',
+                    targets: [5, 6, 7, 8]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_estudiante').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/estudiante_controlador.php",
@@ -240,7 +254,16 @@
             // Cargar para Editar
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_estudiante').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/estudiante_controlador.php",
@@ -259,7 +282,7 @@
                         $('#parroquia_edit').val(data.id_parroquia);
                         $('#grado_edit').val(data.id_grado);
                         $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
-                        console.log(data.fecha_nacimiento);
+
                         $('#editmodal').modal('show');
                     }
                 });
@@ -268,7 +291,16 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_estudiante').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará al estudiante permanentemente!',

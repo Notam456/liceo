@@ -26,7 +26,7 @@
                         <h4>Visitas Agendadas <i class="bi bi-calendar-check"></i></h4>
                     </div>
                     <div class="card-body">
-                        <table style="width:100%; margin-left:40px;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;">#</th>
@@ -65,14 +65,14 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td class="text-center">No hay visitas agendadas.</td>
+                                        <td></td>
+                                        <td>No hay visitas agendadas.</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td style="display: none;"></td>
-                                        
+
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -108,17 +108,31 @@
                 lengthMenu: 'Mostrar _MENU_ por pagina',
                 zeroRecords: '0 resultados encontrados'
             },
-             columnDefs: [{
-                width: '93px',
-                targets: [5,6]
-            }]
+            columnDefs: [{
+                    width: '93px',
+                    targets: [5, 6]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Show view modal
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_visita').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/visita_controlador.php",
@@ -136,7 +150,16 @@
             // Update status
             $('#myTable').on('change', '.estado-visita', function(e) {
                 e.preventDefault();
-                var id = $(this).data('id-visita');
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 var estado = $(this).val();
 
                 $.ajax({
@@ -156,7 +179,16 @@
             // Delete
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_visita').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará la visita permanentemente!',

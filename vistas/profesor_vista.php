@@ -30,7 +30,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table style="margin-left: 40px; width:100%;" class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th style="display: none;" scope="col">#</th>
@@ -60,7 +60,7 @@
                                 } else { ?>
                                     <tr>
                                         <td style="display: none;"></td>
-                                        <td>No Record Found</td>
+                                        <td>No se encontraron registros de profesores.</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -101,7 +101,7 @@
                             <label>Cédula</label>
                             <input type="text" id="cedula_profesor_edit" class="form-control" name="cedula_profesor" required>
                         </div>
-                       
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -149,7 +149,7 @@
                             <label>Cédula</label>
                             <input type="text" class="form-control" name="cedula_profesor" required>
                         </div>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
@@ -170,16 +170,30 @@
                 zeroRecords: '0 resultados encontrados'
             },
             columnDefs: [{
-                width: '93px',
-                targets: [4, 5, 6]
-            }]
+                    width: '93px',
+                    targets: [4, 5, 6]
+                },
+                {
+                    visible: false,
+                    target: 0
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Ver
             $(document).on('click', '.view-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_profesor').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/profesor_controlador.php",
@@ -197,7 +211,16 @@
             // Cargar para Editar
             $(document).on('click', '.edit-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_profesor').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/profesor_controlador.php",
@@ -220,7 +243,16 @@
             // Eliminar
             $(document).on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                var id = $(this).closest('tr').find('.id_profesor').text();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+
+                var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¡Esta acción eliminará el registro permanentemente!',
