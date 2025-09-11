@@ -116,6 +116,7 @@ if (!isset($reporte)) {
                                         <th title="Inasistencias"><i class="bi bi-person-dash-fill"></i> Ausencias</th>
                                         <th title="Justificados"><i class="bi bi-journal-check"></i> Justificados</th>
                                         <th>Total</th>
+                                        <th>Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -132,6 +133,11 @@ if (!isset($reporte)) {
                                                 <?= $item['total'] ?>
                                             </span>
                                         </td>
+                                        <td>
+                                            <?php if ($item['total'] >= 3): ?>
+                                                <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -142,6 +148,8 @@ if (!isset($reporte)) {
             </div>
         </div>
     </div>
+
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/visita_modal_view.php'); ?>
 
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
@@ -170,13 +178,21 @@ if (!isset($reporte)) {
             $('#alert-ausencias').show();
             $('#lista-alertas').html(
                 alertas.map(item => 
-                    `<div class="card-alumno alert">
-                        ${item.nombre} (${item.cedula}) - 
-                        <span class="badge bg-danger">${item.total} ausencias</span>
+                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
+                        <div>
+                            ${item.nombre} (${item.cedula}) -
+                            <span class="badge bg-danger">${item.total} ausencias</span>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>
                     </div>`
                 ).join('')
             );
         }
+
+        $(document).on('click', '.schedule-visit', function() {
+            var studentId = $(this).data('id-estudiante');
+            $('#visitaModal #id_estudiante_visita').val(studentId);
+        });
     });
     </script>
 </body>
