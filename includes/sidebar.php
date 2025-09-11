@@ -15,6 +15,7 @@ $modulos_por_rol = [
         'municipio' => 'bi-geo-alt',
         'asigna_cargo' => 'bi-box-arrow-in-down-right',
         'visita' => 'bi-calendar-check',
+        'cargo' => 'bi-briefcase',
     ],
     'user' => [
         'estudiante' => 'bi-person-badge',
