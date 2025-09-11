@@ -1,4 +1,6 @@
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/visita_modelo.php');
+
 class ReporteModelo {
     private $db;
 
@@ -6,7 +8,14 @@ class ReporteModelo {
         $this->db = $db;
     }
 
-    public function obtenerReporteAusencias() {
+    public function obtenerReporteAusencias($filtro = 'semana') {
+        $where_condicion = "";
+        if ($filtro === 'semana') {
+            $where_condicion = "AND YEARWEEK(a.fecha, 1) = YEARWEEK(CURDATE(), 1)";
+        } elseif ($filtro === 'mes') {
+            $where_condicion = "AND MONTH(a.fecha) = MONTH(CURDATE()) AND YEAR(a.fecha) = YEAR(CURDATE())";
+        }
+
         $query = "SELECT 
                     e.id_estudiante,
                     CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
@@ -17,7 +26,7 @@ class ReporteModelo {
                     COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
                     COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
                  FROM estudiante e
-                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante AND YEARWEEK(a.fecha, 1) = YEARWEEK(CURDATE(), 1)
+                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
                  GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula";
@@ -28,8 +37,10 @@ class ReporteModelo {
             throw new Exception("Error en la consulta: " . $this->db->error);
         }
 
+        $visitaModelo = new VisitaModelo($this->db);
         $reporte = [];
         while ($row = $result->fetch_assoc()) {
+            $tiene_visita = $visitaModelo->tieneVisitaAgendada($row['id_estudiante']);
             $reporte[] = [
                 'id_estudiante' => $row['id_estudiante'],
                 'nombre' => $row['nombre_completo'],
@@ -38,7 +49,8 @@ class ReporteModelo {
                 'cedula' => $row['cedula'],
                 'ausencias' => (int)$row['ausencias'],
                 'justificadas' => (int)$row['justificadas'],
-                'total' => (int)$row['total']
+                'total' => (int)$row['total'],
+                'tiene_visita_agendada' => $tiene_visita
             ];
         }
 
