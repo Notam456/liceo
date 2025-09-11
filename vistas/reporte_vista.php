@@ -185,7 +185,7 @@ if (!isset($reporte)) {
             table.column(3).search(this.value).draw();
         });
 
-        var alertas = <?= json_encode(array_filter($reporte, function($item) { return $item['total'] >= 3; })) ?>;
+        var alertas = <?= json_encode(array_filter($reporte, function($item) { return $item['total'] >= 3 && !$item['tiene_visita_agendada']; })) ?>;
         if (alertas.length > 0) {
             $('#alert-ausencias').show();
             $('#lista-alertas').html(
@@ -225,7 +225,7 @@ if (!isset($reporte)) {
                         var alertas = [];
 
                         response.data.forEach(function(item) {
-                            if (item.total >= 3) {
+                            if (item.total >= 3 && !item.tiene_visita_agendada) {
                                 alertas.push(item);
                             }
 
