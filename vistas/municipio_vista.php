@@ -84,7 +84,7 @@
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
                             <label>Nombre del municipio</label>
-                            <input type="text" id="municipio_edit" class="form-control" name="municipio_edit" required>
+                            <input type="text" id="municipio_edit" class="form-control" name="municipio_edit" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -123,7 +123,7 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Nombre del municipio</label>
-                            <input type="text" name="municipio" class="form-control" required>
+                            <input type="text" name="municipio" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                     </div>
                     <div class="modal-footer">

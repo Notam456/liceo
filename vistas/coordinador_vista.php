@@ -109,27 +109,27 @@
 
                         <div class="form-group mb-3">
                             <label>Nombres</label>
-                            <input type="text" id="nombre_coordinador_edit" class="form-control" name="nombre_coordinador" required>
+                            <input type="text" id="nombre_coordinador_edit" class="form-control" name="nombre_coordinador" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Apellidos</label>
-                            <input type="text" id="apellido_coordinador_edit" class="form-control" name="apellido_coordinador" required>
+                            <input type="text" id="apellido_coordinador_edit" class="form-control" name="apellido_coordinador" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Cédula</label>
-                            <input type="text" id="cedula_coordinador_edit" class="form-control" name="cedula_coordinador" required>
+                            <input type="text" id="cedula_coordinador_edit" class="form-control" name="cedula_coordinador" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Contacto</label>
-                            <input type="text" id="contacto_coordinador_edit" class="form-control" name="contacto_coordinador" required>
+                            <input type="text" id="contacto_coordinador_edit" class="form-control" name="contacto_coordinador" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
                         </div>
 
                         <div class="form-group mb-3">
                             <label>Área de Coordinación</label>
-                            <input type="text" id="area_coordinacion_edit" class="form-control" name="area_coordinacion" required>
+                            <input type="text" id="area_coordinacion_edit" class="form-control" name="area_coordinacion" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
 
                     </div>
@@ -167,23 +167,23 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Nombres</label>
-                            <input type="text" class="form-control" name="nombre_coordinador" required>
+                            <input type="text" class="form-control" name="nombre_coordinador" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Apellidos</label>
-                            <input type="text" class="form-control" name="apellido_coordinador" required>
+                            <input type="text" class="form-control" name="apellido_coordinador" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Cédula</label>
-                            <input type="text" class="form-control" name="cedula_coordinador" required>
+                            <input type="text" class="form-control" name="cedula_coordinador" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
                         </div>
                         <div class="form-group mb-3">
                             <label>Contacto</label>
-                            <input type="text" class="form-control" name="contacto_coordinador" required>
+                            <input type="text" class="form-control" name="contacto_coordinador" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
                         </div>
                         <div class="form-group mb-3">
                             <label>Área de Coordinación</label>
-                            <input type="text" class="form-control" name="area_coordinacion" required>
+                            <input type="text" class="form-control" name="area_coordinacion" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                     </div>
                     <div class="modal-footer">
