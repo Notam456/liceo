@@ -117,13 +117,21 @@
                             <label>Fecha de Nacimiento</label>
                             <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required>
                         </div>
-                        <div class="form-group mb-3"><label>Parroquia</label>
-                            <select id='parroquia_edit' name="parroquia" class="form-control" required>
-                                <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
-                                while ($row = mysqli_fetch_array($parroquias)) {
-                                    echo '<option value="' . $row["id_parroquia"] . '"> ' . $row["parroquia"];
+                        <div class="form-group mb-3">
+                            <label>Municipio</label>
+                            <select id="municipio_edit" name="municipio" class="form-control" required>
+                                <?php
+                                $municipios = $municipioModelo->obtenerTodosLosMunicipios();
+                                while ($row = mysqli_fetch_array($municipios)) {
+                                    echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
                                 }
                                 ?>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3" id="parroquia_edit_container" style="display: none;">
+                            <label>Parroquia</label>
+                            <select id='parroquia_edit' name="parroquia" class="form-control" required>
+                                <!-- Las parroquias se cargarán dinámicamente -->
                             </select>
                         </div>
                         <div class="form-group mb-3"><label>Grado a cursar</label>
@@ -175,13 +183,22 @@
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos"></div>
                         <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
                         <div class="form-group mb-3"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Parroquia</label>
-                            <select name="parroquia" class="form-control" required>
-                                <?php $parroquias = $parroquiaModelo->obtenerTodasLasParroquias();
-                                while ($row = mysqli_fetch_array($parroquias)) {
-                                    echo '<option value="' . $row["id_parroquia"] . '"> ' . $row["parroquia"];
+                        <div class="form-group mb-3">
+                            <label>Municipio</label>
+                            <select id="municipio_create" name="municipio" class="form-control" required>
+                                <option value="">Seleccione un municipio</option>
+                                <?php
+                                $municipios = $municipioModelo->obtenerTodosLosMunicipios();
+                                while ($row = mysqli_fetch_array($municipios)) {
+                                    echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
                                 }
                                 ?>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3" id="parroquia_create_container" style="display: none;">
+                            <label>Parroquia</label>
+                            <select id="parroquia_create" name="parroquia" class="form-control" required>
+                                <!-- Las parroquias se cargarán dinámicamente -->
                             </select>
                         </div>
                         <div class="form-group mb-3"><label>Grado a cursar</label>
@@ -224,6 +241,58 @@
         });
 
         $(document).ready(function() {
+            $('#municipio_create').on('change', function() {
+                var municipio_id = $(this).val();
+                if (municipio_id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/liceo/controladores/estudiante_controlador.php',
+                        data: {
+                            action: 'get_parroquias',
+                            municipio_id: municipio_id
+                        },
+                        dataType: 'json',
+                        success: function(parroquias) {
+                            var parroquia_select = $('#parroquia_create');
+                            parroquia_select.empty().append('<option value="">Seleccione una parroquia</option>');
+                            $.each(parroquias, function(key, value) {
+                                parroquia_select.append('<option value="' + value.id_parroquia + '">' + value.parroquia + '</option>');
+                            });
+                            $('#parroquia_create_container').show();
+                        }
+                    });
+                } else {
+                    $('#parroquia_create_container').hide();
+                    $('#parroquia_create').empty();
+                }
+            });
+
+            $('#municipio_edit').on('change', function() {
+                var municipio_id = $(this).val();
+                if (municipio_id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/liceo/controladores/estudiante_controlador.php',
+                        data: {
+                            action: 'get_parroquias',
+                            municipio_id: municipio_id
+                        },
+                        dataType: 'json',
+                        success: function(parroquias) {
+                            var parroquia_select = $('#parroquia_edit');
+                            parroquia_select.empty().append('<option value="">Seleccione una parroquia</option>');
+                            $.each(parroquias, function(key, value) {
+                                parroquia_select.append('<option value="' + value.id_parroquia + '">' + value.parroquia + '</option>');
+                            });
+                            $('#parroquia_edit_container').show();
+                        }
+                    });
+                } else {
+                    $('#parroquia_edit_container').hide();
+                    $('#parroquia_edit').empty();
+                }
+            });
+
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
@@ -279,9 +348,24 @@
                         $('#apellido_estudiante_edit').val(data.apellido);
                         $('#cedula_estudiante_edit').val(data.cedula);
                         $('#contacto_estudiante_edit').val(data.contacto);
-                        $('#parroquia_edit').val(data.id_parroquia);
                         $('#grado_edit').val(data.id_grado);
                         $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
+
+                        // Pre-seleccionar municipio y cargar parroquias
+                        $('#municipio_edit').val(data.id_municipio).trigger('change');
+
+                        // Guardar el id de la parroquia para seleccionarla después
+                        var parroquia_id_to_select = data.id_parroquia;
+
+                        // Cuando las parroquias se carguen, seleccionar la correcta
+                        $(document).ajaxComplete(function(event, xhr, settings) {
+                            if (settings.data.includes("action=get_parroquias")) {
+                                $('#parroquia_edit').val(parroquia_id_to_select);
+                                // Desvincular el evento para que no se ejecute en futuras llamadas ajax
+                                $(document).off("ajaxComplete");
+                            }
+                        });
+
 
                         $('#editmodal').modal('show');
                     }

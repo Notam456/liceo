@@ -26,6 +26,12 @@ class ParroquiaModelo {
         return mysqli_query($this->conn, $query);
     }
 
+    public function obtenerParroquiasPorMunicipio($id_municipio) {
+        $id_municipio = (int)$id_municipio;
+        $query = "SELECT * FROM parroquia WHERE id_municipio = $id_municipio";
+        return mysqli_query($this->conn, $query);
+    }
+
     public function actualizarParroquia($id, $parroquia, $municipio) {
         $id = (int)$id;
         $parroquia = mysqli_real_escape_string($this->conn, $parroquia);

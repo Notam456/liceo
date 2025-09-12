@@ -14,6 +14,11 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $anioActivo = mysqli_fetch_array($anioModelo->obtenerAnioActivo());
+            if(empty($anioActivo)){
+                $_SESSION['status'] = 'No existe un año académico activo. Ponte en contacto con el administrador';
+                header('Location: /liceo/controladores/grado_controlador.php');
+                exit();
+            }
             $resultado = $gradoModelo->generarGrados($_POST['cantidad'], $anioActivo['id_anio']);
             $_SESSION['status'] = $resultado ? "Grados generados correctamente" : "Error al crear los grados";
             header('Location: /liceo/controladores/grado_controlador.php');
