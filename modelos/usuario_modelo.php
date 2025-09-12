@@ -68,9 +68,16 @@ class UsuarioModelo
             $profesor = (int)$profesor; // aseguramos que sea un número válido
         }
         $update_query = "UPDATE usuario SET usuario = '$usuario', contrasena = '$contrasena', rol = '$rol', id_profesor = $profesor WHERE `id_usuario` = $id";
-        $update_query_run = mysqli_query($this->conn, $update_query);
 
-        return $update_query_run;
+        try {
+            $update_query_run = mysqli_query($this->conn, $update_query);
+            return $update_query_run;
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function eliminarUsuario($id)

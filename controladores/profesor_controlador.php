@@ -15,7 +15,13 @@ switch ($action) {
                 $_POST['apellido_profesor'],
                 $_POST['cedula_profesor']
             );
-            $_SESSION['status'] = $resultado ? "Profesor creado correctamente" : "Error al crear el profesor";
+            if ($resultado === true) {
+                $_SESSION['status'] = "Profesor creado correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "La cédula ya existe. Intente con otra.";
+            } else {
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
+            }
             header('Location: /liceo/controladores/profesor_controlador.php');
             exit();
         }
@@ -60,7 +66,13 @@ switch ($action) {
                 $_POST['apellido'],
                 $_POST['cedula']
             );
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            if ($resultado === true) {
+                $_SESSION['status'] = "Datos actualizados correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "La cédula ya existe. Intente con otra.";
+            } else {
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
+            }
             header('Location: /liceo/controladores/profesor_controlador.php');
             exit();
         }

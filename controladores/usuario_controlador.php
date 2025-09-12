@@ -71,14 +71,15 @@ switch ($action) {
             $usuario = $_POST['usuario'];
             $contrasena = $_POST['contrasena'];
             $rol = $_POST['rol'];
-            print_r($_POST);
             $profesor = isset($_POST['profesor']) ? $_POST['profesor'] : NULL;
             $resultado = $usuarioModelo->actualizarUsuario($id, $usuario, $contrasena, $rol, $profesor);
 
-            if ($resultado) {
+            if ($resultado === true) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "El nombre de usuario ya existe. Intente con otro.";
             } else {
-                $_SESSION['status'] = "Los datos no se pudieron actualizar";
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
             }
             header('Location: /liceo/controladores/usuario_controlador.php');
             exit();
