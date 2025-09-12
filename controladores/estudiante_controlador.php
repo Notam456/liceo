@@ -20,7 +20,13 @@ switch ($action) {
                 $_POST['contacto_estudiante'], $_POST['parroquia'],
                 $_POST['grado'], $_POST['fecha_nacimiento']
             );
-            $_SESSION['status'] = $resultado ? "Estudiante creado correctamente" : "Error al crear el estudiante";
+            if ($resultado === true) {
+                $_SESSION['status'] = "Estudiante creado correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "La cédula ya existe. Intente con otra.";
+            } else {
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
+            }
             header('Location: /liceo/controladores/estudiante_controlador.php');
             exit();
         }
@@ -62,7 +68,13 @@ switch ($action) {
                 $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
                 $_POST['parroquia'], $_POST['grado'], $_POST['fecha_nacimiento']
             );
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            if ($resultado === true) {
+                $_SESSION['status'] = "Datos actualizados correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "La cédula ya existe. Intente con otra.";
+            } else {
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
+            }
             header('Location: /liceo/controladores/estudiante_controlador.php');
             exit();
         }

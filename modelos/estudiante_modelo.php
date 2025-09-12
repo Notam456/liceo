@@ -18,7 +18,16 @@ class EstudianteModelo {
 
         $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_parroquia, id_grado, fecha_nacimiento)
                   VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$parroquia', '$anio', '$fecha')";
-        return mysqli_query($this->conn, $query);
+
+        try {
+            $insert_query_run = mysqli_query($this->conn, $query);
+            return true; // éxito
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function obtenerEstudiantePorId($id) {
@@ -61,7 +70,16 @@ class EstudianteModelo {
                     id_grado = '$anio',
                     fecha_nacimiento = '$fecha'
                   WHERE id_estudiante = '$id'";
-        return mysqli_query($this->conn, $query);
+
+        try {
+            $update_query_run = mysqli_query($this->conn, $query);
+            return $update_query_run;
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function eliminarEstudiante($id) {

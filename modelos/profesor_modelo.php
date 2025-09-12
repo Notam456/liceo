@@ -15,7 +15,16 @@ class ProfesorModelo {
 
         $query = "INSERT INTO profesor(nombre, apellido, cedula)
                   VALUES ('$nombre', '$apellido', '$cedula')";
-        return mysqli_query($this->conn, $query);
+
+        try {
+            $insert_query_run = mysqli_query($this->conn, $query);
+            return true; // éxito
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function obtenerProfesorPorId($id) {
@@ -37,11 +46,20 @@ class ProfesorModelo {
 
 
         $query = "UPDATE profesor SET
-                    nombre_profesor = '$nombre',
-                    apellido_profesor = '$apellido',
-                    cedula_profesor = '$cedula'
+                    nombre = '$nombre',
+                    apellido = '$apellido',
+                    cedula = '$cedula'
                   WHERE id_profesor = $id";
-        return mysqli_query($this->conn, $query);
+
+        try {
+            $update_query_run = mysqli_query($this->conn, $query);
+            return $update_query_run;
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function eliminarProfesor($id) {
