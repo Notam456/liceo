@@ -6,10 +6,13 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/parroquia_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/municipio_modelo.php');
+
 
 $estudianteModelo = new EstudianteModelo($conn);
 $gradoModelo = new GradoModelo($conn);
 $parroquiaModelo = new ParroquiaModelo($conn);
+$municipioModelo = new MunicipioModelo($conn);
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
@@ -178,6 +181,19 @@ switch ($action) {
             } else {
                 echo "No se encontró el estudiante con el ID proporcionado.";
             }
+        }
+        break;
+
+    case 'get_parroquias':
+        if (isset($_POST['municipio_id'])) {
+            $municipio_id = $_POST['municipio_id'];
+            $parroquias = $parroquiaModelo->obtenerParroquiasPorMunicipio($municipio_id);
+            $data = [];
+            while($row = mysqli_fetch_assoc($parroquias)) {
+                $data[] = $row;
+            }
+            header('Content-Type: application/json');
+            echo json_encode($data);
         }
         break;
 

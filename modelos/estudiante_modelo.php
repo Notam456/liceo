@@ -32,11 +32,12 @@ class EstudianteModelo {
 
     public function obtenerEstudiantePorId($id) {
         $id = (int)$id;
-        $query = "SELECT e.*, p.parroquia, s.letra, g.numero_anio FROM estudiante e
-        JOIN parroquia p ON e.id_parroquia = p.id_parroquia
-        LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
-        LEFT JOIN grado g ON s.id_grado = g.id_grado 
-        WHERE id_estudiante = '$id'";
+        $query = "SELECT e.*, p.parroquia, p.id_municipio, s.letra, g.numero_anio
+                  FROM estudiante e
+                  JOIN parroquia p ON e.id_parroquia = p.id_parroquia
+                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                  LEFT JOIN grado g ON s.id_grado = g.id_grado
+                  WHERE id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
