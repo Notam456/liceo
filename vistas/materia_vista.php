@@ -87,11 +87,11 @@
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
                             <label>Nombre de la Materia</label>
-                            <input type="text" id="nombre_materia_edit" class="form-control" name="nombre_materia_edit" required>
+                            <input type="text" id="nombre_materia_edit" class="form-control" name="nombre_materia_edit" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Descripción de la Materia</label>
-                            <input type="text" id="info_materia_edit" class="form-control" name="info_materia_edit" required>
+                            <input type="text" id="info_materia_edit" class="form-control" name="info_materia_edit" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -130,11 +130,11 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Nombre de la Materia</label>
-                            <input type="text" name="nombre_materia" class="form-control" required>
+                            <input type="text" name="nombre_materia" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Descripción de la Materia</label>
-                            <input type="text" name="info_materia" class="form-control" required>
+                            <input type="text" name="info_materia" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -87,7 +87,7 @@
                         <input type="hidden" id="idEdit" class="form-control" name="idEdit">
                         <div class="form-group mb-3">
                             <label>Nombre de la parroquia</label>
-                            <input type="text" id="parroquia_edit" class="form-control" name="parroquia_edit" required>
+                            <input type="text" id="parroquia_edit" class="form-control" name="parroquia_edit" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Municipio</label>
@@ -138,7 +138,7 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Nombre de la parroquia</label>
-                            <input type="text" name="parroquia" class="form-control" required>
+                            <input type="text" name="parroquia" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Municipio</label>

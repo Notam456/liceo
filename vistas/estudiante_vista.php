@@ -99,19 +99,19 @@
                         <input type="hidden" id="id_estudiante_edit" class="form-control" name="id_estudiante">
                         <div class="form-group mb-3">
                             <label>Nombres</label>
-                            <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required>
+                            <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Apellidos</label>
-                            <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required>
+                            <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
                         <div class="form-group mb-3">
                             <label>Cédula</label>
-                            <input type="text" id="cedula_estudiante_edit" class="form-control" name="cedula_estudiante" required>
+                            <input type="text" id="cedula_estudiante_edit" class="form-control" name="cedula_estudiante" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
                         </div>
                         <div class="form-group mb-3">
                             <label>Contacto</label>
-                            <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required>
+                            <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
                         </div>
                         <div class="form-group mb-3">
                             <label>Fecha de Nacimiento</label>
@@ -170,10 +170,10 @@
                 <form action="/liceo/controladores/estudiante_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
-                        <div class="form-group mb-3"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required></div>
-                        <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required></div>
+                        <div class="form-group mb-3"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                        <div class="form-group mb-3"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                        <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos"></div>
+                        <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
                         <div class="form-group mb-3"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
                         <div class="form-group mb-3"><label>Parroquia</label>
                             <select name="parroquia" class="form-control" required>
