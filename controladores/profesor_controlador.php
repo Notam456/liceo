@@ -13,10 +13,7 @@ switch ($action) {
             $resultado = $profesorModelo->crearProfesor(
                 $_POST['nombre_profesor'],
                 $_POST['apellido_profesor'],
-                $_POST['cedula_profesor'],
-                $_POST['contacto_profesor'],
-                $_POST['id_materia'],
-                $_POST['id_seccion']
+                $_POST['cedula_profesor']
             );
             $_SESSION['status'] = $resultado ? "Profesor creado correctamente" : "Error al crear el profesor";
             header('Location: /liceo/controladores/profesor_controlador.php');

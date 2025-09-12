@@ -15,15 +15,18 @@ switch ($action) {
             $usuario = $_POST['usuario'];
             $contrasena = $_POST['contrasena'];
             $rol = $_POST['rol'];
-
             $profesor = isset($_POST['profesor']) ? $_POST['profesor'] : NULL;
+
             $resultado = $usuarioModelo->crearUsuario($usuario, $contrasena, $rol, $profesor);
 
-            if ($resultado) {
+            if ($resultado === true) {
                 $_SESSION['status'] = "Datos ingresados correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "El nombre de usuario ya existe. Intente con otro.";
             } else {
-                $_SESSION['status'] = "Datos ingresados incorrectamente, vuelva a intentar";
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
             }
+
             header('Location: /liceo/controladores/usuario_controlador.php');
             exit();
         }
@@ -35,7 +38,7 @@ switch ($action) {
             $resultado = $usuarioModelo->obtenerUsuarioPorId($id);
             if (mysqli_num_rows($resultado) > 0) {
                 $row = mysqli_fetch_array($resultado);
-                
+
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/usuario_modal_view.php');
             } else {
 
@@ -102,5 +105,3 @@ switch ($action) {
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/usuario_vista.php');
         break;
 }
-
-?>

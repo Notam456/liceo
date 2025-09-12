@@ -15,17 +15,24 @@ class UsuarioModelo
         $contrasena = mysqli_real_escape_string($this->conn, $contrasena);
         $rol = mysqli_real_escape_string($this->conn, $rol);
 
-
         if (empty($profesor)) {
             $profesor = "NULL";
         } else {
-            $profesor = (int)$profesor; // aseguramos que sea un número válido
+            $profesor = (int)$profesor;
         }
 
-        $insert_query = "INSERT INTO usuario(usuario, contrasena, rol, id_profesor) VALUES ('$usuario', '$contrasena', '$rol', '$profesor')";
-        $insert_query_run = mysqli_query($this->conn, $insert_query);
+        $insert_query = "INSERT INTO usuario(usuario, contrasena, rol, id_profesor) 
+                     VALUES ('$usuario', '$contrasena', '$rol', $profesor)";
 
-        return $insert_query_run;
+        try {
+            $insert_query_run = mysqli_query($this->conn, $insert_query);
+            return true; // éxito
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function obtenerUsuarioPorId($id)
