@@ -148,7 +148,7 @@ CREATE TABLE asigna_materia (
 
 CREATE TABLE usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(255) NOT NULL,
+    usuario VARCHAR(255) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
     rol VARCHAR(255) NOT NULL,
     id_profesor int(11) NULL,

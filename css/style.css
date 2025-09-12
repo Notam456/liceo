@@ -1,5 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#mainContent {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+    flex: 1;
+    /* ocupa todo el espacio disponible */
+}
+
+footer {
+    margin-top: auto;
+    /* empuja el footer hacia abajo */
+}
 
 body {
     font-family: "Barlow", sans-serif;
@@ -7,8 +30,16 @@ body {
     line-height: 1.7;
 }
 
-h1,h2,h3,h4,h5,h6,
-.display-1,.display-2,.display-3,.display-4 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.display-1,
+.display-2,
+.display-3,
+.display-4 {
     font-weight: 700;
     color: black;
 }
@@ -55,7 +86,8 @@ section {
     background-color: #fff;
     color: var(--brand);
 }
-.conditions-section{
+
+.conditions-section {
     margin: 20px 0;
 }
 
@@ -69,12 +101,12 @@ section {
     left: 0; bottom: 0; width: 100%;
 } */
 
-.item-mainmenu{
+.item-mainmenu {
     margin: 10px;
     align-items: center;
 }
 
-.text-mainmenu{
+.text-mainmenu {
     text-align: center;
 }
 
