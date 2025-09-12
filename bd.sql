@@ -156,3 +156,76 @@ CREATE TABLE usuario (
         ON DELETE CASCADE ON UPDATE CASCADE
 
 );
+
+
+INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
+VALUES ('administrador', 'Hola1234!', 'admin', NULL);
+
+
+INSERT INTO municipio (municipio) VALUES
+('Arístides Bastidas'),
+('Bolívar'),
+('Bruzual'),
+('Cocorote'),
+('Independencia'),
+('José Antonio Páez'),
+('La Trinidad'),
+('Manuel Monge'),
+('Nirgua'),
+('Peña'),
+('San Felipe'),
+('Sucre'),
+('Urachiche'),
+('Veroes');
+
+
+INSERT INTO parroquia (parroquia, id_municipio) VALUES
+-- Municipio Arístides Bastidas (id_municipio = 1)
+('Arístides Bastidas', 1),
+
+-- Municipio Bolívar (2)
+('Bolívar', 2),
+
+-- Municipio Bruzual (3)
+('Chivacoa', 3),
+('Campo Elías', 3),
+
+-- Municipio Cocorote (4)
+('Cocorote', 4),
+
+-- Municipio Independencia (5)
+('Independencia', 5),
+
+-- Municipio José Antonio Páez (6)
+('José Antonio Páez', 6),
+
+-- Municipio La Trinidad (7)
+('La Trinidad', 7),
+
+-- Municipio Manuel Monge (8)
+('Manuel Monge', 8),
+
+-- Municipio Nirgua (9)
+('Salóm', 9),
+('Temerla', 9),
+('Nirgua', 9),
+('Cogollos', 9),
+
+-- Municipio Peña (10)
+('San Andrés', 10),
+('Yaritagua', 10),
+
+-- Municipio San Felipe (11)
+('San Javier', 11),
+('Albarico', 11),
+('San Felipe', 11),
+
+-- Municipio Sucre (12)
+('Sucre', 12),
+
+-- Municipio Urachiche (13)
+('Urachiche', 13),
+
+-- Municipio Veroes (14)
+('El Guayabo', 14),
+('Farriar', 14);
