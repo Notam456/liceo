@@ -7,9 +7,15 @@ $modulos_por_rol = [
     'admin' => [
         'usuario' => 'bi-people',
         'profesor' => 'bi-person-workspace',
-        'seccion' => 'bi-diagram-3',
+        'estudiante' => 'bi-person-badge',
+        'asistencia' => 'bi-card-checklist',
+        'reporte' => 'bi-file-check',
+        'visita' => 'bi-calendar-check',
         'materia' => 'bi-journal-bookmark',
         'grado' => 'bi-collection',
+        'seccion' => 'bi-diagram-3',
+        'materia' => 'bi-journal-bookmark',
+        'asigna_materia' => 'bi-box-arrow-in-down-right',
         'anio_academico' => 'bi-calendar',
         'parroquia' => 'bi-geo-alt',
         'municipio' => 'bi-geo-alt',
@@ -54,6 +60,8 @@ $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
         transition: left 0.3s ease-in-out;
         z-index: 1040;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .sidebar.active {

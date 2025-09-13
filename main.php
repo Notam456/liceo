@@ -31,10 +31,17 @@ define('ROOT_PATH', __DIR__ . '/');
             // Define los módulos visibles para cada rol
             $modulos_por_rol = [
                 'admin' => [
-                    'profesor' => '/liceo/imgs/masculino.png',
                     'usuario' => '/liceo/imgs/agregar-usuario.png',
+                    'profesor' => '/liceo/imgs/masculino.png',
+                    'estudiante' => '/liceo/imgs/estudiando.png',
+                    'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                    'reporte' => '/liceo/imgs/reporte.png',
+                    'visita' => '/liceo/imgs/calendar-check.svg',
                     'anio_academico' => '/liceo/imgs/calendario.png',
                     'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
+                    'seccion' => '/liceo/imgs/secciones.png',
+                    'materia' => '/liceo/imgs/libros.png',
+                    'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
                     'parroquia' => '/liceo/imgs/pueblo.png',
                     'municipio' => '/liceo/imgs/cataluna.png',
                     'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
