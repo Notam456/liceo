@@ -94,16 +94,16 @@ if (!isset($reporte)) {
                                     <label for="filtroCedula" class="form-label">Buscar por cédula:</label>
                                     <input type="text" class="form-control" id="filtroCedula" placeholder="Ej: 30426270">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="filtroFecha" class="form-label">Filtrar por fecha:</label>
-                                    <select class="form-select" id="filtroFecha">
-                                        <option value="semana" selected>Esta semana</option>
-                                        <option value="mes">Este mes</option>
-                                        <option value="todas">Todas</option>
-                                    </select>
+                                <div class="col-md-3">
+                                    <label for="filtroDesde" class="form-label">Desde:</label>
+                                    <input type="date" class="form-control" id="filtroDesde" value="<?= $anio_desde ?>" min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
                                 </div>
-                                <div class="col-md-4 d-flex align-items-end">
-                                    <div class="text-muted small">Sugerencia: haga clic en los encabezados para ordenar</div>
+                                <div class="col-md-3">
+                                    <label for="filtroHasta" class="form-label">Hasta:</label>
+                                    <input type="date" class="form-control" id="filtroHasta" value="<?= $anio_hasta ?>" min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                     <button class="btn btn-secondary" id="limpiarFiltros">Limpiar</button>
                                 </div>
                             </div>
                         </div>
@@ -209,9 +209,15 @@ if (!isset($reporte)) {
             $('#visitaModal #id_estudiante_visita').val(studentId);
         });
 
-        $('#filtroFecha').change(function() {
-            var filtro = $(this).val();
-            var url = '/liceo/controladores/reporte_controlador.php?filtro=' + filtro;
+        function cargarReporte() {
+            var desde = $('#filtroDesde').val();
+            var hasta = $('#filtroHasta').val();
+
+            if (!desde || !hasta) {
+                return;
+            }
+
+            var url = `/liceo/controladores/reporte_controlador.php?desde=${desde}&hasta=${hasta}`;
 
             $.ajax({
                 url: url,
@@ -277,6 +283,14 @@ if (!isset($reporte)) {
                     console.error('AJAX error:', status, error);
                 }
             });
+        }
+
+        $('#filtroDesde, #filtroHasta').change(cargarReporte);
+
+        $('#limpiarFiltros').click(function() {
+            $('#filtroDesde').val('<?= $anio_desde ?>');
+            $('#filtroHasta').val('<?= $anio_hasta ?>');
+            cargarReporte();
         });
     });
     </script>

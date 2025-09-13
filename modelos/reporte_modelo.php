@@ -8,12 +8,10 @@ class ReporteModelo {
         $this->db = $db;
     }
 
-    public function obtenerReporteAusencias($filtro = 'semana') {
+    public function obtenerReporteAusencias($desde = null, $hasta = null) {
         $where_condicion = "";
-        if ($filtro === 'semana') {
-            $where_condicion = "AND YEARWEEK(a.fecha, 1) = YEARWEEK(CURDATE(), 1)";
-        } elseif ($filtro === 'mes') {
-            $where_condicion = "AND MONTH(a.fecha) = MONTH(CURDATE()) AND YEAR(a.fecha) = YEAR(CURDATE())";
+        if ($desde && $hasta) {
+            $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
         }
 
         $query = "SELECT 
