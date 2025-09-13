@@ -22,7 +22,11 @@ class ReporteModelo {
                     e.cedula AS cedula,
                     COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
                     COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
-                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
+                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total,
+                    (SELECT COALESCE(SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END), 0)
+                     FROM asistencia a2
+                     WHERE a2.id_estudiante = e.id_estudiante
+                     AND YEARWEEK(a2.fecha, 1) = YEARWEEK(CURDATE(), 1)) AS total_ultima_semana
                  FROM estudiante e
                  LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
@@ -48,6 +52,7 @@ class ReporteModelo {
                 'ausencias' => (int)$row['ausencias'],
                 'justificadas' => (int)$row['justificadas'],
                 'total' => (int)$row['total'],
+                'total_ultima_semana' => (int)$row['total_ultima_semana'],
                 'tiene_visita_agendada' => $tiene_visita
             ];
         }
