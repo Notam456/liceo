@@ -60,11 +60,12 @@ switch ($action) {
 
     case 'actualizar':
         if (isset($_POST['update-data'])) {
+            print_r($_POST);
             $resultado = $profesorModelo->actualizarProfesor(
                 $_POST['id_profesor'],
-                $_POST['nombre'],
-                $_POST['apellido'],
-                $_POST['cedula']
+                $_POST['nombre_profesor'],
+                $_POST['apellido_profesor'],
+                $_POST['cedula_profesor']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
