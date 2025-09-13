@@ -21,8 +21,9 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <?php if (isset($_SESSION['usuario'])) { ?>
+                        <p class="d-inline text-light my-auto align-middle fw-bold"><?= $_SESSION['nombre_prof']?></p>
                         <a href="/liceo/logout.php" class="btn btn-outline-danger ms-lg-3 mt-2 mt-lg-0">
-                            Cerrar sesión
+                            Cerrar Sesión
                         </a>
                     <?php } elseif (basename($_SERVER['PHP_SELF']) !== 'index.php') {
                         header("Location: /liceo/index.php");
