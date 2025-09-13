@@ -87,7 +87,7 @@
 
     <!-- Modulo editar -->
     <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
@@ -98,26 +98,31 @@
                     <div class="modal-body">
                         <input type="hidden" id="id_estudiante_edit" class="form-control" name="id_estudiante">
                         <div class="form-group mb-3">
-                            <label>Nombres</label>
-                            <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Apellidos</label>
-                            <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
-                        </div>
-                        <div class="form-group mb-3">
                             <label>Cédula</label>
                             <input type="text" id="cedula_estudiante_edit" class="form-control" name="cedula_estudiante" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="row mb-3"> <!-- jose yajure, AGREGAR UNA NUEVA ROW SI SE AGRANDA EL FORM, COPIAR Y PEGAR ESTE DIV-->
+                        <div class="col-md-6"> <!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
+                            <label>Nombres</label>
+                            <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
+                        </div>
+                        <div class="col-md-6"><!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
+                            <label>Apellidos</label>
+                            <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
+                        </div>
+                        </div> <!-- jose yajure, AGREGAR UNA NUEVA ROW SI SE AGRANDA EL FORM, COPIAR Y PEGAR ESTE DIV-->
+                        <div class="row mb-3"> <!-- FILA2 -->
+                        <div class="col-md-6">
                             <label>Contacto</label>
                             <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="col-md-6">
                             <label>Fecha de Nacimiento</label>
                             <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required>
                         </div>
-                        <div class="form-group mb-3">
+                        </div> <!-- FILA2 -->
+                        <div class="row mb-3"> <!-- FILA3 -->
+                        <div class="col-md-6">
                             <label>Municipio</label>
                             <select id="municipio_edit" name="municipio" class="form-control" required>
                                 <?php
@@ -128,12 +133,21 @@
                                 ?>
                             </select>
                         </div>
-                        <div class="form-group mb-3" id="parroquia_edit_container" style="display: none;">
+                        <div class="col-md-6" id="parroquia_edit_container" style="display: none;">
                             <label>Parroquia</label>
                             <select id='parroquia_edit' name="parroquia" class="form-control" required>
                                 <!-- Las parroquias se cargarán dinámicamente -->
                             </select>
                         </div>
+                        </div> <!-- FILA3 -->
+
+                        <!-- jose, yajure, FILA PARA COLOCAR EL SECTOR Y PUNTO DE REFERNCIA CUANDO SEA CREADA
+                        <div class="row mb-3">
+                            <div class="col-md-6">Sector</div>
+                            <div class="col-md-6">Punto de Referencia</div>
+                        </div>
+                            -->
+
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select id="grado_edit" name="grado" class="form-control" required>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
@@ -169,7 +183,7 @@
 
     <!-- modulo crear -->
     <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="insertdataLabel">Inscribe a un Nuevo Estudiante</h1>
@@ -178,12 +192,17 @@
                 <form action="/liceo/controladores/estudiante_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
-                        <div class="form-group mb-3"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
-                        <div class="form-group mb-3"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos"></div>
-                        <div class="form-group mb-3"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
-                        <div class="form-group mb-3"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
-                        <div class="form-group mb-3">
+                        <div class="row mb-3"> <!-- FILA1 -->
+                        <div class="col-md-6"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                        <div class="col-md-6"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                        </div><!-- FILA1 -->
+                        <div class="row mb-3"> <!-- FILA2 -->
+                        <div class="col-md-6"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
+                        <div class="col-md-6"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
+                        </div> <!-- FILA2 -->
+                        <div class="row mb-3"> <!-- FILA3 -->
+                        <div class="col-md-6">
                             <label>Municipio</label>
                             <select id="municipio_create" name="municipio" class="form-control" required>
                                 <option value="">Seleccione un municipio</option>
@@ -195,12 +214,21 @@
                                 ?>
                             </select>
                         </div>
-                        <div class="form-group mb-3" id="parroquia_create_container" style="display: none;">
+                        <div class="col-md-6" id="parroquia_create_container" style="display: none;">
                             <label>Parroquia</label>
                             <select id="parroquia_create" name="parroquia" class="form-control" required>
                                 <!-- Las parroquias se cargarán dinámicamente -->
                             </select>
                         </div>
+                        </div> <!-- FILA3 -->
+
+                        <!-- jose, yajure, FILA PARA COLOCAR EL SECTOR Y PUNTO DE REFERNCIA CUANDO SEA CREADA
+                        <div class="row mb-3">
+                            <div class="col-md-6">Sector</div>
+                            <div class="col-md-6">Punto de Referencia</div>
+                        </div>
+                            -->
+
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select name="grado" class="form-control" required>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();

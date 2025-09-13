@@ -90,6 +90,10 @@
                     <div class="modal-body">
                         <input type="hidden" id="id_profesor_edit" name="id_profesor">
                         <div class="form-group mb-3">
+                            <label>Cédula</label>
+                            <input type="text" id="cedula_profesor_edit" class="form-control" name="cedula_profesor" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
+                        </div>
+                        <div class="form-group mb-3">
                             <label>Nombres</label>
                             <input type="text" id="nombre_profesor_edit" class="form-control" name="nombre_profesor" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
@@ -97,11 +101,6 @@
                             <label>Apellidos</label>
                             <input type="text" id="apellido_profesor_edit" class="form-control" name="apellido_profesor" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Cédula</label>
-                            <input type="text" id="cedula_profesor_edit" class="form-control" name="cedula_profesor" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
-                        </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -138,6 +137,10 @@
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3">
+                            <label>Cédula</label>
+                            <input type="text" class="form-control" name="cedula_profesor" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
+                        </div>
+                        <div class="form-group mb-3">
                             <label>Nombres</label>
                             <input type="text" class="form-control" name="nombre_profesor" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
@@ -145,11 +148,6 @@
                             <label>Apellidos</label>
                             <input type="text" class="form-control" name="apellido_profesor" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
-                        <div class="form-group mb-3">
-                            <label>Cédula</label>
-                            <input type="text" class="form-control" name="cedula_profesor" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
-                        </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
