@@ -12,9 +12,13 @@ if (!isset($row)) {
         <label for="observaciones" class="form-label">Observaciones</label>
         <textarea class="form-control" id="observaciones" name="observaciones" rows="3" required></textarea>
     </div>
+    <?php if ($action == 'realizada'): ?>
     <div class="mb-3">
         <label for="fecha_realizada" class="form-label">Fecha de Realización</label>
-        <input type="date" class="form-control" id="fecha_realizada" name="fecha_realizada" value="<?php echo date('Y-m-d'); ?>" required>
+        <input type="date" class="form-control" id="fecha_realizada" name="fecha_realizada" value="<?php echo htmlspecialchars($row['fecha_visita']); ?>" required>
     </div>
+    <?php else: ?>
+        <input type="hidden" name="fecha_realizada" value="<?php echo date('Y-m-d'); ?>">
+    <?php endif; ?>
     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
 </form>
