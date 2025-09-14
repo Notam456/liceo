@@ -50,13 +50,29 @@ switch ($action) {
         }
         break;
 
-    case 'actualizar_estado':
+    case 'ver_para_actualizar':
+        if (isset($_POST['id_visita'])) {
+            $id = $_POST['id_visita'];
+            $action = $_POST['action_type'];
+            $resultado = $visitaModelo->obtenerVisitaPorId($id);
+            if ($resultado && mysqli_num_rows($resultado) > 0) {
+                $row = mysqli_fetch_array($resultado);
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/visita_actualizar_modal.php');
+            } else {
+                echo "No se encontraron datos para la visita con el ID proporcionado.";
+            }
+        }
+        break;
+
+    case 'actualizar_visita':
         if (isset($_POST['id_visita']) && isset($_POST['estado'])) {
-            $resultado = $visitaModelo->actualizarEstadoVisita(
+            $resultado = $visitaModelo->actualizarVisita(
                 $_POST['id_visita'],
-                $_POST['estado']
+                $_POST['estado'],
+                $_POST['observaciones'],
+                $_POST['fecha_realizada']
             );
-            echo $resultado ? "Estado actualizado correctamente" : "No se pudo actualizar el estado";
+            echo $resultado ? "Visita actualizada correctamente" : "No se pudo actualizar la visita";
         }
         break;
 

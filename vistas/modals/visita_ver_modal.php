@@ -66,6 +66,18 @@ if (!isset($row)) {
                             <span class="badge <?php echo $badge_class; ?>"><?php echo ucfirst($estado); ?></span>
                         </td>
                     </tr>
+                    <?php if (!empty($row['observaciones'])): ?>
+                    <tr>
+                        <th>Observaciones</th>
+                        <td><?php echo htmlspecialchars($row['observaciones']); ?></td>
+                    </tr>
+                    <?php endif; ?>
+                    <?php if (!empty($row['fecha_realizada'])): ?>
+                    <tr>
+                        <th>Fecha de Realización</th>
+                        <td><?php echo date("d/m/Y", strtotime($row['fecha_realizada'])); ?></td>
+                    </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

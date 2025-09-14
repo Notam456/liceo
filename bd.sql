@@ -128,7 +128,9 @@ CREATE TABLE visita (
     id_visita INT AUTO_INCREMENT PRIMARY KEY,
     id_asistencia INT NOT NULL,
     fecha_visita DATE NOT NULL,
-    estado VARCHAR(50),
+    estado VARCHAR(50) DEFAULT 'agendada',
+    observaciones TEXT,
+    fecha_realizada DATE,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
