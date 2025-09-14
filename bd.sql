@@ -159,6 +159,13 @@ CREATE TABLE usuario (
 
 );
 
+CREATE TABLE sector (
+    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
+    sector VARCHAR(50) NOT NULL,
+    id_parroquia INT(11) NOT NULL,
+    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);
