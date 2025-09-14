@@ -2,8 +2,10 @@
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/asistencia_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
 
 $asistenciaModelo = new AsistenciaModelo($conn);
+$anioAcademicoModelo = new AnioAcademicoModelo($conn);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
@@ -281,6 +283,11 @@ switch ($action) {
     default:
         $secciones = $asistenciaModelo->obtenerSecciones();
         $asistencias = $asistenciaModelo->obtenerAsistenciasAgrupadasPorFecha();
+        $anio_activo_result = $anioAcademicoModelo->obtenerAnioActivo();
+        $anio_activo = null;
+        if (mysqli_num_rows($anio_activo_result) > 0) {
+            $anio_activo = mysqli_fetch_assoc($anio_activo_result);
+        }
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/asistencia_vista.php');
         break;
 }

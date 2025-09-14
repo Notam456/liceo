@@ -13,6 +13,13 @@
 </head>
 
 <body>
+    <?php
+    $today = date('Y-m-d');
+    $min_date = '';
+    if (isset($anio_activo) && $anio_activo) {
+        $min_date = date('Y-m-d', strtotime($anio_activo['desde']));
+    }
+    ?>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
     </nav>
@@ -153,7 +160,7 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="fechaAsistencia" class="form-label">Fecha:</label>
-                                <input type="date" class="form-control" id="fechaAsistencia" name="fecha" required>
+                                <input type="date" class="form-control" id="fechaAsistencia" name="fecha" required max="<?= $today ?>" <?php if ($min_date): ?> min="<?= $min_date ?>" <?php endif; ?>>
                             </div>
                             <div class="col-md-4">
                                 <label for="gradoAsistencia" class="form-label">Grado:</label>

@@ -7,6 +7,9 @@
 </head>
 
 <body>
+    <?php
+    $max_date = date('Y-m-d', strtotime('-11 years'));
+    ?>
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
     </nav>
@@ -118,7 +121,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>Fecha de Nacimiento</label>
-                            <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required>
+                            <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required max="<?php echo $max_date; ?>">
                         </div>
                         </div> <!-- FILA2 -->
                         <div class="row mb-3"> <!-- FILA3 -->
@@ -199,7 +202,7 @@
                         </div><!-- FILA1 -->
                         <div class="row mb-3"> <!-- FILA2 -->
                         <div class="col-md-6"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
-                        <div class="col-md-6"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
+                        <div class="col-md-6"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required max="<?php echo $max_date; ?>"></div>
                         </div> <!-- FILA2 -->
                         <div class="row mb-3"> <!-- FILA3 -->
                         <div class="col-md-6">
