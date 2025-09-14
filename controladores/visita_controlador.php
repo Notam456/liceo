@@ -66,11 +66,12 @@ switch ($action) {
 
     case 'actualizar_visita':
         if (isset($_POST['id_visita']) && isset($_POST['estado'])) {
+            $fecha_realizada = isset($_POST['fecha_realizada']) ? $_POST['fecha_realizada'] : null;
             $resultado = $visitaModelo->actualizarVisita(
                 $_POST['id_visita'],
                 $_POST['estado'],
                 $_POST['observaciones'],
-                $_POST['fecha_realizada']
+                $fecha_realizada
             );
             echo $resultado ? "Visita actualizada correctamente" : "No se pudo actualizar la visita";
         }

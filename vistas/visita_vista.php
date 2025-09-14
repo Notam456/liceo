@@ -65,8 +65,13 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex" style="gap: 5px;">
-                                                    <a href="#" class="btn btn-success btn-sm-2 update-data" data-action="realizada">Realizar</a>
-                                                    <a href="#" class="btn btn-danger btn-sm-2 update-data" data-action="cancelada">Cancelar</a>
+                                                    <?php if ($row['estado'] == 'agendada'): ?>
+                                                        <a href="#" class="btn btn-success btn-sm-2 update-data" data-action="realizada">Realizar</a>
+                                                        <a href="#" class="btn btn-danger btn-sm-2 update-data" data-action="cancelada">Cancelar</a>
+                                                    <?php else: ?>
+                                                        <a href="#" class="btn btn-success btn-sm-2 disabled" data-action="realizada">Realizar</a>
+                                                        <a href="#" class="btn btn-danger btn-sm-2 disabled" data-action="cancelada">Cancelar</a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </td>
                                             <td>
