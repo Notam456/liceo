@@ -128,7 +128,9 @@ CREATE TABLE visita (
     id_visita INT AUTO_INCREMENT PRIMARY KEY,
     id_asistencia INT NOT NULL,
     fecha_visita DATE NOT NULL,
-    estado VARCHAR(50),
+    estado VARCHAR(50) DEFAULT 'agendada',
+    observaciones TEXT,
+    fecha_realizada DATE,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -157,6 +159,13 @@ CREATE TABLE usuario (
 
 );
 
+CREATE TABLE sector (
+    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
+    sector VARCHAR(50) NOT NULL,
+    id_parroquia INT(11) NOT NULL,
+    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);

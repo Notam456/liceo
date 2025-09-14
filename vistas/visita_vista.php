@@ -34,7 +34,8 @@
                                     <th>Cédula</th>
                                     <th>Fecha de Visita</th>
                                     <th>Estado</th>
-                                    <th>Accion</th>
+                                    <th>Acciones</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -49,11 +50,29 @@
                                             <td> <?php echo $row['cedula'] ?> </td>
                                             <td> <?php echo date("d/m/Y", strtotime($row['fecha_visita'])) ?> </td>
                                             <td>
-                                                <select class="form-select form-select-sm estado-visita" data-id-visita="<?php echo $row['id_visita'] ?>">
-                                                    <option value="agendada" <?php echo ($row['estado'] == 'agendada') ? 'selected' : ''; ?>>Agendada</option>
-                                                    <option value="realizada" <?php echo ($row['estado'] == 'realizada') ? 'selected' : ''; ?>>Realizada</option>
-                                                    <option value="cancelada" <?php echo ($row['estado'] == 'cancelada') ? 'selected' : ''; ?>>Cancelada</option>
-                                                </select>
+                                                <?php
+                                                    $estado = htmlspecialchars($row['estado']);
+                                                    $badge_class = 'bg-secondary';
+                                                    if ($estado == 'agendada') {
+                                                        $badge_class = 'bg-primary';
+                                                    } elseif ($estado == 'realizada') {
+                                                        $badge_class = 'bg-success';
+                                                    } elseif ($estado == 'cancelada') {
+                                                        $badge_class = 'bg-danger';
+                                                    }
+                                                ?>
+                                                <span class="badge <?php echo $badge_class; ?>"><?php echo ucfirst($estado); ?></span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex" style="gap: 5px;">
+                                                    <?php if ($row['estado'] == 'agendada'): ?>
+                                                        <a href="#" class="btn btn-success btn-sm-2 update-data" data-action="realizada">Realizar</a>
+                                                        <a href="#" class="btn btn-danger btn-sm-2 update-data" data-action="cancelada">Cancelar</a>
+                                                    <?php else: ?>
+                                                        <a href="#" class="btn btn-success btn-sm-2 disabled" data-action="realizada">Realizar</a>
+                                                        <a href="#" class="btn btn-danger btn-sm-2 disabled" data-action="cancelada">Cancelar</a>
+                                                    <?php endif; ?>
+                                                </div>
                                             </td>
                                             <td>
                                                 <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
@@ -66,13 +85,13 @@
                                 } else { ?>
                                     <tr>
                                         <td></td>
+                                        <td></td>
                                         <td>No hay visitas agendadas.</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -93,6 +112,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="view_visita_data"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modulo Actualizar -->
+    <div class="modal fade" id="updateVisitaModal" tabindex="-1" aria-labelledby="updateVisitaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="updateVisitaModalLabel">Actualizar Visita</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="update_visita_data"></div>
                 </div>
             </div>
         </div>
@@ -124,14 +158,8 @@
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -147,31 +175,42 @@
                 });
             });
 
-            // Update status
-            $('#myTable').on('change', '.estado-visita', function(e) {
+            // Show update modal
+            $('#myTable').on('click', '.update-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-
                 var id = data[0];
-                var estado = $(this).val();
-
+                var action = $(this).data('action');
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/visita_controlador.php",
                     data: {
-                        'action': 'actualizar_estado',
+                        'action': 'ver_para_actualizar',
                         'id_visita': id,
-                        'estado': estado
+                        'action_type': action
                     },
                     success: function(response) {
-                        Swal.fire('¡Éxito!', response, 'success');
+                        $('.update_visita_data').html(response);
+                        $('#updateVisitaModal').modal('show');
+                    }
+                });
+            });
+
+            // Submit update form
+            $(document).on('submit', '#updateVisitaForm', function(e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/liceo/controladores/visita_controlador.php?action=actualizar_visita",
+                    data: formData,
+                    success: function(response) {
+                        $('#updateVisitaModal').modal('hide');
+                        Swal.fire('¡Éxito!', response, 'success').then(() => {
+                            location.reload();
+                        });
                     }
                 });
             });
@@ -180,14 +219,8 @@
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-                
                 var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',

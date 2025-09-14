@@ -48,10 +48,16 @@ class VisitaModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarEstadoVisita($id_visita, $estado) {
+    public function actualizarVisita($id_visita, $estado, $observaciones, $fecha_realizada) {
         $id_visita = (int)$id_visita;
         $estado = mysqli_real_escape_string($this->conn, $estado);
-        $query = "UPDATE visita SET estado = '$estado' WHERE id_visita = $id_visita";
+        $observaciones = mysqli_real_escape_string($this->conn, $observaciones);
+        if (empty($fecha_realizada)) {
+            $fecha_realizada = date('Y-m-d');
+        } else {
+            $fecha_realizada = mysqli_real_escape_string($this->conn, $fecha_realizada);
+        }
+        $query = "UPDATE visita SET estado = '$estado', observaciones = '$observaciones', fecha_realizada = '$fecha_realizada' WHERE id_visita = $id_visita";
         return mysqli_query($this->conn, $query);
     }
 
@@ -61,6 +67,8 @@ class VisitaModelo {
                     v.id_visita,
                     v.fecha_visita,
                     v.estado,
+                    v.observaciones,
+                    v.fecha_realizada,
                     e.id_estudiante,
                     e.nombre,
                     e.apellido,
