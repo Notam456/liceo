@@ -188,8 +188,7 @@ CREATE TABLE logs_anio (
 
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
-VALUES ('administrador', 'Hola1234!', 'admin', NULL),
-       ('coordinador', 'Hola1234!', 'coordinador', NULL);
+VALUES ('administrador', 'Hola1234!', 'admin', NULL);
 
 
 INSERT INTO municipio (municipio) VALUES
