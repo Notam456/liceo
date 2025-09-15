@@ -1,13 +1,16 @@
 <?php
 
-class EstudianteModelo {
+class EstudianteModelo
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia) {
+    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia)
+    {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
@@ -32,7 +35,8 @@ class EstudianteModelo {
         }
     }
 
-    public function obtenerEstudiantePorId($id) {
+    public function obtenerEstudiantePorId($id)
+    {
         $id = (int)$id;
         $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio, s.letra, g.numero_anio
                     FROM estudiante e
@@ -45,18 +49,31 @@ class EstudianteModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerEstudiantesPorSeccion($id_seccion) {
+    public function obtenerEstudiantesPorSeccion($id_seccion)
+    {
         $id_seccion = (int)$id_seccion;
         $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' ORDER BY apellido, nombre";
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerTodosLosEstudiantes() {
-        $query = "SELECT * FROM estudiante";
+    public function obtenerTodosLosEstudiantes()
+    {
+        switch ($_SESSION['tipo_cargo']) {
+            case 'Administrador':
+                $query = "SELECT * FROM estudiante";
+                break;
+            case 'inferior':
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4";
+                break;
+            case 'superior':
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3";
+                break;
+        }
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia) {
+    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia)
+    {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
@@ -91,29 +108,43 @@ class EstudianteModelo {
         }
     }
 
-    public function eliminarEstudiante($id) {
+    public function eliminarEstudiante($id)
+    {
         $id = (int)$id;
         $query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerEstudiantesSinSeccion() {
-        $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
+    public function obtenerEstudiantesSinSeccion()
+    {
+        switch ($_SESSION['tipo_cargo']) {
+            case 'Administrador':
+                $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
+                break;
+            case 'inferior':
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND id_seccion IS NULL OR id_seccion = 0";
+                break;
+            case 'superior':
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND id_seccion IS NULL OR id_seccion = 0";
+                break;
+        }
         return mysqli_query($this->conn, $query);
     }
 
-    public function asignarSeccion($id_estudiante, $id_seccion) {
+    public function asignarSeccion($id_estudiante, $id_seccion)
+    {
         $id_estudiante = (int)$id_estudiante;
         $id_seccion = (int)$id_seccion;
-        
+
         $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
         return mysqli_query($this->conn, $query);
     }
 
-    public function asignarSeccionMasiva($estudiantes_ids, $id_seccion) {
+    public function asignarSeccionMasiva($estudiantes_ids, $id_seccion)
+    {
         $id_seccion = (int)$id_seccion;
         $success = true;
-        
+
         foreach ($estudiantes_ids as $id_estudiante) {
             $id_estudiante = (int)$id_estudiante;
             $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
@@ -121,8 +152,7 @@ class EstudianteModelo {
                 $success = false;
             }
         }
-        
+
         return $success;
     }
 }
-?>

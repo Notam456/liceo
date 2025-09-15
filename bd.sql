@@ -259,3 +259,55 @@ INSERT INTO parroquia (parroquia, id_municipio) VALUES
 -- Municipio Veroes (14)
 ('El Guayabo', 14),
 ('Farriar', 14);
+
+
+INSERT INTO sector (sector, id_parroquia) VALUES
+-- Municipio Arístides Bastidas (id_municipio = 1)
+('Arístides Bastidas', 1),
+
+-- Municipio Bolívar (2)
+('Bolívar', 2),
+
+-- Municipio Bruzual (3)
+('Chivacoa', 3),
+('Campo Elías', 4),
+
+-- Municipio Cocorote (4)
+('Cocorote', 5),
+
+-- Municipio Independencia (5)
+('Independencia', 6),
+
+-- Municipio José Antonio Páez (6)
+('José Antonio Páez', 7),
+
+-- Municipio La Trinidad (7)
+('La Trinidad', 8),
+
+-- Municipio Manuel Monge (8)
+('Manuel Monge', 9),
+
+-- Municipio Nirgua (9)
+('Salóm', 10),
+('Temerla', 11),
+('Nirgua', 12),
+('Cogollos', 13),
+
+-- Municipio Peña (10)
+('San Andrés', 14),
+('Yaritagua', 15),
+
+-- Municipio San Felipe (11)
+('San Javier', 16),
+('Albarico', 17),
+('San Felipe', 18),
+
+-- Municipio Sucre (12)
+('Sucre', 19),
+
+-- Municipio Urachiche (13)
+('Urachiche', 20),
+
+-- Municipio Veroes (14)
+('El Guayabo', 21),
+('Farriar', 22);

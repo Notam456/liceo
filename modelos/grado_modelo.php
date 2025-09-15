@@ -1,20 +1,24 @@
 <?php
 
-class GradoModelo {
+class GradoModelo
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function generarGrados($cantidad, $id){
+    public function generarGrados($cantidad, $id)
+    {
         $cantidad = (int)$cantidad;
         for ($i = 1; $i <= $cantidad; $i++) {
             $this->crearGrado($i, $id);
         }
         return "success";
     }
-    public function crearGrado($numero_anio, $id_anio) {
+    public function crearGrado($numero_anio, $id_anio)
+    {
         $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
         $id_anio = mysqli_real_escape_string($this->conn, $id_anio);
 
@@ -22,18 +26,41 @@ class GradoModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerGradoPorId($id) {
+    public function obtenerGradoPorId($id)
+    {
         $id = (int)$id;
-        $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id'";
+        switch ($_SESSION['tipo_cargo']) {
+            case 'Administrador':
+                $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id'";
+                break;
+            case 'inferior':
+                $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id' AND numero_anio < 4";
+                break;
+            case 'superior':
+                $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id' AND numero_anio > 3";
+                break;
+        }
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerTodosLosGrados() {
-        $query = "SELECT g.* FROM grado g INNER JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1;";
+    public function obtenerTodosLosGrados()
+    {
+        switch ($_SESSION['tipo_cargo']) {
+            case 'Administrador':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1";
+                break;
+            case 'inferior':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio < 4";
+                break;
+            case 'superior':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio > 3";
+                break;
+        }
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarGrado($id, $numero_anio) {
+    public function actualizarGrado($id, $numero_anio)
+    {
         $id = (int)$id;
         $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
 
@@ -41,12 +68,10 @@ class GradoModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function eliminarGrado($id) {
+    public function eliminarGrado($id)
+    {
         $id = (int)$id;
         $query = "DELETE FROM grado WHERE id_grado ='$id'";
         return mysqli_query($this->conn, $query);
     }
-
-    
 }
-?>

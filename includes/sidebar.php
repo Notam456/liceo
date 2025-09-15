@@ -32,7 +32,6 @@ $modulos_por_rol = [
         'materia' => 'bi-journal-bookmark',
         'seccion' => 'bi-diagram-3',
         'asigna_materia' => 'bi-box-arrow-in-down-right',
-        'grado' => 'bi-collection',
     ],
     'user' => [
         'seccion' => 'bi-diagram-3',

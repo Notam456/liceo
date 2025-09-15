@@ -1,6 +1,7 @@
 <?php
 session_start();
 define('ROOT_PATH', __DIR__ . '/');
+print_r($_SESSION);
 ?>
 
 <!doctype html>
@@ -57,7 +58,6 @@ define('ROOT_PATH', __DIR__ . '/');
                     'materia' => '/liceo/imgs/libros.png',
                     'seccion' => '/liceo/imgs/secciones.png',
                     'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                    'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
                 ],
                 'user' => [
                    'seccion' => '/liceo/imgs/secciones.png',

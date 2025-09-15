@@ -134,8 +134,18 @@ class AsistenciaModelo
 
     public function obtenerGrados()
     {
-        $query = "SELECT * FROM grado ORDER BY numero_anio";
-        return $this->executeQuery($query);
+       switch ($_SESSION['tipo_cargo']) {
+            case 'Administrador':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 ORDER BY g.numero_anio";
+                break;
+            case 'inferior':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio < 4  ORDER BY g.numero_anio";
+                break;
+            case 'superior':
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio > 3  ORDER BY g.numero_anio";
+                break;
+        }
+        return mysqli_query($this->conn, $query);
     }
 
     public function obtenerSeccionesPorGrado($id_grado)
