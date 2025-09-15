@@ -17,6 +17,7 @@ if (isset($_POST)) {
         $_SESSION['profesor'] = !isset($row['id_profesor']) ? 'Administrador' : $row['id_profesor'];
         $_SESSION['nombre_prof'] =!isset($row['id_profesor']) ? 'Administrador' : $row['profesor'];
         $_SESSION['usuario'] = $row['usuario'];
+        header("Location: main.php");
     } else if (mysqli_num_rows($fetch_query_run) == 0) {
         $_SESSION['status'] = 'No se ha encontrado el usuario';
         header("Location: index.php");

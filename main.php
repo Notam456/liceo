@@ -42,6 +42,7 @@ define('ROOT_PATH', __DIR__ . '/');
                     'seccion' => '/liceo/imgs/secciones.png',
                     'materia' => '/liceo/imgs/libros.png',
                     'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+                    'sector' => '/liceo/imgs/pueblo.png',
                     'parroquia' => '/liceo/imgs/pueblo.png',
                     'municipio' => '/liceo/imgs/cataluna.png',
                     'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',

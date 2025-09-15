@@ -2,7 +2,6 @@
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
-print_r($_SESSION);
 $anioAcademicoModelo = new AnioAcademicoModelo($conn);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';

@@ -19,6 +19,7 @@ $modulos_por_rol = [
         'anio_academico' => 'bi-calendar',
         'parroquia' => 'bi-geo-alt',
         'municipio' => 'bi-geo-alt',
+        'sector' => 'bi-geo-alt',
         'asigna_cargo' => 'bi-box-arrow-in-down-right',
         'cargo' => 'bi-briefcase',
     ],
