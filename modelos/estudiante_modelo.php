@@ -7,17 +7,18 @@ class EstudianteModelo {
         $this->conn = $db;
     }
 
-    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $parroquia, $anio, $fecha) {
+    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta) {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
         $contacto = mysqli_real_escape_string($this->conn, $contacto);
-        $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
+        $id_sector = mysqli_real_escape_string($this->conn, $id_sector);
         $anio = mysqli_real_escape_string($this->conn, $anio);
         $fecha = mysqli_real_escape_string($this->conn, $fecha);
+        $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
 
-        $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_parroquia, id_grado, fecha_nacimiento)
-                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$parroquia', '$anio', '$fecha')";
+        $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_sector, id_grado, fecha_nacimiento, direccion_exacta)
+                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$id_sector', '$anio', '$fecha', '$direccion_exacta')";
 
         try {
             $insert_query_run = mysqli_query($this->conn, $query);
@@ -32,12 +33,14 @@ class EstudianteModelo {
 
     public function obtenerEstudiantePorId($id) {
         $id = (int)$id;
-        $query = "SELECT e.*, p.parroquia, p.id_municipio, s.letra, g.numero_anio
-                  FROM estudiante e
-                  JOIN parroquia p ON e.id_parroquia = p.id_parroquia
-                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
-                  LEFT JOIN grado g ON s.id_grado = g.id_grado
-                  WHERE id_estudiante = '$id'";
+        $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio, s.letra, g.numero_anio
+                    FROM estudiante e
+                    JOIN sector sec ON e.id_sector = sec.id_sector
+                    JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
+                    JOIN municipio m ON p.id_municipio = m.id_municipio
+                    LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                    LEFT JOIN grado g ON s.id_grado = g.id_grado
+                    WHERE id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -52,24 +55,26 @@ class EstudianteModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $parroquia, $anio, $fecha) {
+    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta) {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
         $contacto = mysqli_real_escape_string($this->conn, $contacto);
-        $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
+        $id_sector = mysqli_real_escape_string($this->conn, $id_sector);
         $anio = mysqli_real_escape_string($this->conn, $anio);
         $fecha = mysqli_real_escape_string($this->conn, $fecha);
+        $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
 
         $query = "UPDATE estudiante SET
                     nombre = '$nombre',
                     apellido = '$apellido',
                     cedula = '$cedula',
                     contacto = '$contacto',
-                    id_parroquia = '$parroquia',
+                    id_sector = '$id_sector',
                     id_grado = '$anio',
-                    fecha_nacimiento = '$fecha'
+                    fecha_nacimiento = '$fecha',
+                    direccion_exacta = '$direccion_exacta'
                   WHERE id_estudiante = '$id'";
 
         try {

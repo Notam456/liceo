@@ -143,13 +143,18 @@
                             </select>
                         </div>
                         </div> <!-- FILA3 -->
-
-                        <!-- jose, yajure, FILA PARA COLOCAR EL SECTOR Y PUNTO DE REFERNCIA CUANDO SEA CREADA
-                        <div class="row mb-3">
-                            <div class="col-md-6">Sector</div>
-                            <div class="col-md-6">Punto de Referencia</div>
-                        </div>
-                            -->
+                        <div class="row mb-3"> <!-- FILA4 -->
+                            <div class="col-md-6" id="sector_edit_container" style="display: none;">
+                                <label>Sector</label>
+                                <select id='sector_edit' name="sector" class="form-control" required>
+                                    <!-- Los sectores se cargarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Dirección Exacta</label>
+                                <input type="text" id="direccion_exacta_edit" name="direccion_exacta" class="form-control" required>
+                            </div>
+                        </div> <!-- FILA4 -->
 
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select id="grado_edit" name="grado" class="form-control" required>
@@ -224,13 +229,18 @@
                             </select>
                         </div>
                         </div> <!-- FILA3 -->
-
-                        <!-- jose, yajure, FILA PARA COLOCAR EL SECTOR Y PUNTO DE REFERNCIA CUANDO SEA CREADA
-                        <div class="row mb-3">
-                            <div class="col-md-6">Sector</div>
-                            <div class="col-md-6">Punto de Referencia</div>
-                        </div>
-                            -->
+                        <div class="row mb-3"> <!-- FILA4 -->
+                            <div class="col-md-6" id="sector_create_container" style="display: none;">
+                                <label>Sector</label>
+                                <select id="sector_create" name="sector" class="form-control" required>
+                                    <!-- Los sectores se cargarán dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Dirección Exacta</label>
+                                <input type="text" name="direccion_exacta" class="form-control" required>
+                            </div>
+                        </div> <!-- FILA4 -->
 
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select name="grado" class="form-control" required>
@@ -272,6 +282,7 @@
         });
 
         $(document).ready(function() {
+            // Cargar parroquias en modal de CREAR
             $('#municipio_create').on('change', function() {
                 var municipio_id = $(this).val();
                 if (municipio_id) {
@@ -290,14 +301,46 @@
                                 parroquia_select.append('<option value="' + value.id_parroquia + '">' + value.parroquia + '</option>');
                             });
                             $('#parroquia_create_container').show();
+                            $('#sector_create_container').hide();
+                            $('#sector_create').empty();
                         }
                     });
                 } else {
                     $('#parroquia_create_container').hide();
                     $('#parroquia_create').empty();
+                    $('#sector_create_container').hide();
+                    $('#sector_create').empty();
                 }
             });
 
+            // Cargar sectores en modal de CREAR
+            $('#parroquia_create').on('change', function() {
+                var parroquia_id = $(this).val();
+                if (parroquia_id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/liceo/controladores/estudiante_controlador.php',
+                        data: {
+                            action: 'get_sectores',
+                            parroquia_id: parroquia_id
+                        },
+                        dataType: 'json',
+                        success: function(sectores) {
+                            var sector_select = $('#sector_create');
+                            sector_select.empty().append('<option value="">Seleccione un sector</option>');
+                            $.each(sectores, function(key, value) {
+                                sector_select.append('<option value="' + value.id_sector + '">' + value.sector + '</option>');
+                            });
+                            $('#sector_create_container').show();
+                        }
+                    });
+                } else {
+                    $('#sector_create_container').hide();
+                    $('#sector_create').empty();
+                }
+            });
+
+            // Cargar parroquias en modal de EDITAR
             $('#municipio_edit').on('change', function() {
                 var municipio_id = $(this).val();
                 if (municipio_id) {
@@ -316,11 +359,42 @@
                                 parroquia_select.append('<option value="' + value.id_parroquia + '">' + value.parroquia + '</option>');
                             });
                             $('#parroquia_edit_container').show();
+                            $('#sector_edit_container').hide();
+                            $('#sector_edit').empty();
                         }
                     });
                 } else {
                     $('#parroquia_edit_container').hide();
                     $('#parroquia_edit').empty();
+                    $('#sector_edit_container').hide();
+                    $('#sector_edit').empty();
+                }
+            });
+
+             // Cargar sectores en modal de EDITAR
+             $('#parroquia_edit').on('change', function() {
+                var parroquia_id = $(this).val();
+                if (parroquia_id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/liceo/controladores/estudiante_controlador.php',
+                        data: {
+                            action: 'get_sectores',
+                            parroquia_id: parroquia_id
+                        },
+                        dataType: 'json',
+                        success: function(sectores) {
+                            var sector_select = $('#sector_edit');
+                            sector_select.empty().append('<option value="">Seleccione un sector</option>');
+                            $.each(sectores, function(key, value) {
+                                sector_select.append('<option value="' + value.id_sector + '">' + value.sector + '</option>');
+                            });
+                            $('#sector_edit_container').show();
+                        }
+                    });
+                } else {
+                    $('#sector_edit_container').hide();
+                    $('#sector_edit').empty();
                 }
             });
 
@@ -328,14 +402,8 @@
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -355,15 +423,10 @@
             $('#myTable').on('click', '.edit-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-
                 var id = data[0];
+
                 $.ajax({
                     type: "POST",
                     url: "/liceo/controladores/estudiante_controlador.php",
@@ -381,40 +444,52 @@
                         $('#contacto_estudiante_edit').val(data.contacto);
                         $('#grado_edit').val(data.id_grado);
                         $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
+                        $('#direccion_exacta_edit').val(data.direccion_exacta);
 
-                        // Pre-seleccionar municipio y cargar parroquias
-                        $('#municipio_edit').val(data.id_municipio).trigger('change');
-
-                        // Guardar el id de la parroquia para seleccionarla después
+                        var municipio_id_to_select = data.id_municipio;
                         var parroquia_id_to_select = data.id_parroquia;
+                        var sector_id_to_select = data.id_sector;
 
-                        // Cuando las parroquias se carguen, seleccionar la correcta
-                        $(document).ajaxComplete(function(event, xhr, settings) {
-                            if (settings.data.includes("action=get_parroquias")) {
+                        // 1. Cargar parroquias
+                        $('#municipio_edit').val(municipio_id_to_select).trigger('change');
+
+                        // 2. Cuando se carguen las parroquias, seleccionar la correcta y cargar sectores
+                        $(document).on('ajaxComplete.parroquia', function(event, xhr, settings) {
+                            if (settings.url === '/liceo/controladores/estudiante_controlador.php' && settings.data.includes("action=get_parroquias")) {
                                 $('#parroquia_edit').val(parroquia_id_to_select);
-                                // Desvincular el evento para que no se ejecute en futuras llamadas ajax
-                                $(document).off("ajaxComplete");
+                                $(document).off('ajaxComplete.parroquia'); // Evitar que se ejecute de nuevo
+
+                                // 3. Cargar sectores
+                                $('#parroquia_edit').trigger('change');
+
+                                // 4. Cuando se carguen los sectores, seleccionar el correcto
+                                $(document).on('ajaxComplete.sector', function(event, xhr, settings) {
+                                    if (settings.url === '/liceo/controladores/estudiante_controlador.php' && settings.data.includes("action=get_sectores")) {
+                                        $('#sector_edit').val(sector_id_to_select);
+                                        $(document).off('ajaxComplete.sector'); // Limpiar este listener también
+                                    }
+                                });
                             }
                         });
-
 
                         $('#editmodal').modal('show');
                     }
                 });
             });
 
+            // Limpiar eventos ajaxComplete al cerrar el modal para evitar ejecuciones no deseadas
+            $('#editmodal').on('hidden.bs.modal', function () {
+                $(document).off('ajaxComplete.parroquia');
+                $(document).off('ajaxComplete.sector');
+            });
+
+
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
                 var tabla = $('#myTable').DataTable();
-
-                // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
-
-                // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
-
                 var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',
