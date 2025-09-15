@@ -58,7 +58,11 @@ switch ($action) {
             $id = $_POST['idEdit'];
             $nombre = $_POST['nombreEdit'];
             $anio = $_POST['añoEdit'];
+            $tutor = $_POST['tutorEdit'];
             $resultado = $seccionModelo->actualizarSeccion($id, $nombre, $anio);
+            if ($tutor) {
+                $seccionModelo->actualizarTutor($id, $tutor);
+            }
             if ($resultado) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
             } else {
@@ -79,7 +83,11 @@ switch ($action) {
 
     case 'listar':
     default:
-        $secciones = $seccionModelo->obtenerTodasLasSecciones();
+        if ($_SESSION['rol'] == 'user') {
+            $secciones = $seccionModelo->obtenerSeccionesPorTutor($_SESSION['profesor']);
+        } else {
+            $secciones = $seccionModelo->obtenerTodasLasSecciones();
+        }
         $horarios_status = [];
         if ($secciones) {
             $secciones_copy = [];

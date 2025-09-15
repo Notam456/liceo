@@ -44,7 +44,16 @@ if (!isset($row)) {
             <h4>Datos de la Visita</h4>
             <table class="table table-borderless">
                 <tbody>
-
+                    <tr>
+                        <th>Tutor a Cargo</th>
+                        <td>
+                            <?php if (!empty($row['nombre_tutor'])): ?>
+                                <?php echo htmlspecialchars($row['nombre_tutor'] . ' ' . $row['apellido_tutor']); ?>
+                            <?php else: ?>
+                                <span class="text-muted">No asignado</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                     <tr>
                         <th>Fecha de la Visita</th>
                         <td><?php echo date("d/m/Y", strtotime($row['fecha_visita'])); ?></td>

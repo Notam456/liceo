@@ -87,7 +87,11 @@ switch ($action) {
 
     case 'listar':
     default:
-        $visitas = $visitaModelo->obtenerVisitas();
+        if ($_SESSION['rol'] == 'user') {
+            $visitas = $visitaModelo->obtenerVisitasPorEncargado($_SESSION['profesor']);
+        } else {
+            $visitas = $visitaModelo->obtenerVisitas();
+        }
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/visita_vista.php');
         break;
 }
