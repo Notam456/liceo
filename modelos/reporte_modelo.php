@@ -1,17 +1,31 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/visita_modelo.php');
 
-class ReporteModelo {
+class ReporteModelo
+{
     private $db;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
 
-    public function obtenerReporteAusencias($desde = null, $hasta = null) {
+    public function obtenerReporteAusencias($desde = null, $hasta = null)
+    {
         $where_condicion = "";
         if ($desde && $hasta) {
             $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
+        }
+
+        $condicion = "1=1"; 
+        switch ($_SESSION['tipo_cargo']) {
+            case 'inferior':
+                $condicion = " g.numero_anio < 4";
+                break;
+            case 'superior':
+                $condicion = " g.numero_anio > 3";
+                break;
+                // en 'Administrador' no agregamos condición extra
         }
 
         $query = "SELECT 
@@ -31,7 +45,9 @@ class ReporteModelo {
                  LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
-                 GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula";
+                  WHERE $condicion
+                 GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula
+                ";
 
         $result = $this->db->query($query);
 
@@ -60,25 +76,26 @@ class ReporteModelo {
         return $reporte;
     }
 
-    public function obtenerFechasAusencias($id_estudiante, $desde = null, $hasta = null) {
+    public function obtenerFechasAusencias($id_estudiante, $desde = null, $hasta = null)
+    {
         $where_condicion = "";
         if ($desde && $hasta) {
             $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
         }
-        
+
         $query = "SELECT a.fecha, a.justificado 
                   FROM asistencia a 
                   WHERE a.id_estudiante = {$id_estudiante} 
                   AND (a.inasistencia = 1 OR a.justificado = 1)
                   {$where_condicion}
                   ORDER BY a.fecha DESC";
-        
+
         $result = $this->db->query($query);
-        
+
         if (!$result) {
             throw new Exception("Error en la consulta: " . $this->db->error);
         }
-        
+
         $fechas = [];
         while ($row = $result->fetch_assoc()) {
             $fechas[] = [
@@ -86,8 +103,7 @@ class ReporteModelo {
                 'justificado' => (bool)$row['justificado']
             ];
         }
-        
+
         return $fechas;
     }
 }
-?>
