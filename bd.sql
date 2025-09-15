@@ -105,6 +105,7 @@ CREATE TABLE horario (
 
 CREATE TABLE cargo (
     id_cargo INT AUTO_INCREMENT PRIMARY KEY,
+    tipo ENUM('inferior', 'superior'),
     nombre VARCHAR(50) NOT NULL
 );
 

@@ -11,7 +11,8 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $nombre = $_POST['nombre'];
-            $resultado = $cargoModelo->crearCargo($nombre);
+            $tipo = $_POST['tipo'];
+            $resultado = $cargoModelo->crearCargo($nombre, $tipo);
             $_SESSION['status'] = $resultado ? "Cargo creado correctamente" : "Error al crear el cargo";
             header('Location: /liceo/controladores/cargo_controlador.php');
             exit();
@@ -49,7 +50,8 @@ switch ($action) {
         if (isset($_POST['update-data'])) {
             $id = $_POST['idEdit'];
             $nombre = $_POST['nombre_edit'];
-            $resultado = $cargoModelo->actualizarCargo($id, $nombre);
+            $tipo = $_POST['tipo_edit'];
+            $resultado = $cargoModelo->actualizarCargo($id, $nombre, $tipo);
             $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
             header('Location: /liceo/controladores/cargo_controlador.php');
             exit();

@@ -7,10 +7,11 @@ class CargoModelo {
         $this->conn = $db;
     }
 
-    public function crearCargo($nombre) {
+    public function crearCargo($nombre, $tipo) {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
+        $tipo = mysqli_real_escape_string($this->conn, $tipo);
 
-        $query = "INSERT INTO cargo(nombre) VALUES ('$nombre')";
+        $query = "INSERT INTO cargo(nombre, tipo) VALUES ('$nombre', '$tipo')";
         return mysqli_query($this->conn, $query);
     }
 
@@ -25,11 +26,12 @@ class CargoModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarCargo($id, $nombre) {
+    public function actualizarCargo($id, $nombre, $tipo) {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
+          $tipo = mysqli_real_escape_string($this->conn, $tipo);
 
-        $query = "UPDATE cargo SET nombre = '$nombre' WHERE id_cargo = $id";
+        $query = "UPDATE cargo SET nombre = '$nombre', tipo = '$tipo' WHERE id_cargo = $id";
         return mysqli_query($this->conn, $query);
     }
 

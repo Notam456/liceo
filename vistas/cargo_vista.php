@@ -55,11 +55,11 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td ></td>
-                                        <td >No se encontraron registros de cargos.</td>
-                                        <td ></td>
-                                        <td ></td>
-                                        <td ></td>
+                                        <td></td>
+                                        <td>No se encontraron registros de cargos.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -86,6 +86,18 @@
                             <label>Cargo</label>
                             <input type="text" id="nombre_edit" class="form-control" name="nombre_edit" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Tipo</label>
+                            <select
+                                class="form-select form-select-lg"
+                                name="tipo_edit"
+                                id="tipo_edit" required>
+                                <option selected value="">Seleccione...</option>
+                                <option value="inferior">Inferior (1er, 2do y 3er año)</option>
+                                <option value="superior">Superior (4to y 5to año)</option>
+                            </select>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -125,6 +137,17 @@
                             <label>Nombre del cargo</label>
                             <input type="text" name="nombre" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
                         </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Tipo</label>
+                            <select
+                                class="form-select form-select-lg"
+                                name="tipo"
+                                required>
+                                <option selected value="">Seleccione...</option>
+                                <option value="inferior">Inferior (1er, 2do y 3er año)</option>
+                                <option value="superior">Superior (4to y 5to año)</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
@@ -145,20 +168,21 @@
                 zeroRecords: '0 resultados encontrados'
             },
             columnDefs: [{
-                width: '93px',
-                targets: [2, 3, 4]
-            },
+                    width: '93px',
+                    targets: [2, 3, 4]
+                },
                 {
                     visible: false,
                     target: 0
-                }]
+                }
+            ]
         });
 
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
                 e.preventDefault();
-               var tabla = $('#myTable').DataTable();
+                var tabla = $('#myTable').DataTable();
 
                 // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
@@ -166,7 +190,7 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-                
+
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -193,7 +217,7 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-                
+
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -207,6 +231,7 @@
                         var data = response[0];
                         $('#idEdit').val(data.id_cargo);
                         $('#nombre_edit').val(data.nombre);
+                        $('#tipo_edit').val(data.tipo);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -215,7 +240,7 @@
             // Eliminar
             $('#myTable').on('click', '.delete-data', function(e) {
                 e.preventDefault();
-                 var tabla = $('#myTable').DataTable();
+                var tabla = $('#myTable').DataTable();
 
                 // obtenemos la fila DataTables desde el botón clicado
                 var fila = tabla.row($(this).closest('tr'));
@@ -223,7 +248,7 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-                
+
                 var id = data[0];
                 Swal.fire({
                     title: '¿Estás seguro?',

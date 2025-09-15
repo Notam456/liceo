@@ -7,6 +7,9 @@
                     <div class="col-md-6">
                         <strong>Nombre del Cargo:</strong> <?= htmlspecialchars($row['nombre']) ?>
                     </div>
+                    <div class="col-md-6">
+                        <strong>Tipo del cargo:</strong> <?= htmlspecialchars($row['tipo']) ?>
+                    </div>
                 </div>
             </div>
         </div>
