@@ -69,6 +69,7 @@ CREATE TABLE estudiante (
     apellido VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
+    id_grado int,
     id_sector INT,
     direccion_exacta TEXT,
     punto_referencia TEXT,
@@ -187,8 +188,7 @@ CREATE TABLE logs_anio (
 
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
-VALUES ('administrador', 'Hola1234!', 'admin', NULL),
-       ('coordinador', 'Hola1234!', 'coordinador', NULL);
+VALUES ('administrador', 'Hola1234!', 'admin', NULL);
 
 
 INSERT INTO municipio (municipio) VALUES

@@ -48,7 +48,7 @@ define('ROOT_PATH', __DIR__ . '/');
                     'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
                     'cargo' => '/liceo/imgs/suitcase-lg.svg'
                 ],
-                'user' => [
+                'coordinador' => [
                     'estudiante' => '/liceo/imgs/estudiando.png',
                     'profesor' => '/liceo/imgs/masculino.png',
                     'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
@@ -59,8 +59,9 @@ define('ROOT_PATH', __DIR__ . '/');
                     'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
                     'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
                 ],
-                'profesor' => [
-                    // Define los módulos específicos del profesor aquí
+                'user' => [
+                   'seccion' => '/liceo/imgs/secciones.png',
+                   'visita' => '/liceo/imgs/calendar-check.svg'
                 ]
             ];
             $nombre_legible = [
