@@ -168,8 +168,6 @@ if (!isset($reporte)) {
                                                         Generar Reporte
                                                     </a>
                                                 <?php endif; ?>
-
-                                                
                                             </td>
 
                                         </tr>
