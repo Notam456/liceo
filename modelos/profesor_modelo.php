@@ -1,13 +1,16 @@
 <?php
 
-class ProfesorModelo {
+class ProfesorModelo
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function crearProfesor($nombre, $apellido, $cedula) {
+    public function crearProfesor($nombre, $apellido, $cedula)
+    {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
@@ -27,18 +30,27 @@ class ProfesorModelo {
         }
     }
 
-    public function obtenerProfesorPorId($id) {
+    public function obtenerProfesorPorId($id)
+    {
         $id = (int)$id;
         $query = "SELECT * FROM profesor WHERE id_profesor = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerTodosLosProfesores() {
+    public function obtenerTodosLosProfesores()
+    {
         $query = "SELECT * FROM profesor";
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarProfesor($id, $nombre, $apellido, $cedula) {
+    public function obtenerTodosLosProfesoresConCargo()
+    {
+        $query = "SELECT p.* FROM profesor p INNER JOIN asigna_cargo a ON a.id_profesor = p.id_profesor ";
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function actualizarProfesor($id, $nombre, $apellido, $cedula)
+    {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
@@ -62,13 +74,15 @@ class ProfesorModelo {
         }
     }
 
-    public function eliminarProfesor($id) {
+    public function eliminarProfesor($id)
+    {
         $id = (int)$id;
         $query = "DELETE FROM profesor WHERE id_profesor ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerCargosPorProfesor($id_profesor) {
+    public function obtenerCargosPorProfesor($id_profesor)
+    {
         $query = "SELECT c.nombre FROM cargo c
                   JOIN asigna_cargo ac ON c.id_cargo = ac.id_cargo
                   WHERE ac.id_profesor = ? AND ac.estado = 'activa'";
@@ -87,7 +101,8 @@ class ProfesorModelo {
         return $cargos;
     }
 
-    public function obtenerMateriasPorProfesor($id_profesor) {
+    public function obtenerMateriasPorProfesor($id_profesor)
+    {
         $query = "SELECT m.nombre FROM materia m
                   JOIN asigna_materia am ON m.id_materia = am.id_materia
                   WHERE am.id_profesor = ? AND am.estado = 'activa'";
@@ -106,4 +121,3 @@ class ProfesorModelo {
         return $materias;
     }
 }
-?>

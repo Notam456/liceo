@@ -101,7 +101,7 @@ switch ($action) {
     case 'listar':
     default:
         $usuarios = $usuarioModelo->obtenerTodosLosUsuarios();
-        $query = $profesorModelo->obtenerTodosLosProfesores();
+        $query = $profesorModelo->obtenerTodosLosProfesoresConCargo();
         $profesores = $query->fetch_all(MYSQLI_ASSOC);
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/usuario_vista.php');
         break;
