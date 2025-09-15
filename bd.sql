@@ -16,6 +16,14 @@ CREATE TABLE parroquia (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE sector (
+    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
+    sector VARCHAR(50) NOT NULL,
+    id_parroquia INT(11) NOT NULL,
+    FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE profesor (
     id_profesor INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
@@ -59,7 +67,8 @@ CREATE TABLE estudiante (
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
     id_sector INT,
-    id_grado INT,
+    direccion_exacta TEXT,
+    punto_referencia TEXT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
@@ -159,13 +168,17 @@ CREATE TABLE usuario (
 
 );
 
-CREATE TABLE sector (
-    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
-    sector VARCHAR(50) NOT NULL,
-    id_parroquia INT(11) NOT NULL,
-    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
-        ON DELETE CASCADE ON UPDATE CASCADE
+
+CREATE TABLE logs_anio (
+    id_log INT AUTO_INCREMENT PRIMARY KEY,
+    id_anio INT NOT NULL,
+    id_usuario INT NOT NULL,
+    accion ENUM('activar','desactivar') NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
+
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);

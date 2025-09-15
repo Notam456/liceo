@@ -34,6 +34,12 @@ class SectorModelo {
         return mysqli_query($this->conn, $query);
     }
 
+    public function obtenerSectoresPorParroquia($id_parroquia) {
+        $id_parroquia = (int)$id_parroquia;
+        $query = "SELECT * FROM sector WHERE id_parroquia = $id_parroquia";
+        return mysqli_query($this->conn, $query);
+    }
+
     public function actualizarSector($id, $sector, $id_parroquia = null) {
         $id = (int)$id;
         $sector = mysqli_real_escape_string($this->conn, $sector);

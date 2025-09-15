@@ -7,12 +7,14 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php')
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/parroquia_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/municipio_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/sector_modelo.php');
 
 
 $estudianteModelo = new EstudianteModelo($conn);
 $gradoModelo = new GradoModelo($conn);
 $parroquiaModelo = new ParroquiaModelo($conn);
 $municipioModelo = new MunicipioModelo($conn);
+$sectorModelo = new SectorModelo($conn);
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
@@ -20,8 +22,8 @@ switch ($action) {
         if (isset($_POST['save_data'])) {
             $resultado = $estudianteModelo->crearEstudiante(
                 $_POST['nombre_estudiante'], $_POST['apellido_estudiante'], $_POST['cedula_estudiante'],
-                $_POST['contacto_estudiante'], $_POST['parroquia'],
-                $_POST['grado'], $_POST['fecha_nacimiento']
+                $_POST['contacto_estudiante'], $_POST['sector'], $_POST['grado'],
+                $_POST['fecha_nacimiento'], $_POST['direccion_exacta']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Estudiante creado correctamente";
@@ -69,7 +71,8 @@ switch ($action) {
             $resultado = $estudianteModelo->actualizarEstudiante(
                 $_POST['id_estudiante'], $_POST['nombre_estudiante'], $_POST['apellido_estudiante'],
                 $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
-                $_POST['parroquia'], $_POST['grado'], $_POST['fecha_nacimiento']
+                $_POST['sector'], $_POST['grado'], $_POST['fecha_nacimiento'],
+                $_POST['direccion_exacta']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
@@ -190,6 +193,19 @@ switch ($action) {
             $parroquias = $parroquiaModelo->obtenerParroquiasPorMunicipio($municipio_id);
             $data = [];
             while($row = mysqli_fetch_assoc($parroquias)) {
+                $data[] = $row;
+            }
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        }
+        break;
+
+    case 'get_sectores':
+        if (isset($_POST['parroquia_id'])) {
+            $parroquia_id = $_POST['parroquia_id'];
+            $sectores = $sectorModelo->obtenerSectoresPorParroquia($parroquia_id);
+            $data = [];
+            while($row = mysqli_fetch_assoc($sectores)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
