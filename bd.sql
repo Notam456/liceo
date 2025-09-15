@@ -20,7 +20,7 @@ CREATE TABLE sector (
     id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
     sector VARCHAR(50) NOT NULL,
     id_parroquia INT(11) NOT NULL,
-    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
+    FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -166,6 +166,17 @@ CREATE TABLE usuario (
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE
 
+);
+
+
+CREATE TABLE logs_anio (
+    id_log INT AUTO_INCREMENT PRIMARY KEY,
+    id_anio INT NOT NULL,
+    id_usuario INT NOT NULL,
+    accion ENUM('activar','desactivar') NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
 
