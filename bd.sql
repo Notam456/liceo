@@ -58,11 +58,12 @@ CREATE TABLE estudiante (
     apellido VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
-    id_parroquia INT,
+    id_sector INT,
+    direccion_exacta TEXT
     id_grado INT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
+    FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
         ON DELETE CASCADE ON UPDATE CASCADE
