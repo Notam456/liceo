@@ -155,6 +155,12 @@
                                 <input type="text" id="direccion_exacta_edit" name="direccion_exacta" class="form-control" required>
                             </div>
                         </div> <!-- FILA4 -->
+                        <div class="row mb-3"> <!-- FILA5 -->
+                            <div class="col-md-6" id="punto_referencia_edit_container" style="display: none;">
+                                <label>Punto de Referencia</label>
+                                <input type="text" id="punto_referencia_edit" name="punto_referencia" class="form-control">
+                            </div>
+                        </div> <!-- FILA5 -->
 
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select id="grado_edit" name="grado" class="form-control" required>
@@ -242,6 +248,13 @@
                             </div>
                         </div> <!-- FILA4 -->
 
+                        <div class="row mb-3"> <!-- FILA5 -->
+                            <div class="col-md-6" id="punto_referencia_create_container" style="display: none;">
+                                <label>Punto de Referencia</label>
+                                <input type="text" name="punto_referencia" class="form-control">
+                            </div>
+                        </div> <!-- FILA5 -->
+
                         <div class="form-group mb-3"><label>Grado a cursar</label>
                             <select name="grado" class="form-control" required>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
@@ -313,6 +326,15 @@
                 }
             });
 
+            // Mostrar/ocultar punto de referencia en modal de CREAR
+            $('#sector_create').on('change', function() {
+                if ($(this).val()) {
+                    $('#punto_referencia_create_container').show();
+                } else {
+                    $('#punto_referencia_create_container').hide();
+                }
+            });
+
             // Cargar sectores en modal de CREAR
             $('#parroquia_create').on('change', function() {
                 var parroquia_id = $(this).val();
@@ -368,6 +390,15 @@
                     $('#parroquia_edit').empty();
                     $('#sector_edit_container').hide();
                     $('#sector_edit').empty();
+                }
+            });
+
+            // Mostrar/ocultar punto de referencia en modal de EDITAR
+            $('#sector_edit').on('change', function() {
+                if ($(this).val()) {
+                    $('#punto_referencia_edit_container').show();
+                } else {
+                    $('#punto_referencia_edit_container').hide();
                 }
             });
 
@@ -445,6 +476,7 @@
                         $('#grado_edit').val(data.id_grado);
                         $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
                         $('#direccion_exacta_edit').val(data.direccion_exacta);
+                        $('#punto_referencia_edit').val(data.punto_referencia);
 
                         var municipio_id_to_select = data.id_municipio;
                         var parroquia_id_to_select = data.id_parroquia;
