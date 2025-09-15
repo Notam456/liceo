@@ -23,7 +23,7 @@ switch ($action) {
             $resultado = $estudianteModelo->crearEstudiante(
                 $_POST['nombre_estudiante'], $_POST['apellido_estudiante'], $_POST['cedula_estudiante'],
                 $_POST['contacto_estudiante'], $_POST['sector'], $_POST['grado'],
-                $_POST['fecha_nacimiento'], $_POST['direccion_exacta']
+                $_POST['fecha_nacimiento'], $_POST['direccion_exacta'], $_POST['punto_referencia']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Estudiante creado correctamente";
@@ -72,7 +72,7 @@ switch ($action) {
                 $_POST['id_estudiante'], $_POST['nombre_estudiante'], $_POST['apellido_estudiante'],
                 $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
                 $_POST['sector'], $_POST['grado'], $_POST['fecha_nacimiento'],
-                $_POST['direccion_exacta']
+                $_POST['direccion_exacta'], $_POST['punto_referencia']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Datos actualizados correctamente";

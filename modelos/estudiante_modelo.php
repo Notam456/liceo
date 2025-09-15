@@ -7,7 +7,7 @@ class EstudianteModelo {
         $this->conn = $db;
     }
 
-    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta) {
+    public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia) {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
@@ -16,9 +16,10 @@ class EstudianteModelo {
         $anio = mysqli_real_escape_string($this->conn, $anio);
         $fecha = mysqli_real_escape_string($this->conn, $fecha);
         $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
+        $punto_referencia = mysqli_real_escape_string($this->conn, $punto_referencia);
 
-        $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_sector, id_grado, fecha_nacimiento, direccion_exacta)
-                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$id_sector', '$anio', '$fecha', '$direccion_exacta')";
+        $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_sector, id_grado, fecha_nacimiento, direccion_exacta, punto_referencia)
+                  VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$id_sector', '$anio', '$fecha', '$direccion_exacta', '$punto_referencia')";
 
         try {
             $insert_query_run = mysqli_query($this->conn, $query);
@@ -55,7 +56,7 @@ class EstudianteModelo {
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta) {
+    public function actualizarEstudiante($id, $nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia) {
         $id = (int)$id;
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
@@ -65,6 +66,7 @@ class EstudianteModelo {
         $anio = mysqli_real_escape_string($this->conn, $anio);
         $fecha = mysqli_real_escape_string($this->conn, $fecha);
         $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
+        $punto_referencia = mysqli_real_escape_string($this->conn, $punto_referencia);
 
         $query = "UPDATE estudiante SET
                     nombre = '$nombre',
@@ -74,7 +76,8 @@ class EstudianteModelo {
                     id_sector = '$id_sector',
                     id_grado = '$anio',
                     fecha_nacimiento = '$fecha',
-                    direccion_exacta = '$direccion_exacta'
+                    direccion_exacta = '$direccion_exacta',
+                    punto_referencia = '$punto_referencia'
                   WHERE id_estudiante = '$id'";
 
         try {

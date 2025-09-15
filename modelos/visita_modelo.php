@@ -75,13 +75,19 @@ class VisitaModelo {
                     e.cedula,
                     e.contacto,
                     e.fecha_nacimiento,
+                    e.direccion_exacta,
+                    e.punto_referencia,
+                    sec.sector,
                     p.parroquia,
+                    m.municipio,
                     g.numero_anio,
                     s.letra AS letra_seccion
                   FROM visita v
                   JOIN asistencia a ON v.id_asistencia = a.id_asistencia
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
-                  LEFT JOIN parroquia p ON e.id_parroquia = p.id_parroquia
+                  LEFT JOIN sector sec ON e.id_sector = sec.id_sector
+                  LEFT JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
+                  LEFT JOIN municipio m ON p.id_municipio = m.id_municipio
                   LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                   LEFT JOIN grado g ON s.id_grado = g.id_grado
                   WHERE v.id_visita = $id";

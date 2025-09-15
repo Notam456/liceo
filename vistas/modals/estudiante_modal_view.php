@@ -23,14 +23,14 @@
                 </div>
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Parroquia:</strong> <?= htmlspecialchars($row['parroquia']) ?>
+                    <div class="col-md-12">
+                        <strong>Dirección:</strong> <?= htmlspecialchars($row['municipio']) ?>, <?= htmlspecialchars($row['parroquia']) ?>, <?= htmlspecialchars($row['sector']) ?>, <?= htmlspecialchars($row['punto_referencia']) ?>, <?= htmlspecialchars($row['direccion_exacta']) ?>
                     </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-md-6">
                         <strong>Fecha de Nacimiento:</strong> <?= $row['fecha_nacimiento']?>
                     </div>
-                    <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
-                </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <strong>Seccion:</strong>

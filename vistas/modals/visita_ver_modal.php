@@ -30,8 +30,8 @@ if (!isset($row)) {
                         <td><?php echo htmlspecialchars($row['contacto']); ?></td>
                     </tr>
                     <tr>
-                        <th>Parroquia</th>
-                        <td><?php echo htmlspecialchars($row['parroquia']); ?></td>
+                        <th>Dirección</th>
+                        <td><?php echo htmlspecialchars($row['municipio'] . ', ' . $row['parroquia'] . ', ' . $row['sector'] . ', ' . $row['punto_referencia'] . ', ' . $row['direccion_exacta']); ?></td>
                     </tr>
                     <tr>
                         <th>Grado y Sección</th>
