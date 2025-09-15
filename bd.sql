@@ -16,6 +16,14 @@ CREATE TABLE parroquia (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE sector (
+    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
+    sector VARCHAR(50) NOT NULL,
+    id_parroquia INT(11) NOT NULL,
+    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE profesor (
     id_profesor INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
@@ -59,7 +67,7 @@ CREATE TABLE estudiante (
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
     id_sector INT,
-    direccion_exacta TEXT
+    direccion_exacta TEXT,
     id_grado INT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -160,13 +168,6 @@ CREATE TABLE usuario (
 
 );
 
-CREATE TABLE sector (
-    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
-    sector VARCHAR(50) NOT NULL,
-    id_parroquia INT(11) NOT NULL,
-    FOREIGN KEY (id_parroquia) REFFERENCES parroquia(id_parroquia)
-        ON DELETE CASCADE ON UPDATE CASCADE
-);
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);
