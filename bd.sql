@@ -69,7 +69,6 @@ CREATE TABLE estudiante (
     id_sector INT,
     direccion_exacta TEXT,
     punto_referencia TEXT,
-    id_grado INT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
