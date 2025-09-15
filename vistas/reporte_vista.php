@@ -125,6 +125,7 @@ if (!isset($reporte)) {
                                         <th title="Justificados"><i class="bi bi-journal-check"></i> Justificados</th>
                                         <th>Total</th>
                                         <th>Acción</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -150,6 +151,24 @@ if (!isset($reporte)) {
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         </td>
+
+                                        <td>
+    <?php if ($item['total'] > 0): ?>
+        <a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $item['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>" 
+           class="btn btn-info btn-sm" target="_blank">
+            Generar Reporte
+        </a>
+    <?php endif; ?>
+    
+    <?php if ($item['total_ultima_semana'] >= 3): ?>
+        <?php if ($item['tiene_visita_agendada']): ?>
+            <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
+        <?php else: ?>
+            <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
+        <?php endif; ?>
+    <?php endif; ?>
+</td>            
+
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -210,12 +229,18 @@ if (!isset($reporte)) {
         });
 
         function cargarReporte() {
-            var desde = $('#filtroDesde').val();
-            var hasta = $('#filtroHasta').val();
+            var actionButton = '';
+if (item.total > 0) {
+    actionButton += '<a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=' + item.id_estudiante + '&desde=' + desde + '&hasta=' + hasta + '" class="btn btn-info btn-sm" target="_blank">Generar Reporte</a> ';
+}
 
-            if (!desde || !hasta) {
-                return;
-            }
+if (item.total_ultima_semana >= 3) {
+    if (item.tiene_visita_agendada) {
+        actionButton += '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
+    } else {
+        actionButton += '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
+    }
+}
 
             var url = `/liceo/controladores/reporte_controlador.php?desde=${desde}&hasta=${hasta}`;
 

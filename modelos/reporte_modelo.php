@@ -59,5 +59,35 @@ class ReporteModelo {
 
         return $reporte;
     }
+
+    public function obtenerFechasAusencias($id_estudiante, $desde = null, $hasta = null) {
+        $where_condicion = "";
+        if ($desde && $hasta) {
+            $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
+        }
+        
+        $query = "SELECT a.fecha, a.justificado 
+                  FROM asistencia a 
+                  WHERE a.id_estudiante = {$id_estudiante} 
+                  AND (a.inasistencia = 1 OR a.justificado = 1)
+                  {$where_condicion}
+                  ORDER BY a.fecha DESC";
+        
+        $result = $this->db->query($query);
+        
+        if (!$result) {
+            throw new Exception("Error en la consulta: " . $this->db->error);
+        }
+        
+        $fechas = [];
+        while ($row = $result->fetch_assoc()) {
+            $fechas[] = [
+                'fecha' => $row['fecha'],
+                'justificado' => (bool)$row['justificado']
+            ];
+        }
+        
+        return $fechas;
+    }
 }
 ?>
