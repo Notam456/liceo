@@ -122,6 +122,20 @@
                                 ?>
                             </select>
                         </div>
+                        <div class="form-group mb-3">
+                            <label>Tutor</label>
+                            <select class="form-select form-select-lg" name="tutorEdit" id="tutorEdit">
+                                <option selected value="">Seleccione un tutor...</option>
+                                <?php
+                                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
+                                $profesorModelo = new ProfesorModelo($conn);
+                                $profesores = $profesorModelo->obtenerTodosLosProfesores();
+                                while ($row = mysqli_fetch_array($profesores)) {
+                                    echo '<option value="' . $row["id_profesor"] . '"> ' . $row["nombre"] . ' ' . $row['apellido'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
@@ -293,7 +307,8 @@
                         var data = response[0];
                         $('#idEdit').val(data.id_seccion);
                         $('#nombreEdit').val(data.letra);
-                        $('#añoEdit').val(data.numero_anio);
+                        $('#añoEdit').val(data.id_grado);
+                        $('#tutorEdit').val(data.id_tutor);
                         $('#editmodal').modal('show');
                     }
                 });
@@ -395,6 +410,11 @@
 
             var idSeccion = $('#seccion_asignar').val();
             var idTutor = $('#tutor_id').val();
+
+            if (!idTutor) {
+                Swal.fire('Atención', 'Debe seleccionar un tutor para la sección', 'warning');
+                return;
+            }
 
             Swal.fire({
                 title: '¿Confirmar asignación?',

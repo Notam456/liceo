@@ -90,7 +90,9 @@ class VisitaModelo {
                     p.parroquia,
                     m.municipio,
                     g.numero_anio,
-                    s.letra AS letra_seccion
+                    s.letra AS letra_seccion,
+                    prof.nombre AS nombre_tutor,
+                    prof.apellido AS apellido_tutor
                   FROM visita v
                   JOIN asistencia a ON v.id_asistencia = a.id_asistencia
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
@@ -99,6 +101,7 @@ class VisitaModelo {
                   LEFT JOIN municipio m ON p.id_municipio = m.id_municipio
                   LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                   LEFT JOIN grado g ON s.id_grado = g.id_grado
+                  LEFT JOIN profesor prof ON v.encargado_id = prof.id_profesor
                   WHERE v.id_visita = $id";
         return mysqli_query($this->conn, $query);
     }

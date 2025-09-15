@@ -58,7 +58,11 @@ switch ($action) {
             $id = $_POST['idEdit'];
             $nombre = $_POST['nombreEdit'];
             $anio = $_POST['añoEdit'];
+            $tutor = $_POST['tutorEdit'];
             $resultado = $seccionModelo->actualizarSeccion($id, $nombre, $anio);
+            if ($tutor) {
+                $seccionModelo->actualizarTutor($id, $tutor);
+            }
             if ($resultado) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
             } else {

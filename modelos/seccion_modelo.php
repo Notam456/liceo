@@ -25,7 +25,11 @@ class SeccionModelo {
 
     public function obtenerSeccionPorId($id) {
         $id = (int)$id;
-        $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.id_seccion = '$id'";
+        $query = "SELECT s.*, g.numero_anio, p.nombre AS nombre_tutor, p.apellido AS apellido_tutor
+                  FROM seccion AS s
+                  JOIN grado AS g ON s.id_grado = g.id_grado
+                  LEFT JOIN profesor AS p ON s.id_tutor = p.id_profesor
+                  WHERE s.id_seccion = '$id'";
         return mysqli_query($this->conn, $query);
     }
 

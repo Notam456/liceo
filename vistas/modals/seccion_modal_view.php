@@ -4,6 +4,14 @@
         <div class="col-md-6">
             <strong>Sección:</strong> <?= htmlspecialchars($row['numero_anio']) . '° ' . htmlspecialchars($row['letra']) ?>
         </div>
+        <div class="col-md-6">
+            <strong>Tutor:</strong>
+            <?php if (!empty($row['nombre_tutor'])): ?>
+                <?= htmlspecialchars($row['nombre_tutor']) . ' ' . htmlspecialchars($row['apellido_tutor']) ?>
+            <?php else: ?>
+                <span class="text-muted">No asignado</span>
+            <?php endif; ?>
+        </div>
     </div>
     <div class="row mb-3">
         <div class="col-md-12 d-flex gap-2">
