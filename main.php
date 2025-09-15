@@ -1,7 +1,6 @@
 <?php
 session_start();
 define('ROOT_PATH', __DIR__ . '/');
-print_r($_SESSION);
 ?>
 
 <!doctype html>
