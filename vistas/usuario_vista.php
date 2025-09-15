@@ -162,6 +162,7 @@
                                 id="rolEdit">
                                 <option selected>Seleccione un rol...</option>
                                 <option value="admin">Administrador</option>
+                                <option value="coordinador">Coordinador</option>
                                 <option value="user">Usuario</option>
                             </select>
                         </div>
@@ -258,6 +259,7 @@
                                 id="rol">
                                 <option selected>Seleccione un rol...</option>
                                 <option value="admin">Administrador</option>
+                                <option value="coordinador">Coordinador</option>
                                 <option value="user">Usuario</option>
                             </select>
                         </div>
@@ -309,7 +311,7 @@
             ]
         });
         $('#rol').on('change', function() {
-            if ($('#rol option:selected').val() == 'user') {
+            if ($('#rol option:selected').val() == 'user' || $('#rol option:selected').val() == 'coordinador') {
                 $('select[name="profesor"').prop('required', true);
                 $('div[name="profesor-group"').show();
             } else {
@@ -319,7 +321,7 @@
             }
         }).trigger("change");
         $('#rolEdit').on('change', function() {
-            if ($('#rolEdit option:selected').val() == 'user') {
+            if ($('#rolEdit option:selected').val() == 'user' || $('#rolEdit option:selected').val() == 'coordinador') {
                 $('select[name="profesor"').prop('required', true);
                 $('div[name="profesor-group"').show();
             } else {

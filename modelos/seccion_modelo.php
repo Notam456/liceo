@@ -66,5 +66,18 @@ class SeccionModelo {
         }
         return "success";
     }
+
+    public function actualizarTutor($id_seccion, $id_tutor) {
+        $id_seccion = (int)$id_seccion;
+        $id_tutor = (int)$id_tutor;
+        $query = "UPDATE seccion SET id_tutor = $id_tutor WHERE id_seccion = $id_seccion";
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function obtenerSeccionesPorTutor($id_tutor) {
+        $id_tutor = (int)$id_tutor;
+        $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.id_tutor = $id_tutor";
+        return mysqli_query($this->conn, $query);
+    }
 }
 ?>

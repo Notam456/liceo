@@ -53,8 +53,11 @@ CREATE TABLE seccion (
     id_seccion INT AUTO_INCREMENT PRIMARY KEY,
     id_grado INT NOT NULL,
     letra CHAR(1) NOT NULL,
+    id_tutor INT NULL,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_tutor) REFERENCES profesor(id_profesor)
+        ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 
@@ -136,12 +139,15 @@ CREATE TABLE asistencia (
 CREATE TABLE visita (
     id_visita INT AUTO_INCREMENT PRIMARY KEY,
     id_asistencia INT NOT NULL,
+    encargado_id INT NULL,
     fecha_visita DATE NOT NULL,
     estado VARCHAR(50) DEFAULT 'agendada',
     observaciones TEXT,
     fecha_realizada DATE,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (encargado_id) REFERENCES profesor(id_profesor)
+        ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE asigna_materia (
@@ -161,7 +167,7 @@ CREATE TABLE usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(255) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
-    rol VARCHAR(255) NOT NULL,
+    rol VARCHAR(255) NOT NULL, -- Posibles roles: admin, coordinador, user
     id_profesor int(11) NULL,
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -181,7 +187,8 @@ CREATE TABLE logs_anio (
 
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
-VALUES ('administrador', 'Hola1234!', 'admin', NULL);
+VALUES ('administrador', 'Hola1234!', 'admin', NULL),
+       ('coordinador', 'Hola1234!', 'coordinador', NULL);
 
 
 INSERT INTO municipio (municipio) VALUES

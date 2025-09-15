@@ -23,7 +23,7 @@ $modulos_por_rol = [
         'asigna_cargo' => 'bi-box-arrow-in-down-right',
         'cargo' => 'bi-briefcase',
     ],
-    'user' => [
+    'coordinador' => [
         'estudiante' => 'bi-person-badge',
         'profesor' => 'bi-person-workspace',
         'asistencia' => 'bi-card-checklist',
@@ -33,6 +33,10 @@ $modulos_por_rol = [
         'seccion' => 'bi-diagram-3',
         'asigna_materia' => 'bi-box-arrow-in-down-right',
         'grado' => 'bi-collection',
+    ],
+    'user' => [
+        'seccion' => 'bi-diagram-3',
+        'visita' => 'bi-calendar-check',
     ],
     'profesor' => []
 ];

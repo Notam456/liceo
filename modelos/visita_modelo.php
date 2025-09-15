@@ -21,8 +21,17 @@ class VisitaModelo {
             $row = mysqli_fetch_assoc($result_asistencia);
             $id_asistencia = $row['id_asistencia'];
 
-            $query = "INSERT INTO visita(id_asistencia, fecha_visita, estado)
-                      VALUES ('$id_asistencia', '$fecha_visita', '$estado')";
+            // Get the tutor from the student's section
+            $query_tutor = "SELECT s.id_tutor FROM estudiante e JOIN seccion s ON e.id_seccion = s.id_seccion WHERE e.id_estudiante = $id_estudiante";
+            $result_tutor = mysqli_query($this->conn, $query_tutor);
+            $id_tutor = null;
+            if(mysqli_num_rows($result_tutor) > 0){
+                $row_tutor = mysqli_fetch_assoc($result_tutor);
+                $id_tutor = $row_tutor['id_tutor'];
+            }
+
+            $query = "INSERT INTO visita(id_asistencia, fecha_visita, estado, encargado_id)
+                      VALUES ('$id_asistencia', '$fecha_visita', '$estado', " . ($id_tutor ? $id_tutor : 'NULL') . ")";
             return mysqli_query($this->conn, $query);
         }
         return false; // No absence found for the student.
@@ -97,6 +106,17 @@ class VisitaModelo {
     public function eliminarVisita($id) {
         $id = (int)$id;
         $query = "DELETE FROM visita WHERE id_visita = $id";
+        return mysqli_query($this->conn, $query);
+    }
+
+    public function obtenerVisitasPorEncargado($id_encargado) {
+        $id_encargado = (int)$id_encargado;
+        $query = "SELECT v.id_visita, v.fecha_visita, v.estado, e.nombre, e.apellido, e.cedula
+                  FROM visita v
+                  JOIN asistencia a ON v.id_asistencia = a.id_asistencia
+                  JOIN estudiante e ON a.id_estudiante = e.id_estudiante
+                  WHERE v.encargado_id = $id_encargado
+                  ORDER BY v.fecha_visita DESC";
         return mysqli_query($this->conn, $query);
     }
 }

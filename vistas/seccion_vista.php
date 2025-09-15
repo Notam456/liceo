@@ -163,6 +163,9 @@
                             </div>
                         </div>
                     </div>
+                    <div id="tutor-container" class="mt-3">
+                        <!-- El dropdown del tutor se cargará aquí -->
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -365,6 +368,17 @@
                     });
                 }
             });
+             // Cargar profesores para el dropdown de tutores
+            $.ajax({
+                type: "POST",
+                url: "/liceo/controladores/asignacion_estudiantes_controlador.php",
+                data: {
+                    'action': 'obtener_profesores'
+                },
+                success: function(response) {
+                    $('#tutor-container').html(response);
+                }
+            });
         }
 
         // Función para asignar estudiantes seleccionados
@@ -380,6 +394,7 @@
             }
 
             var idSeccion = $('#seccion_asignar').val();
+            var idTutor = $('#tutor_id').val();
 
             Swal.fire({
                 title: '¿Confirmar asignación?',
@@ -398,7 +413,8 @@
                         data: {
                             'action': 'asignar_masiva',
                             'estudiantes': estudiantesSeleccionados,
-                            'id_seccion': idSeccion
+                            'id_seccion': idSeccion,
+                            'id_tutor': idTutor
                         },
                         dataType: 'json',
                         success: function(response) {

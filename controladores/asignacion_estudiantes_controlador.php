@@ -2,8 +2,12 @@
 session_start();
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/estudiante_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/seccion_modelo.php');
 
 $estudianteModelo = new EstudianteModelo($conn);
+$profesorModelo = new ProfesorModelo($conn);
+$seccionModelo = new SeccionModelo($conn);
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'obtener_estudiantes';
 
 switch ($action) {
@@ -45,9 +49,14 @@ switch ($action) {
         if (isset($_POST['estudiantes']) && isset($_POST['id_seccion'])) {
             $estudiantes_ids = $_POST['estudiantes'];
             $id_seccion = $_POST['id_seccion'];
+            $id_tutor = isset($_POST['id_tutor']) ? $_POST['id_tutor'] : null;
             
             $resultado = $estudianteModelo->asignarSeccionMasiva($estudiantes_ids, $id_seccion);
             
+            if ($id_tutor) {
+                $seccionModelo->actualizarTutor($id_seccion, $id_tutor);
+            }
+
             if ($resultado) {
                 $_SESSION['status'] = "Estudiantes asignados correctamente a la sección";
             } else {
@@ -55,6 +64,22 @@ switch ($action) {
             }
             
             echo json_encode(['success' => $resultado]);
+        }
+        break;
+
+    case 'obtener_profesores':
+        $profesores = $profesorModelo->obtenerTodosLosProfesores();
+        if ($profesores && mysqli_num_rows($profesores) > 0) {
+            echo '<div class="form-group mb-3">
+                    <label for="tutor_id">Seleccionar Tutor</label>
+                    <select class="form-select" id="tutor_id" name="tutor_id">
+                        <option value="">Seleccione un tutor...</option>';
+            while ($row = mysqli_fetch_array($profesores)) {
+                echo '<option value="' . $row['id_profesor'] . '">' . $row['nombre'] . ' ' . $row['apellido'] . '</option>';
+            }
+            echo '</select></div>';
+        } else {
+            echo '<div class="alert alert-info">No hay profesores disponibles.</div>';
         }
         break;
 }
