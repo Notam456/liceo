@@ -35,20 +35,45 @@
                                 Crear
                             </button>
                         </h4>
+                        <!-- Pestañas de navegación -->
+                        <ul class="nav nav-tabs mt-3" id="anioTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link <?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'active' : ''; ?>" 
+                                        id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista-pane" 
+                                        type="button" role="tab" aria-controls="lista-pane" 
+                                        aria-selected="<?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'true' : 'false'; ?>">
+                                    Lista de Años Académicos
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'active' : ''; ?>" 
+                                        id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial-pane" 
+                                        type="button" role="tab" aria-controls="historial-pane" 
+                                        aria-selected="<?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'true' : 'false'; ?>">
+                                    Historial de Cambios
+                                </button>
+                            </li>
+                        </ul>
                     </div>
+                    
                     <div class="card-body">
-                        <table class="table table-striped" id="myTable">
-                            <thead>
-                                <tr class="table-secondary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Período</th>
-                                    <th scope="col">Estado</th>
-                                    <th scope="col" class="action">Acción</th>
-                                    <th scope="col" class="action"></th>
-                                    <th scope="col" class="action"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <!-- Contenido de las pestañas -->
+                        <div class="tab-content" id="anioTabsContent">
+                            <!-- Pestaña Lista de Años Académicos -->
+                            <div class="tab-pane fade <?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'show active' : ''; ?>" 
+                                 id="lista-pane" role="tabpanel" aria-labelledby="lista-tab">
+                                <table class="table table-striped" id="myTable">
+                                    <thead>
+                                        <tr class="table-secondary">
+                                            <th scope="col">#</th>
+                                            <th scope="col">Período</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col" class="action">Acción</th>
+                                            <th scope="col" class="action"></th>
+                                            <th scope="col" class="action"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                 <?php
                                 if ($anios_academicos && mysqli_num_rows($anios_academicos) > 0) {
                                     while ($row = mysqli_fetch_array($anios_academicos)) {
@@ -97,8 +122,70 @@
                                 <?php
                                 }
                                 ?>
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Pestaña Historial de Cambios -->
+                            <div class="tab-pane fade <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'show active' : ''; ?>" 
+                                 id="historial-pane" role="tabpanel" aria-labelledby="historial-tab">
+                                
+                                <!-- Filtros -->
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <label for="filtro_usuario" class="form-label">Usuario:</label>
+                                        <select class="form-select" id="filtro_usuario" name="filtro_usuario">
+                                            <option value="">Todos los usuarios</option>
+                                            <?php 
+                                            if (isset($usuarios_filtro) && $usuarios_filtro && mysqli_num_rows($usuarios_filtro) > 0) {
+                                                while ($usuario = mysqli_fetch_array($usuarios_filtro)) {
+                                                    $selected = (isset($_GET['filtro_usuario']) && $_GET['filtro_usuario'] == $usuario['id_usuario']) ? 'selected' : '';
+                                                    echo "<option value='{$usuario['id_usuario']}' $selected>{$usuario['usuario']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="filtro_anio" class="form-label">Año Académico:</label>
+                                        <select class="form-select" id="filtro_anio" name="filtro_anio">
+                                            <option value="">Todos los años</option>
+                                            <?php 
+                                            if (isset($anios_filtro) && $anios_filtro && mysqli_num_rows($anios_filtro) > 0) {
+                                                while ($anio = mysqli_fetch_array($anios_filtro)) {
+                                                    $selected = (isset($_GET['filtro_anio']) && $_GET['filtro_anio'] == $anio['id_anio']) ? 'selected' : '';
+                                                    echo "<option value='{$anio['id_anio']}' $selected>{$anio['periodo']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="filtro_accion" class="form-label">Acción:</label>
+                                        <select class="form-select" id="filtro_accion" name="filtro_accion">
+                                            <option value="">Todas las acciones</option>
+                                            <option value="activar" <?php echo (isset($_GET['filtro_accion']) && $_GET['filtro_accion'] == 'activar') ? 'selected' : ''; ?>>Activar</option>
+                                            <option value="desactivar" <?php echo (isset($_GET['filtro_accion']) && $_GET['filtro_accion'] == 'desactivar') ? 'selected' : ''; ?>>Desactivar</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-primary me-2" id="aplicarFiltros">Filtrar</button>
+                                        <button type="button" class="btn btn-secondary" id="limpiarFiltros">Limpiar</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Tabla del historial -->
+                                <div id="historial-container">
+                                    <?php 
+                                    if (isset($historial_logs)) {
+                                        include($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/historial_logs_tabla.php');
+                                    } else {
+                                        echo '<p class="text-center">Seleccione la pestaña "Historial de Cambios" para ver los registros.</p>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -330,6 +417,74 @@
 
 
             });
+
+            // Funcionalidad para las pestañas y filtros del historial
+            $('#historial-tab').on('click', function() {
+                // Cargar historial cuando se hace clic en la pestaña
+                if (!$(this).hasClass('loaded')) {
+                    cargarHistorial();
+                    $(this).addClass('loaded');
+                }
+            });
+
+            // Aplicar filtros
+            $('#aplicarFiltros').on('click', function() {
+                cargarHistorial();
+            });
+
+            // Limpiar filtros
+            $('#limpiarFiltros').on('click', function() {
+                $('#filtro_usuario').val('');
+                $('#filtro_anio').val('');
+                $('#filtro_accion').val('');
+                cargarHistorial();
+            });
+
+            // Función para cargar el historial con filtros
+            function cargarHistorial() {
+                var filtro_usuario = $('#filtro_usuario').val();
+                var filtro_anio = $('#filtro_anio').val();
+                var filtro_accion = $('#filtro_accion').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/liceo/controladores/anio_academico_controlador.php",
+                    data: {
+                        'action': 'historialLogs',
+                        'ajax': '1',
+                        'filtro_usuario': filtro_usuario,
+                        'filtro_anio': filtro_anio,
+                        'filtro_accion': filtro_accion
+                    },
+                    success: function(response) {
+                        $('#historial-container').html(response);
+                        
+                        // Inicializar DataTable para la tabla del historial
+                        if ($.fn.DataTable.isDataTable('#historialTable')) {
+                            $('#historialTable').DataTable().destroy();
+                        }
+                        
+                        $('#historialTable').DataTable({
+                            language: {
+                                search: 'Buscar',
+                                info: 'Mostrando página _PAGE_ de _PAGES_',
+                                infoEmpty: 'No se han encontrado resultados',
+                                infoFiltered: '(se han encontrado _MAX_ resultados)',
+                                lengthMenu: 'Mostrar _MENU_ por página',
+                                zeroRecords: '0 resultados encontrados'
+                            },
+                            order: [[4, 'desc']], // Ordenar por fecha descendente
+                            columnDefs: [{
+                                targets: [0],
+                                visible: false
+                            }]
+                        });
+                    },
+                    error: function() {
+                        $('#historial-container').html('<p class="text-center text-danger">Error al cargar el historial.</p>');
+                    }
+                });
+            }
         });
     </script>
 

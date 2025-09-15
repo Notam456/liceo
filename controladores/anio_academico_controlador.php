@@ -78,12 +78,47 @@ switch ($action) {
         if (isset($_POST['id_anio'])){
             $id = $_POST['id_anio'];
             $resultado = $anioAcademicoModelo->establecerAnioActivo($id);
-              $_SESSION['status'] = $resultado ? "Año activo actualizado correctamente" : "No se pudo actualizar el año activo";
+            
+            if ($resultado['resultado'] && isset($_SESSION['id_usuario'])) {
+                // Registrar desactivación del año anterior si existía
+                if ($resultado['anio_anterior'] && $resultado['anio_anterior'] != $id) {
+                    $anioAcademicoModelo->registrarLogAnio($resultado['anio_anterior'], $_SESSION['id_usuario'], 'desactivar');
+                }
+                
+                // Registrar activación del nuevo año
+                $anioAcademicoModelo->registrarLogAnio($id, $_SESSION['id_usuario'], 'activar');
+            }
+            
+            $_SESSION['status'] = $resultado['resultado'] ? "Año activo actualizado correctamente" : "No se pudo actualizar el año activo";
         }
+        break;
+
+    case 'historialLogs':
+        $filtro_usuario = isset($_GET['filtro_usuario']) ? $_GET['filtro_usuario'] : null;
+        $filtro_anio = isset($_GET['filtro_anio']) ? $_GET['filtro_anio'] : null;
+        $filtro_accion = isset($_GET['filtro_accion']) ? $_GET['filtro_accion'] : null;
+        
+        $historial_logs = $anioAcademicoModelo->obtenerHistorialLogs($filtro_usuario, $filtro_anio, $filtro_accion);
+        $usuarios_filtro = $anioAcademicoModelo->obtenerUsuariosParaFiltro();
+        $anios_filtro = $anioAcademicoModelo->obtenerAniosParaFiltro();
+        
+        if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
+            // Respuesta AJAX para actualizar solo la tabla
+            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/historial_logs_tabla.php');
+        } else {
+            // Cargar la vista completa
+            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/anio_academico_vista.php');
+        }
+        break;
 
     case 'listar':
     default:
         $anios_academicos = $anioAcademicoModelo->obtenerTodosLosAniosAcademicos();
+        
+        // Cargar datos para los filtros del historial
+        $usuarios_filtro = $anioAcademicoModelo->obtenerUsuariosParaFiltro();
+        $anios_filtro = $anioAcademicoModelo->obtenerAniosParaFiltro();
+        
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/anio_academico_vista.php');
         break;
 }
