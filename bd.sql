@@ -70,6 +70,7 @@ CREATE TABLE estudiante (
     fecha_nacimiento DATE,
     contacto VARCHAR(100),
     id_sector INT,
+    id_grado INT,
     direccion_exacta TEXT,
     punto_referencia TEXT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
