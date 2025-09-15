@@ -1,6 +1,6 @@
 # Sistema de Gestión Escolar
 
-Este es un sistema de gestión escolar basado en la web desarrollado en PHP. La aplicación proporciona una solución integral para la gestión de diversas actividades escolares, incluyendo la gestión de estudiantes, profesores, calificaciones, asistencia y más.
+Este es un sistema de gestión escolar basado en la web desarrollado en PHP. La aplicación proporciona una solución integral para la gestión de diversas actividades escolares, incluyendo la gestión de estudiantes, profesores, asistencia y más.
 
 ## Características
 
