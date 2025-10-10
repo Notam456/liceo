@@ -75,6 +75,28 @@ class AsistenciaModelo
         }
     }
 
+    public function obtenerDetalleMateriasAsistidas($id_asistencia)
+    {
+        $query = "SELECT m.nombre
+                  FROM asistencia_detalle ad
+                  JOIN asigna_materia am ON ad.id_asignacion = am.id_asignacion
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  WHERE ad.id_asistencia = ?";
+        return $this->executeQuery($query, [$id_asistencia], "i");
+    }
+
+    public function actualizarAsistenciaDetallada($id_asistencia, $materias_asistidas)
+    {
+        // Primero, eliminar los detalles existentes
+        $queryDelete = "DELETE FROM asistencia_detalle WHERE id_asistencia = ?";
+        $this->executeQuery($queryDelete, [$id_asistencia], "i");
+
+        // Luego, insertar los nuevos detalles
+        if (!empty($materias_asistidas)) {
+            $this->registrarAsistenciaDetallada($id_asistencia, $materias_asistidas);
+        }
+    }
+
     public function obtenerEstudiantesPorSeccion($seccion)
     {
         $query = "SELECT id_estudiante, nombre, apellido FROM estudiante WHERE id_seccion = ? ORDER BY apellido, nombre";

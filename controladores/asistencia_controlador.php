@@ -116,22 +116,31 @@ switch ($action) {
             
             if (mysqli_num_rows($result) > 0) {
                 echo '<table class="table table-striped">';
-                echo '<thead><tr><th>Estudiante</th><th>C.I</th><th>Estado</th><th>Observación</th></tr></thead>';
+                echo '<thead><tr><th>Estudiante</th><th>C.I</th><th>Estado</th><th>Observación/Materias</th></tr></thead>';
                 echo '<tbody>';
                 while ($row = mysqli_fetch_assoc($result)) {
                     $estado = '';
+                    $detalle = '';
                     if ($row['presente']) {
                         $estado = '<span class="badge bg-success">Presente</span>';
+                        $materias_result = $asistenciaModelo->obtenerDetalleMateriasAsistidas($row['id_asistencia']);
+                        $materias = [];
+                        while($materia = mysqli_fetch_assoc($materias_result)) {
+                            $materias[] = $materia['nombre'];
+                        }
+                        $detalle = 'Asistió a: ' . implode(', ', $materias);
                     } else if ($row['justificado']) {
                         $estado = '<span class="badge bg-warning">Justificado</span>';
+                        $detalle = $row['observacion'] ?: 'N/A';
                     } else {
                         $estado = '<span class="badge bg-danger">Ausente</span>';
+                        $detalle = 'N/A';
                     }
                     echo '<tr>';
                     echo '<td>' . $row['nombre'] . ' ' . $row['apellido'] . '</td>';
                     echo '<td>' . $row['cedula'] . '</td>';
                     echo '<td>' . $estado . '</td>';
-                    echo '<td>' . ($row['observacion'] ?: 'N/A') . '</td>';
+                    echo '<td>' . $detalle . '</td>';
                     echo '</tr>';
                 }
                 echo '</tbody></table>';
@@ -188,7 +197,7 @@ switch ($action) {
                 echo '<input type="hidden" name="id_seccion" value="' . $id_seccion . '">';
                 echo '<div class="table-responsive">';
                 echo '<table class="table table-sm">';
-                echo '<thead><tr><th>Estudiante</th><th>Estado</th><th>Observación</th></tr></thead>';
+                echo '<thead><tr><th>Estudiante</th><th>Materias Asistidas</th><th>Justificación</th></tr></thead>';
                 echo '<tbody>';
                 while ($row = mysqli_fetch_assoc($result)) {
                     echo '<tr>';
@@ -196,25 +205,27 @@ switch ($action) {
                     echo '<td>';
                     echo '<input type="hidden" name="id_asistencia[]" value="' . $row['id_asistencia'] . '">';
                     
-                    $presente = $row['presente'];
-                    $ausente = !$row['presente'] && !$row['justificado'];
-                    $justificado = $row['justificado'];
+                    $dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                    $dia_semana = $dias_semana[date('N', strtotime($fecha)) - 1];
+                    $materias_del_dia = $horarioModelo->getMateriasPorSeccionYDia($id_seccion, $dia_semana);
+
+                    $materias_asistidas_result = $asistenciaModelo->obtenerDetalleMateriasAsistidas($row['id_asistencia']);
+                    $materias_asistidas = [];
+                    while($materia = mysqli_fetch_assoc($materias_asistidas_result)) {
+                        $materias_asistidas[] = $materia['nombre'];
+                    }
+
+                    foreach ($materias_del_dia as $materia) {
+                        $checked = in_array($materia['nombre_materia'], $materias_asistidas) ? 'checked' : '';
+                        echo '<div class="form-check">';
+                        echo '<input class="form-check-input materia-checkbox" type="checkbox" name="asistencia[' . $row['id_asistencia'] . '][materias][]" value="' . $materia['id_asignacion'] . '" ' . $checked . '>';
+                        echo '<label class="form-check-label">' . htmlspecialchars($materia['nombre_materia']) . '</label>';
+                        echo '</div>';
+                    }
                     
-                    echo '<div class="form-check form-check-inline">';
-                    echo '<input class="form-check-input estado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="P"' . ($presente ? ' checked' : '') . '>';
-                    echo '<label class="form-check-label">P</label>';
-                    echo '</div>';
-                    echo '<div class="form-check form-check-inline">';
-                    echo '<input class="form-check-input estado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="A"' . ($ausente ? ' checked' : '') . '>';
-                    echo '<label class="form-check-label">A</label>';
-                    echo '</div>';
-                    echo '<div class="form-check form-check-inline">';
-                    echo '<input class="form-check-input estado-radio justificado-radio" type="radio" name="estado_' . $row['id_asistencia'] . '" value="J"' . ($justificado ? ' checked' : '') . '>';
-                    echo '<label class="form-check-label">J</label>';
-                    echo '</div>';
                     echo '</td>';
                     echo '<td>';
-                    echo '<textarea class="form-control form-control-sm justificado-note" name="observacion_' . $row['id_asistencia'] . '" rows="2"' . (!$justificado ? ' style="display:none;"' : '') . '>' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
+                    echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="display:none;">' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -236,12 +247,17 @@ switch ($action) {
             $success = true;
             
             foreach ($ids_asistencia as $id_asistencia) {
-                $estado = $_POST['estado_' . $id_asistencia] ?? 'P';
-                $observacion = $_POST['observacion_' . $id_asistencia] ?? '';
+                $materias_asistidas = isset($_POST['asistencia'][$id_asistencia]['materias']) ? $_POST['asistencia'][$id_asistencia]['materias'] : [];
+                $justificacion = isset($_POST['asistencia'][$id_asistencia]['justificacion']) ? trim($_POST['asistencia'][$id_asistencia]['justificacion']) : '';
                 
-                $justificado = ($estado === 'J') ? 1 : 0;
+                $justificado = 0;
+                if (empty($materias_asistidas) && !empty($justificacion)) {
+                    $justificado = 1;
+                }
                 
-                $result = $asistenciaModelo->actualizarAsistencia($id_asistencia, $justificado, $observacion);
+                $result = $asistenciaModelo->actualizarAsistencia($id_asistencia, $justificado, $justificacion);
+                $asistenciaModelo->actualizarAsistenciaDetallada($id_asistencia, $materias_asistidas);
+
                 if (!$result) {
                     $success = false;
                 }

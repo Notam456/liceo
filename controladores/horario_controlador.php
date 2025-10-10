@@ -1,6 +1,5 @@
 <?php
 session_start();
-header('Content-Type: application/json'); // Set JSON header for all AJAX responses
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/horario_modelo.php');
 

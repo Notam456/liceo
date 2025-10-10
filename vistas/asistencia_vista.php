@@ -395,7 +395,7 @@
             $('#guardarCambios').click(function() {
                 var formData = $('#formModificarAsistencia').serialize();
                 formData += '&action=actualizar_asistencia_masiva';
-                
+
                 $.ajax({
                     url: '/liceo/controladores/asistencia_controlador.php',
                     type: 'POST',
@@ -403,11 +403,12 @@
                     success: function(response) {
                         Swal.fire('¡Actualizado!', response, 'success').then(() => {
                             $('#modificarAsistenciaModal').modal('hide');
+                            // Consider reloading only the table data instead of the whole page for better UX
                             location.reload();
                         });
                     },
                     error: function() {
-                        Swal.fire('Error', 'No se pudo actualizar la asistencia', 'error');
+                        Swal.fire('Error', 'No se pudo actualizar la asistencia.', 'error');
                     }
                 });
             });
