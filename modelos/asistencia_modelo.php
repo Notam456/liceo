@@ -31,20 +31,22 @@ class AsistenciaModelo
     public function registrarAsistencia($id_estudiante, $fecha, $materias_asistidas, $justificacion, $seccion, $profesor)
     {
         $idCoordinador = (is_numeric($profesor) && (int)$profesor > 0) ? (int)$profesor : null;
-
+        $inasistente = 0;
         // Determinar el estado general
         $justificado = 0;
         if (empty($materias_asistidas)) {
             if (!empty($justificacion)) {
                 $justificado = 1; // Justificado
+            } else {
+                $inasistente = 1;
             }
         }
 
         // Insertar el registro principal de asistencia
-        $query = "INSERT INTO asistencia (id_estudiante, fecha, justificado, observacion, id_seccion, id_coordinador)
-                  VALUES (?, ?, ?, ?, ?, ?)";
-        $params = [$id_estudiante, $fecha, $justificado, $justificacion, $seccion, $idCoordinador];
-        $types = "isisii";
+        $query = "INSERT INTO asistencia (id_estudiante, fecha, justificado, observacion, id_seccion, id_coordinador, inasistencia)
+                  VALUES (?, ?, ?, ?, ?, ?,?)";
+        $params = [$id_estudiante, $fecha, $justificado, $justificacion, $seccion, $idCoordinador, $inasistente];
+        $types = "isisiii";
 
         $stmt = mysqli_prepare($this->conn, $query);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
@@ -103,8 +105,8 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$seccion], "s");
     }
 
-    
-        public function filtrarAsistencia($seccion, $fecha)
+
+    public function filtrarAsistencia($seccion, $fecha)
     {
         $query = "SELECT a.id_asistencia, a.fecha, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
                   FROM asistencia a
@@ -171,7 +173,7 @@ class AsistenciaModelo
 
     public function obtenerGrados()
     {
-       switch ($_SESSION['tipo_cargo']) {
+        switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
                 $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 ORDER BY g.numero_anio";
                 break;
@@ -196,21 +198,30 @@ class AsistenciaModelo
     public function obtenerAsistenciasAgrupadasPorFecha()
     {
         $query = "SELECT 
-                    a.fecha,
-                    s.id_seccion,
-                    s.letra,
-                    g.numero_anio,
-                    p.nombre AS nombre_prof, 
-                    p.apellido AS apellido_prof,
-                    COUNT(a.id_asistencia) as total_estudiantes,
-                    SUM(CASE WHEN a.justificado = 0 AND NOT EXISTS (SELECT 1 FROM asistencia_detalle ad WHERE ad.id_asistencia = a.id_asistencia) THEN 1 ELSE 0 END) as ausentes,
-                    SUM(a.justificado) as justificados
-                  FROM asistencia a
-                  JOIN seccion s ON a.id_seccion = s.id_seccion
-                  JOIN grado g ON s.id_grado = g.id_grado
-                  LEFT JOIN profesor p ON a.id_coordinador = p.id_profesor
-                  GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
-                  ORDER BY a.fecha DESC, g.numero_anio, s.letra";
+    a.fecha,
+    s.id_seccion,
+    s.letra,
+    g.numero_anio,
+    p.nombre AS nombre_prof,
+    p.apellido AS apellido_prof,
+    COUNT(a.id_asistencia) AS total_estudiantes,
+    SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) AS ausentes,
+    SUM(a.justificado) AS justificados
+FROM asistencia a
+JOIN seccion s ON a.id_seccion = s.id_seccion
+JOIN grado g ON s.id_grado = g.id_grado
+LEFT JOIN profesor p ON a.id_coordinador = p.id_profesor
+GROUP BY 
+    a.fecha, 
+    s.id_seccion, 
+    s.letra, 
+    g.numero_anio,
+    p.nombre,
+    p.apellido
+ORDER BY 
+    a.fecha DESC, 
+    g.numero_anio, 
+    s.letra;";
         return $this->executeQuery($query);
     }
 
@@ -265,32 +276,31 @@ class AsistenciaModelo
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
                   WHERE 1=1";
-        
+
         $params = [];
         $types = "";
-        
+
         if (!empty($fecha)) {
             $query .= " AND a.fecha = ?";
             $params[] = $fecha;
             $types .= "s";
         }
-        
+
         if (!empty($seccion)) {
             $query .= " AND a.id_seccion = ?";
             $params[] = $seccion;
             $types .= "i";
         }
-        
+
         if (!empty($grado)) {
             $query .= " AND g.id_grado = ?";
             $params[] = $grado;
             $types .= "i";
         }
-        
+
         $query .= " GROUP BY a.fecha, s.id_seccion, s.letra, g.numero_anio
                    ORDER BY a.fecha DESC, g.numero_anio, s.letra";
-        
+
         return $this->executeQuery($query, $params, $types);
     }
-
 }
