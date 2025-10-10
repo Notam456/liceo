@@ -22,8 +22,14 @@
                 <?php unset($_SESSION['status']);
                 } ?>
                 <div class="card">
-                    <div class="card-header">
-                        <h4>Visitas Agendadas <i class="bi bi-calendar-check"></i></h4>
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0">Visitas Agendadas <i class="bi bi-calendar-check"></i></h4>
+                        <!-- NUEVO: Botón para generar reporte general -->
+                        <a href="/liceo/controladores/visita_controlador.php?action=generar_reporte_general_visitas" 
+                           class="btn btn-secondary btn-sm" 
+                           target="_blank">
+                             Generar Reporte General
+                        </a>
                     </div>
                     <div class="card-body">
                         <table class="table table-striped" id="myTable">

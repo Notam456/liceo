@@ -10,7 +10,7 @@ class ReporteModelo
         $this->db = $db;
     }
 
-    public function obtenerReporteAusencias($desde = null, $hasta = null)
+    public function obtenerReporteAusencias($desde = null, $hasta = null, $id_seccion = null)
     {
         $where_condicion = "";
         if ($desde && $hasta) {
@@ -26,6 +26,12 @@ class ReporteModelo
                 $condicion = " g.numero_anio > 3";
                 break;
                 // en 'Administrador' no agregamos condición extra
+        }
+
+        // Jose Yajure: Condición para filtrar por sección
+        $seccion_condicion = "";
+        if ($id_seccion) {
+            $seccion_condicion = " AND e.id_seccion = {$id_seccion}";
         }
 
         $query = "SELECT 
@@ -45,7 +51,7 @@ class ReporteModelo
                  LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
-                  WHERE $condicion
+                  WHERE {$condicion} {$seccion_condicion}  
                  GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula
                 ";
 
@@ -76,6 +82,66 @@ class ReporteModelo
         return $reporte;
     }
 
+    public function obtenerReportePorSeccion($id_seccion, $desde = null, $hasta = null)
+    {
+        $where_condicion = "";
+        if ($desde && $hasta) {
+            $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
+        }
+
+        $condicion = "1=1"; 
+        switch ($_SESSION['tipo_cargo']) {
+            case 'inferior':
+                $condicion = " g.numero_anio < 4";
+                break;
+            case 'superior':
+                $condicion = " g.numero_anio > 3";
+                break;
+                // en 'Administrador' no agregamos condición extra
+        }
+
+        $query = "SELECT 
+                    e.id_estudiante,
+                    CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
+                    e.cedula AS cedula,
+                    e.contacto AS contacto,
+                    g.numero_anio AS grado,
+                    s.letra AS seccion,
+                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
+                    COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
+                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
+                 FROM estudiante e
+                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
+                 LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                 LEFT JOIN grado g ON s.id_grado = g.id_grado
+                 WHERE {$condicion} AND e.id_seccion = {$id_seccion}
+                 GROUP BY e.id_estudiante, nombre_completo, cedula, contacto, grado, seccion
+                 ORDER BY nombre_completo";
+
+        $result = $this->db->query($query);
+
+        if (!$result) {
+            throw new Exception("Error en la consulta: " . $this->db->error);
+        }
+
+        $reporte = [];
+        while ($row = $result->fetch_assoc()) {
+            $reporte[] = [
+                'id_estudiante' => $row['id_estudiante'],
+                'nombre' => $row['nombre_completo'],
+                'cedula' => $row['cedula'],
+                'contacto' => $row['contacto'],
+                'grado' => $row['grado'],
+                'seccion' => $row['seccion'],
+                'ausencias' => (int)$row['ausencias'],
+                'justificadas' => (int)$row['justificadas'],
+                'total' => (int)$row['total']
+            ];
+        }
+
+        return $reporte;
+    }
+
     public function obtenerFechasAusencias($id_estudiante, $desde = null, $hasta = null)
     {
         $where_condicion = "";
@@ -83,7 +149,7 @@ class ReporteModelo
             $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
         }
 
-        $query = "SELECT a.fecha, a.justificado 
+        $query = "SELECT a.fecha, a.justificado, a.observacion
                   FROM asistencia a 
                   WHERE a.id_estudiante = {$id_estudiante} 
                   AND (a.inasistencia = 1 OR a.justificado = 1)
@@ -100,7 +166,8 @@ class ReporteModelo
         while ($row = $result->fetch_assoc()) {
             $fechas[] = [
                 'fecha' => $row['fecha'],
-                'justificado' => (bool)$row['justificado']
+                'justificado' => (bool)$row['justificado'],
+                'observacion' => $row['observacion']
             ];
         }
 

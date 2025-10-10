@@ -33,14 +33,6 @@ if (!isset($reporte)) {
             margin-bottom: 20px;
         }
 
-        .tabla-ausencias {
-            margin-top: 10px;
-        }
-
-        .tabla-ausencias th {
-            white-space: nowrap;
-        }
-
         .resumen {
             display: flex;
             gap: 12px;
@@ -75,9 +67,11 @@ if (!isset($reporte)) {
                 <?php endif; ?>
 
                 <div class="card">
-                    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0"><i class="bi bi-clipboard2-pulse"></i> Reporte de Ausencias</h4>
-                        <span class="small">Período actual</span>
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0">Reporte de Ausencias <i class="bi bi-clipboard2-pulse"></i></h4>
+                        <button class="btn btn-secondary btn-sm" id="generarReporteGeneral">
+                            Reporte General por Sección
+                        </button>
                     </div>
                     <div class="card-body">
                         <?php
@@ -111,6 +105,20 @@ if (!isset($reporte)) {
                                     <label for="filtroHasta" class="form-label">Hasta:</label>
                                     <input type="date" class="form-control" id="filtroHasta" value="<?= $anio_hasta ?>" min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
                                 </div>
+                                <div class="col-md-3">
+                                    <label for="filtroSeccion" class="form-label">Filtrar por Sección:</label>
+                                    <select class="form-select" id="filtroSeccion">
+                                        <option value="">Todas las Secciones</option>
+                                        <?php 
+                                        if (isset($secciones) && is_array($secciones)):
+                                            foreach ($secciones as $seccion): ?>
+                                            <option value="<?= $seccion['id_seccion'] ?>">
+                                                <?= htmlspecialchars($seccion['grado']) ?>
+                                            </option>
+                                        <?php endforeach; 
+                                        endif; ?>
+                                    </select>
+                                </div>
                                 <div class="col-md-2 d-flex align-items-end">
                                     <button class="btn btn-secondary" id="limpiarFiltros">Limpiar</button>
                                 </div>
@@ -122,10 +130,11 @@ if (!isset($reporte)) {
                             <div id="lista-alertas" class="mt-2"></div>
                         </div>
 
-                        <div class="table-responsive tabla-ausencias">
-                            <table class="table table-striped table-hover align-middle" id="tablaReportes">
-                                <thead class="table-dark">
-                                    <tr>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tablaReportes">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th style="display: none;">#</th>
                                         <th>Estudiante</th>
                                         <th>Sección</th>
                                         <th>Contacto</th>
@@ -140,6 +149,7 @@ if (!isset($reporte)) {
                                 <tbody>
                                     <?php foreach ($reporte as $item): ?>
                                         <tr>
+                                            <td style="display: none;"><?= $item['id_estudiante'] ?></td>
                                             <td><?= htmlspecialchars($item['nombre']) ?></td>
                                             <td><?= htmlspecialchars($item['seccion']) ?></td>
                                             <td><?= htmlspecialchars($item['contacto']) ?></td>
@@ -160,7 +170,6 @@ if (!isset($reporte)) {
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </td>
-
                                             <td>
                                                 <?php if ($item['total'] > 0): ?>
                                                     <a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $item['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
@@ -169,7 +178,6 @@ if (!isset($reporte)) {
                                                     </a>
                                                 <?php endif; ?>
                                             </td>
-
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -188,146 +196,197 @@ if (!isset($reporte)) {
     </footer>
 
     <script>
-        $(document).ready(function() {
-            var table = $('#tablaReportes').DataTable({
-                order: [
-                    [6, 'desc']
-                ],
-                dom: '<"top"f>rt<"bottom"lip><"clear">',
-                language: {
-                    search: 'Buscar:',
-                    lengthMenu: 'Mostrar _MENU_ registros',
-                    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-                    paginate: {
-                        first: 'Primero',
-                        last: 'Último',
-                        next: 'Siguiente',
-                        previous: 'Anterior'
-                    }
+    $(document).ready(function() {
+        var table = $('#tablaReportes').DataTable({
+            order: [
+                [7, 'desc']
+            ],
+            language: {
+                search: 'Buscar',
+                info: 'Mostrando pagina _PAGE_ de _PAGES_',
+                infoEmpty: 'No se han encontrado resultados',
+                infoFiltered: '(se han encontrado _MAX_ resultados)',
+                lengthMenu: 'Mostrar _MENU_ por pagina',
+                zeroRecords: '0 resultados encontrados'
+            },
+            columnDefs: [{
+                    width: '120px',
+                    targets: [8, 9]
+                },
+                {
+                    visible: false,
+                    target: 0
                 }
-            });
-
-            $('#filtroCedula').keyup(function() {
-                table.column(3).search(this.value).draw();
-            });
-
-            var alertas = <?= json_encode(array_filter($reporte, function ($item) {
-                                return $item['total_ultima_semana'] >= 3 && !$item['tiene_visita_agendada'];
-                            })) ?>;
-            if (alertas.length > 0) {
-                $('#alert-ausencias').show();
-                $('#lista-alertas').html(
-                    alertas.map(item =>
-                        `<div class="card-alumno alert d-flex justify-content-between align-items-center">
-                        <div>
-                            ${item.nombre} (${item.cedula}) -
-                            <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
-                        </div>
-                        ${item.tiene_visita_agendada
-                            ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
-                            : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
-                        }
-                    </div>`
-                    ).join('')
-                );
-            }
-
-            $(document).on('click', '.schedule-visit', function() {
-                var studentId = $(this).data('id-estudiante');
-                $('#visitaModal #id_estudiante_visita').val(studentId);
-            });
-
-            function cargarReporte() {
-                var actionButton = '';
-                if (item.total > 0) {
-                    actionButton += '<a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=' + item.id_estudiante + '&desde=' + desde + '&hasta=' + hasta + '" class="btn btn-info btn-sm" target="_blank">Generar Reporte</a> ';
-                }
-
-                if (item.total_ultima_semana >= 3) {
-                    if (item.tiene_visita_agendada) {
-                        actionButton += '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
-                    } else {
-                        actionButton += '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
-                    }
-                }
-
-                var url = `/liceo/controladores/reporte_controlador.php?desde=${desde}&hasta=${hasta}`;
-
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            var table = $('#tablaReportes').DataTable();
-                            table.clear();
-
-                            var alertas = [];
-
-                            response.data.forEach(function(item) {
-                                if (item.total_ultima_semana >= 3 && !item.tiene_visita_agendada) {
-                                    alertas.push(item);
-                                }
-
-                                var actionButton = '';
-                                if (item.total_ultima_semana >= 3) {
-                                    if (item.tiene_visita_agendada) {
-                                        actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
-                                    } else {
-                                        actionButton = '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
-                                    }
-                                }
-
-                                table.row.add([
-                                    item.nombre,
-                                    item.seccion,
-                                    item.contacto,
-                                    item.cedula,
-                                    '<span class="badge bg-danger">' + item.ausencias + '</span>',
-                                    '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>',
-                                    '<span class="badge ' + (item.total_ultima_semana >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>',
-                                    actionButton
-                                ]).draw(false);
-                            });
-
-                            if (alertas.length > 0) {
-                                $('#alert-ausencias').show();
-                                $('#lista-alertas').html(
-                                    alertas.map(item =>
-                                        `<div class="card-alumno alert d-flex justify-content-between align-items-center">
-                                        <div>
-                                            ${item.nombre} (${item.cedula}) -
-                                            <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
-                                        </div>
-                                        ${item.tiene_visita_agendada
-                                            ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
-                                            : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
-                                        }
-                                    </div>`
-                                    ).join('')
-                                );
-                            } else {
-                                $('#alert-ausencias').hide();
-                            }
-                        } else {
-                            console.error('Error fetching report data:', response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                    }
-                });
-            }
-
-            $('#filtroDesde, #filtroHasta').change(cargarReporte);
-
-            $('#limpiarFiltros').click(function() {
-                $('#filtroDesde').val('<?= $anio_desde ?>');
-                $('#filtroHasta').val('<?= $anio_hasta ?>');
-                cargarReporte();
-            });
+            ]
         });
+
+        $('#filtroCedula').keyup(function() {
+            table.column(4).search(this.value).draw();
+        });
+
+        var alertas = <?= json_encode(array_filter($reporte, function ($item) {
+                            return $item['total_ultima_semana'] >= 3 && !$item['tiene_visita_agendada'];
+                        })) ?>;
+        if (alertas.length > 0) {
+            $('#alert-ausencias').show();
+            $('#lista-alertas').html(
+                alertas.map(item =>
+                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
+                    <div>
+                        ${item.nombre} (${item.cedula}) -
+                        <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
+                    </div>
+                    ${item.tiene_visita_agendada
+                        ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
+                        : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
+                    }
+                </div>`
+                ).join('')
+            );
+        }
+
+        $(document).on('click', '.schedule-visit', function() {
+            var studentId = $(this).data('id-estudiante');
+            $('#visitaModal #id_estudiante_visita').val(studentId);
+        });
+
+        function cargarReporte() {
+            var desde = $('#filtroDesde').val();
+            var hasta = $('#filtroHasta').val();
+            var id_seccion = $('#filtroSeccion').val();
+
+            var url = `/liceo/controladores/reporte_controlador.php?desde=${desde}&hasta=${hasta}&id_seccion=${id_seccion}`;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        var table = $('#tablaReportes').DataTable();
+                        table.clear();
+
+                        var alertas = [];
+                        var totalEstudiantes = 0;
+                        var totalAusencias = 0;
+                        var totalJustificados = 0;
+
+                        response.data.forEach(function(item) {
+                            if (item.total_ultima_semana >= 3 && !item.tiene_visita_agendada) {
+                                alertas.push(item);
+                            }
+
+                            // Actualizar estadísticas
+                            totalEstudiantes++;
+                            totalAusencias += item.ausencias;
+                            totalJustificados += item.justificadas;
+
+                            var actionButton = '';
+                            if (item.total_ultima_semana >= 3) {
+                                if (item.tiene_visita_agendada) {
+                                    actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
+                                } else {
+                                    actionButton = '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
+                                }
+                            }
+
+                            var reportButton = '';
+                            if (item.total > 0) {
+                                reportButton = '<a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=' + item.id_estudiante + '&desde=' + desde + '&hasta=' + hasta + '" class="btn btn-secondary btn-sm" target="_blank">Generar Reporte</a>';
+                            }
+
+                            // AGREGAR LA FILA CORRECTAMENTE CON TODAS LAS COLUMNAS
+                            table.row.add([
+                                item.id_estudiante, // Columna 0 - oculta
+                                item.nombre,        // Columna 1
+                                item.seccion,       // Columna 2
+                                item.contacto,      // Columna 3
+                                item.cedula,        // Columna 4
+                                '<span class="badge bg-danger">' + item.ausencias + '</span>', // Columna 5
+                                '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>', // Columna 6
+                                '<span class="badge ' + (item.total_ultima_semana >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>', // Columna 7
+                                actionButton,       // Columna 8
+                                reportButton        // Columna 9
+                            ]);
+                        });
+
+                        table.draw();
+
+                        // ACTUALIZAR ESTADÍSTICAS
+                        $('.resumen .stat:nth-child(1) .badge').text(totalEstudiantes);
+                        $('.resumen .stat:nth-child(2) .badge').text(totalAusencias);
+                        $('.resumen .stat:nth-child(3) .badge').text(totalJustificados);
+
+                        // ACTUALIZAR ALERTAS
+                        if (alertas.length > 0) {
+                            $('#alert-ausencias').show();
+                            $('#lista-alertas').html(
+                                alertas.map(item =>
+                                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
+                                    <div>
+                                        ${item.nombre} (${item.cedula}) -
+                                        <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
+                                    </div>
+                                    ${item.tiene_visita_agendada
+                                        ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
+                                        : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
+                                    }
+                                </div>`
+                                ).join('')
+                            );
+                        } else {
+                            $('#alert-ausencias').hide();
+                        }
+                    } else {
+                        console.error('Error fetching report data:', response.error);
+                        alert('Error al cargar los datos: ' + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    alert('Error al cargar los datos. Por favor, intente nuevamente.');
+                }
+            });
+        }
+
+        // ASIGNAR EVENTOS PARA LOS FILTROS
+        $('#filtroDesde, #filtroHasta, #filtroSeccion').on('change', function() {
+            cargarReporte();
+        });
+
+        $('#limpiarFiltros').click(function() {
+            $('#filtroDesde').val('<?= $anio_desde ?>');
+            $('#filtroHasta').val('<?= $anio_hasta ?>');
+            $('#filtroSeccion').val('');
+            $('#filtroCedula').val('');
+            table.column(4).search('').draw();
+            cargarReporte();
+        });
+
+        // CARGAR REPORTE INICIAL SI HAY FILTROS APLICADOS
+        if ($('#filtroSeccion').val() || $('#filtroDesde').val() !== '<?= $anio_desde ?>' || $('#filtroHasta').val() !== '<?= $anio_hasta ?>') {
+            cargarReporte();
+        }
+
+        // NUEVO: Generar reporte general por sección
+        $('#generarReporteGeneral').click(function() {
+            var id_seccion = $('#filtroSeccion').val();
+            var desde = $('#filtroDesde').val();
+            var hasta = $('#filtroHasta').val();
+            
+            if (!id_seccion) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Seleccione una sección',
+                    text: 'Por favor, seleccione una sección para generar el reporte general.'
+                });
+                return;
+            }
+            
+            var url = `/liceo/controladores/reporte_controlador.php?action=generar_reporte_general_seccion&id_seccion=${id_seccion}&desde=${desde}&hasta=${hasta}`;
+            window.open(url, '_blank');
+        });
+    });
     </script>
 </body>
 
