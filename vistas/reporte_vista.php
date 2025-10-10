@@ -157,12 +157,12 @@ if (!isset($reporte)) {
                                             <td><span class="badge bg-danger" title="Ausencias no justificadas"><?= $item['ausencias'] ?></span></td>
                                             <td><span class="badge bg-warning text-dark" title="Ausencias justificadas"><?= $item['justificadas'] ?></span></td>
                                             <td>
-                                                <span class="badge <?= $item['total_ultima_semana'] >= 3 ? 'bg-danger' : 'bg-secondary' ?>" title="Total de inasistencias (A + J)">
+                                                <span class="badge <?= $item['total'] >= 3 ? 'bg-danger' : 'bg-secondary' ?>" title="Total de inasistencias (A + J)">
                                                     <?= $item['total'] ?>
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php if ($item['total_ultima_semana'] >= 3): ?>
+                                                <?php if ($item['total'] >= 3): ?>
                                                     <?php if ($item['tiene_visita_agendada']): ?>
                                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
                                                     <?php else: ?>
@@ -225,7 +225,7 @@ if (!isset($reporte)) {
         });
 
         var alertas = <?= json_encode(array_filter($reporte, function ($item) {
-                            return $item['total_ultima_semana'] >= 3 && !$item['tiene_visita_agendada'];
+                            return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
                         })) ?>;
         if (alertas.length > 0) {
             $('#alert-ausencias').show();
@@ -234,7 +234,7 @@ if (!isset($reporte)) {
                     `<div class="card-alumno alert d-flex justify-content-between align-items-center">
                     <div>
                         ${item.nombre} (${item.cedula}) -
-                        <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
+                        <span class="badge bg-danger">${item.total} ausencias en el rango de tiempo especificado</span>
                     </div>
                     ${item.tiene_visita_agendada
                         ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
@@ -272,7 +272,7 @@ if (!isset($reporte)) {
                         var totalJustificados = 0;
 
                         response.data.forEach(function(item) {
-                            if (item.total_ultima_semana >= 3 && !item.tiene_visita_agendada) {
+                            if (item.total >= 3 && !item.tiene_visita_agendada) {
                                 alertas.push(item);
                             }
 
@@ -282,7 +282,7 @@ if (!isset($reporte)) {
                             totalJustificados += item.justificadas;
 
                             var actionButton = '';
-                            if (item.total_ultima_semana >= 3) {
+                            if (item.total >= 3) {
                                 if (item.tiene_visita_agendada) {
                                     actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
                                 } else {
@@ -304,7 +304,7 @@ if (!isset($reporte)) {
                                 item.cedula,        // Columna 4
                                 '<span class="badge bg-danger">' + item.ausencias + '</span>', // Columna 5
                                 '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>', // Columna 6
-                                '<span class="badge ' + (item.total_ultima_semana >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>', // Columna 7
+                                '<span class="badge ' + (item.total >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>', // Columna 7
                                 actionButton,       // Columna 8
                                 reportButton        // Columna 9
                             ]);
@@ -325,7 +325,7 @@ if (!isset($reporte)) {
                                     `<div class="card-alumno alert d-flex justify-content-between align-items-center">
                                     <div>
                                         ${item.nombre} (${item.cedula}) -
-                                        <span class="badge bg-danger">${item.total_ultima_semana} ausencias en la última semana</span>
+                                        <span class="badge bg-danger">${item.total} ausencias en el rango de tiempo especificado</span>
                                     </div>
                                     ${item.tiene_visita_agendada
                                         ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
