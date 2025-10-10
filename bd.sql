@@ -114,6 +114,7 @@ CREATE TABLE asistencia (
     id_seccion INT NOT NULL,
     fecha DATE NOT NULL,
     observacion TEXT,
+    inasistencia BOOLEAN DEFAULT false,
     justificado BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_coordinador) REFERENCES profesor(id_profesor)
         ON DELETE CASCADE ON UPDATE CASCADE,
