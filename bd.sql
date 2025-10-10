@@ -92,13 +92,11 @@ CREATE TABLE materia (
 CREATE TABLE horario (
     id_horario INT AUTO_INCREMENT PRIMARY KEY,
     id_seccion INT NOT NULL,
-    id_materia INT NOT NULL,
+    id_asignacion INT NOT NULL,
     dia ENUM('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'),
-    hora_entrada TIME NOT NULL,
-    hora_salida TIME NOT NULL,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_materia) REFERENCES materia(id_materia)
+    FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -127,7 +125,6 @@ CREATE TABLE asistencia (
     id_estudiante INT NOT NULL,
     id_seccion INT NOT NULL,
     fecha DATE NOT NULL,
-    inasistencia BOOLEAN DEFAULT FALSE,
     observacion TEXT,
     justificado BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_coordinador) REFERENCES profesor(id_profesor)
@@ -135,6 +132,16 @@ CREATE TABLE asistencia (
     FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE asistencia_detalle (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_asistencia INT NOT NULL,
+    id_asignacion INT NOT NULL,
+    FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 

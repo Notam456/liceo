@@ -349,35 +349,45 @@
                 }
             });
 
-            // Cargar estudiantes al seleccionar sección
-            $('#seccionAsistencia').change(function() {
-                var seccion = $(this).val();
+            // Cargar estudiantes al seleccionar sección o cambiar fecha
+            function cargarEstudiantes() {
+                var seccion = $('#seccionAsistencia').val();
                 var fecha = $('#fechaAsistencia').val();
-                if (seccion) {
+
+                if (seccion && fecha) {
+                    $('#listaEstudiantes').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>');
                     $.ajax({
                         url: '/liceo/controladores/asistencia_controlador.php',
                         type: 'POST',
                         data: {
-                            'action': 'obtener_estudiantes',
+                            'action': 'obtener_estudiantes_para_asistencia',
                             'seccion': seccion,
                             'fecha': fecha
                         },
                         success: function(response) {
                             $('#listaEstudiantes').html(response);
+                        },
+                        error: function() {
+                            $('#listaEstudiantes').html('<div class="alert alert-danger">Error al cargar los estudiantes.</div>');
                         }
                     });
                 } else {
-                    $('#listaEstudiantes').html('<p class="text-muted">Seleccione una sección para ver los estudiantes</p>');
+                    $('#listaEstudiantes').html('<p class="text-muted">Seleccione una fecha y sección para ver los estudiantes</p>');
                 }
-            });
+            }
 
-            // Mostrar/ocultar justificación al seleccionar radio
-            $('body').on('change', '.justificado-radio', function() {
-                var textarea = $(this).closest('tr').find('.justificado-note');
-                if ($(this).is(':checked')) {
-                    textarea.show().prop('required', true);
+            $('#seccionAsistencia, #fechaAsistencia').change(cargarEstudiantes);
+
+            // Mostrar/ocultar justificación basado en checkboxes de materias
+            $('body').on('change', '.materia-checkbox', function() {
+                var row = $(this).closest('tr');
+                var checkboxes = row.find('.materia-checkbox');
+                var justificacionInput = row.find('.justificacion-input');
+
+                if (checkboxes.filter(':checked').length === 0) {
+                    justificacionInput.show();
                 } else {
-                    textarea.hide().prop('required', false).val('');
+                    justificacionInput.hide().val('');
                 }
             });
 

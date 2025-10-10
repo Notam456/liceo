@@ -23,59 +23,52 @@ class HorarioModelo {
     }
 
     public function getHorarioBySeccion($id_seccion) {
-        $query = "SELECT h.*, m.nombre AS nombre_materia, p.nombre AS nombre_profesor
+        $query = "SELECT h.id_horario, h.dia, m.nombre AS nombre_materia, p.nombre AS nombre_profesor, p.apellido AS apellido_profesor
                   FROM horario h
-                  JOIN materia m ON h.id_materia = m.id_materia
-                  JOIN profesor p ON h.id_profesor = p.id_profesor
+                  JOIN asigna_materia am ON h.id_asignacion = am.id_asignacion
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  JOIN profesor p ON am.id_profesor = p.id_profesor
                   WHERE h.id_seccion = ?";
         return $this->executeQuery($query, [$id_seccion], "i");
     }
 
-    public function getMaterias() {
-        $query = "SELECT * FROM materia";
+    public function getAsignaciones() {
+        $query = "SELECT am.id_asignacion, m.nombre AS nombre_materia, p.nombre AS nombre_profesor, p.apellido AS apellido_profesor
+                  FROM asigna_materia am
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  JOIN profesor p ON am.id_profesor = p.id_profesor
+                  WHERE am.estado = 'activa'";
         return $this->executeQuery($query);
     }
 
-    public function getProfesores() {
-        $query = "SELECT * FROM profesores";
-        return $this->executeQuery($query);
+    public function getMateriasPorSeccionYDia($id_seccion, $dia) {
+        $query = "SELECT am.id_asignacion, m.nombre AS nombre_materia
+                  FROM horario h
+                  JOIN asigna_materia am ON h.id_asignacion = am.id_asignacion
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  WHERE h.id_seccion = ? AND h.dia = ?";
+        $result = $this->executeQuery($query, [$id_seccion, $dia], "is");
+        $materias = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $materias[] = $row;
+        }
+        return $materias;
     }
 
-    public function guardarBloqueHorario($id_seccion, $dia, $hora_inicio, $hora_fin, $id_materia, $id_profesor) {
-        $horas_inicio_map = ["07:20:00", "08:10:00", "08:50:00", "09:05:00", "09:45:00", "10:25:00", "10:30:00", "11:45:00", "12:10:00", "12:50:00"];
-        $horas_fin_map = ["08:10:00", "08:50:00", "09:05:00", "09:45:00", "10:25:00", "10:30:00", "11:45:00", "12:10:00", "12:50:00", "13:30:00"];
-
-        $hora_inicio_real = $horas_inicio_map[$hora_inicio] ?? "00:00:00";
-        $hora_fin_real = $horas_fin_map[$hora_fin] ?? "00:00:00";
-
-        $query = "INSERT INTO horario (id_seccion, dia, hora_inicio, hora_fin, id_materia, id_profesores)
-                  VALUES (?, ?, ?, ?, ?, ?)";
-
+    public function guardarBloqueHorario($id_seccion, $dia, $id_asignacion) {
+        $query = "INSERT INTO horario (id_seccion, dia, id_asignacion) VALUES (?, ?, ?)";
         $stmt = mysqli_prepare($this->conn, $query);
-        mysqli_stmt_bind_param($stmt, "isssii", $id_seccion, $dia, $hora_inicio_real, $hora_fin_real, $id_materia, $id_profesor);
-
+        mysqli_stmt_bind_param($stmt, "isi", $id_seccion, $dia, $id_asignacion);
         if (mysqli_stmt_execute($stmt)) {
             return mysqli_insert_id($this->conn);
         }
         return false;
     }
 
-    public function eliminarBloqueHorario($id_seccion, $dia, $hora_index) {
-        $horas_inicio_map = ["07:20:00", "08:10:00", "08:50:00", "09:05:00", "09:45:00", "10:25:00", "10:30:00", "11:45:00", "12:10:00", "12:50:00"];
-        $horas_fin_map = ["08:10:00", "08:50:00", "09:05:00", "09:45:00", "10:25:00", "10:30:00", "11:45:00", "12:10:00", "12:50:00", "13:30:00"];
-
-        $hora_inicio_real = $horas_inicio_map[$hora_index] ?? null;
-        $hora_fin_real = $horas_fin_map[$hora_index] ?? null;
-
-        if (!$hora_inicio_real || !$hora_fin_real) {
-            return false;
-        }
-
-        $query = "DELETE FROM horario WHERE id_seccion = ? AND dia = ? AND hora_inicio = ? AND hora_fin = ?";
-
+    public function eliminarBloqueHorario($id_horario) {
+        $query = "DELETE FROM horario WHERE id_horario = ?";
         $stmt = mysqli_prepare($this->conn, $query);
-        mysqli_stmt_bind_param($stmt, "isss", $id_seccion, $dia, $hora_inicio_real, $hora_fin_real);
-
+        mysqli_stmt_bind_param($stmt, "i", $id_horario);
         return mysqli_stmt_execute($stmt);
     }
 }

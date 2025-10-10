@@ -1,79 +1,77 @@
 <?php
 session_start();
+header('Content-Type: application/json'); // Set JSON header for all AJAX responses
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/horario_modelo.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/materia_modelo.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
 
 $horarioModelo = new HorarioModelo($conn);
-$materiaModelo = new MateriaModelo($conn);
-$profesorModelo = new ProfesorModelo($conn);
 
+// Get the action from the request, default to 'mostrar'
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'mostrar';
 
-switch ($action) {
-    case 'guardar':
-        if (isset($_POST['seccion'])) {
-            $id_seccion = $_POST['seccion'];
-            $dia = $_POST['dia'];
-            $inicio = $_POST['inicio'];
-            $fin = $_POST['fin'];
-            $id_materia = $_POST['materia'];
-            $id_profesor = $_POST['profesor'];
+// Handle actions that don't need a full page load first
+if ($action == 'guardar') {
+    if (isset($_POST['seccion']) && isset($_POST['dia']) && isset($_POST['id_asignacion'])) {
+        $id_seccion = $_POST['seccion'];
+        $dia = $_POST['dia'];
+        $id_asignacion = $_POST['id_asignacion'];
 
-            $resultado = $horarioModelo->guardarBloqueHorario($id_seccion, $dia, $inicio, $fin, $id_materia, $id_profesor);
-            echo $resultado ? "Guardado con ID: " . $resultado : "Error al guardar";
-        }
-        exit();
-
-    case 'eliminar':
-        if (isset($_POST['seccion'])) {
-            $id_seccion = $_POST['seccion'];
-            $dia = $_POST['dia'];
-            $hora = $_POST['hora'];
-
-            $resultado = $horarioModelo->eliminarBloqueHorario($id_seccion, $dia, $hora);
-            echo $resultado ? "OK" : "Error al eliminar";
-        }
-        exit();
-
-    case 'mostrar':
-    default:
-        if (isset($_GET['secc'])) {
-            $seccion_id = $_GET['secc'];
-
-            // Data for the view
-            $horario_result = $horarioModelo->getHorarioBySeccion($seccion_id);
-            $horario_existente = [];
-            while ($row = mysqli_fetch_assoc($horario_result)) {
-                $horario_existente[] = $row;
-            }
-
-            $materias_result = $materiaModelo->obtenerTodasLasMaterias();
-            $materias = [];
-            while ($row = mysqli_fetch_assoc($materias_result)) {
-                $materias[] = $row;
-            }
-
-            $profesores_result = $profesorModelo->obtenerTodosLosProfesores();
-            $profesores = [];
-            while ($row = mysqli_fetch_assoc($profesores_result)) {
-                $profesores[] = $row;
-            }
-
-            $horas = [
-                "7:20am - 8:10am", "8:10am - 8:50am", "8:50am - 9:05am", "9:05am - 9:45am",
-                "9:45am - 10:25am", "10:25am - 10:30am", "10:30am - 11:45am", "11:45am - 12:10am",
-                "12:10am - 12:50am", "12:50am - 1:30am"
-            ];
-            $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-
-            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/horario_vista.php');
+        $resultado = $horarioModelo->guardarBloqueHorario($id_seccion, $dia, $id_asignacion);
+        if ($resultado) {
+            echo json_encode(['success' => true, 'id_horario' => $resultado]);
         } else {
-            $_SESSION['status'] = "Por favor, seleccione una sección.";
-            header('Location: /liceo/controladores/seccion_controlador.php');
-            exit();
+            echo json_encode(['success' => false, 'message' => 'Error al guardar el horario.']);
         }
-        break;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Datos incompletos.']);
+    }
+    exit();
 }
-?>
+
+if ($action == 'eliminar') {
+    if (isset($_POST['id_horario'])) {
+        $id_horario = $_POST['id_horario'];
+        $resultado = $horarioModelo->eliminarBloqueHorario($id_horario);
+        if ($resultado) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al eliminar el bloque.']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'ID de horario no proporcionado.']);
+    }
+    exit();
+}
+
+// Default action: display the schedule page
+if ($action == 'mostrar') {
+    // Clear the JSON header for the HTML view
+    header_remove('Content-Type');
+
+    if (isset($_GET['secc'])) {
+        $seccion_id = $_GET['secc'];
+
+        // Data for the view
+        $horario_result = $horarioModelo->getHorarioBySeccion($seccion_id);
+        $horario_existente = [];
+        while ($row = mysqli_fetch_assoc($horario_result)) {
+            $horario_existente[] = $row;
+        }
+
+        $asignaciones_result = $horarioModelo->getAsignaciones();
+        $asignaciones = [];
+        while ($row = mysqli_fetch_assoc($asignaciones_result)) {
+            $asignaciones[] = $row;
+        }
+
+        $dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+        // This will load the HTML file which in turn makes the AJAX calls
+        include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/horario_vista.php');
+    } else {
+        // If no section is selected, redirect back to the sections page
+        $_SESSION['status'] = "Por favor, seleccione una sección para ver o editar el horario.";
+        header('Location: /liceo/controladores/seccion_controlador.php');
+        exit();
+    }
+}
