@@ -16,7 +16,7 @@
                         <h4>Constructor de Horario</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Form for adding new entries -->
+                      
                         <form id="form-horario" class="row g-3 align-items-end mb-4 border p-3 rounded">
                             <div class="col-md-5">
                                 <label for="asignacion" class="form-label">Materia y Profesor</label>
@@ -43,7 +43,7 @@
                             </div>
                         </form>
 
-                        <!-- Display schedule -->
+                       
                         <div class="row">
                             <?php foreach ($dias as $dia): ?>
                                 <div class="col-md-4 mb-3">
@@ -52,7 +52,7 @@
                                             <strong><?= htmlspecialchars($dia) ?></strong>
                                         </div>
                                         <ul class="list-group list-group-flush" id="lista-<?= strtolower(str_replace('é', 'e', $dia)) ?>">
-                                            <?php /* Entries will be populated here by JS */ ?>
+                                            
                                         </ul>
                                     </div>
                                 </div>
@@ -69,7 +69,6 @@
     const horarioCargado = <?= json_encode($horario_existente) ?>;
     const seccionId = <?= json_encode($seccion_id) ?>;
 
-    // Function to render a single schedule item
     function renderizarItemHorario(item) {
         return `
             <li class="list-group-item d-flex justify-content-between align-items-center" data-id-horario="${item.id_horario}">
@@ -83,7 +82,6 @@
             </li>`;
     }
 
-    // Populate the lists on page load
     document.addEventListener('DOMContentLoaded', function () {
         horarioCargado.forEach(item => {
             const diaId = `lista-${item.dia.toLowerCase().replace('é', 'e')}`;
@@ -94,7 +92,6 @@
         });
     });
 
-    // Handle adding a new item
     document.getElementById('btn-agregar').addEventListener('click', function () {
         const asignacionSelect = document.getElementById('asignacion');
         const diaSelect = document.getElementById('dia');
@@ -130,7 +127,6 @@
                     if (lista) {
                         lista.innerHTML += renderizarItemHorario(newItem);
                     }
-                    // Reset form
                     asignacionSelect.value = '';
                     diaSelect.value = '';
                     Swal.fire('¡Guardado!', 'La materia ha sido agregada al horario.', 'success');
@@ -144,7 +140,6 @@
         });
     });
 
-    // Handle deleting an item (using event delegation)
     document.addEventListener('click', function (e) {
         const botonEliminar = e.target.closest('.btn-eliminar');
         if (botonEliminar) {

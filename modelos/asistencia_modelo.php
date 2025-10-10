@@ -103,9 +103,7 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$seccion], "s");
     }
 
-    // ... (Keep other methods like filtrarAsistencia, obtenerTodasLasAsistencias, etc.)
-    // You will need to adapt them later to join with `asistencia_detalle` if you want to show that level of detail.
-
+    
         public function filtrarAsistencia($seccion, $fecha)
     {
         $query = "SELECT a.id_asistencia, a.fecha, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido

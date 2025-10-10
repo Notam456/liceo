@@ -403,7 +403,6 @@
                     success: function(response) {
                         Swal.fire('¡Actualizado!', response, 'success').then(() => {
                             $('#modificarAsistenciaModal').modal('hide');
-                            // Consider reloading only the table data instead of the whole page for better UX
                             location.reload();
                         });
                     },

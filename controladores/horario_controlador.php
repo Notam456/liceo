@@ -5,10 +5,8 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/horario_modelo.php');
 
 $horarioModelo = new HorarioModelo($conn);
 
-// Get the action from the request, default to 'mostrar'
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'mostrar';
 
-// Handle actions that don't need a full page load first
 if ($action == 'guardar') {
     if (isset($_POST['seccion']) && isset($_POST['dia']) && isset($_POST['id_asignacion'])) {
         $id_seccion = $_POST['seccion'];
@@ -42,15 +40,12 @@ if ($action == 'eliminar') {
     exit();
 }
 
-// Default action: display the schedule page
 if ($action == 'mostrar') {
-    // Clear the JSON header for the HTML view
     header_remove('Content-Type');
 
     if (isset($_GET['secc'])) {
         $seccion_id = $_GET['secc'];
 
-        // Data for the view
         $horario_result = $horarioModelo->getHorarioBySeccion($seccion_id);
         $horario_existente = [];
         while ($row = mysqli_fetch_assoc($horario_result)) {
