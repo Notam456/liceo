@@ -19,45 +19,81 @@ class AsistenciaModelo
             die("Error en la consulta: " . mysqli_stmt_error($stmt));
         }
         $result = mysqli_stmt_get_result($stmt);
-        // Si no hay result set (INSERT/UPDATE/DELETE), devolver true para indicar éxito
         if ($result === false) {
             $affected = mysqli_stmt_affected_rows($stmt);
             mysqli_stmt_close($stmt);
-            return $affected >= 0; // true si ejecutó correctamente
+            return $affected >= 0;
         }
         mysqli_stmt_close($stmt);
         return $result;
     }
 
-    public function registrarAsistencia($id_estudiante, $fecha, $estado, $justificacion, $seccion, $profesor)
+    public function registrarAsistencia($id_estudiante, $fecha, $materias_asistidas, $justificacion, $seccion, $profesor)
     {
-        // Mapear estado a flags
-        $inasistencia = 0;
+        $idCoordinador = (is_numeric($profesor) && (int)$profesor > 0) ? (int)$profesor : null;
+
+        // Determinar el estado general
         $justificado = 0;
-        if ($estado == 'A') {
-            $inasistencia = 1;
-            $justificado = 0;
-        } else if ($estado == 'J') {
-            $inasistencia = 0;
-            $justificado = 1;
-        } else {
-            $inasistencia = 0;
-            $justificado = 0;
+        if (empty($materias_asistidas)) {
+            if (!empty($justificacion)) {
+                $justificado = 1; // Justificado
+            }
         }
 
-        // Determinar id_coordinador válido (entero) o NULL si no aplica (p.ej., Administrador)
-        $idCoordinador = null;
-        if (is_numeric($profesor) && (int)$profesor > 0) {
-            $idCoordinador = (int)$profesor;
-        }
+        // Insertar el registro principal de asistencia
+        $query = "INSERT INTO asistencia (id_estudiante, fecha, justificado, observacion, id_seccion, id_coordinador)
+                  VALUES (?, ?, ?, ?, ?, ?)";
+        $params = [$id_estudiante, $fecha, $justificado, $justificacion, $seccion, $idCoordinador];
+        $types = "isisii";
 
-        if ($idCoordinador === null) {
-            // Omitir la columna id_coordinador para no violar la FK
-            $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion) VALUES (?, ?, ?, ?, ?, ?)";
-            return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion], "isiisi");
-        } else {
-            $query = "INSERT INTO asistencia (id_estudiante, fecha, inasistencia, justificado, observacion, id_seccion, id_coordinador) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            return $this->executeQuery($query, [$id_estudiante, $fecha, $inasistencia, $justificado, $justificacion, $seccion, $idCoordinador], "isiisii");
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        $success = mysqli_stmt_execute($stmt);
+
+        if ($success) {
+            $id_asistencia = mysqli_insert_id($this->conn);
+            mysqli_stmt_close($stmt);
+
+            // Insertar detalle de materias asistidas
+            if (!empty($materias_asistidas)) {
+                $this->registrarAsistenciaDetallada($id_asistencia, $materias_asistidas);
+            }
+            return true;
+        }
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+
+    public function registrarAsistenciaDetallada($id_asistencia, $materias_asistidas)
+    {
+        $query = "INSERT INTO asistencia_detalle (id_asistencia, id_asignacion) VALUES (?, ?)";
+        foreach ($materias_asistidas as $id_asignacion) {
+            $stmt = mysqli_prepare($this->conn, $query);
+            mysqli_stmt_bind_param($stmt, "ii", $id_asistencia, $id_asignacion);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    public function obtenerDetalleMateriasAsistidas($id_asistencia)
+    {
+        $query = "SELECT m.nombre
+                  FROM asistencia_detalle ad
+                  JOIN asigna_materia am ON ad.id_asignacion = am.id_asignacion
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  WHERE ad.id_asistencia = ?";
+        return $this->executeQuery($query, [$id_asistencia], "i");
+    }
+
+    public function actualizarAsistenciaDetallada($id_asistencia, $materias_asistidas)
+    {
+        // Primero, eliminar los detalles existentes
+        $queryDelete = "DELETE FROM asistencia_detalle WHERE id_asistencia = ?";
+        $this->executeQuery($queryDelete, [$id_asistencia], "i");
+
+        // Luego, insertar los nuevos detalles
+        if (!empty($materias_asistidas)) {
+            $this->registrarAsistenciaDetallada($id_asistencia, $materias_asistidas);
         }
     }
 
@@ -67,9 +103,10 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$seccion], "s");
     }
 
-    public function filtrarAsistencia($seccion, $fecha)
+    
+        public function filtrarAsistencia($seccion, $fecha)
     {
-        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
+        $query = "SELECT a.id_asistencia, a.fecha, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
@@ -94,7 +131,7 @@ class AsistenciaModelo
 
     public function obtenerTodasLasAsistencias()
     {
-        $query = "SELECT a.id_asistencia, a.fecha, a.inasistencia, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
+        $query = "SELECT a.id_asistencia, a.fecha, a.justificado, a.observacion, e.nombre, e.apellido, s.letra, g.numero_anio, p.nombre, p.apellido
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
@@ -114,10 +151,10 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$id_asistencia], "i");
     }
 
-    public function actualizarAsistencia($id_asistencia, $inasistencia, $justificado, $observacion)
+    public function actualizarAsistencia($id_asistencia, $justificado, $observacion)
     {
-        $query = "UPDATE asistencia SET inasistencia = ?, justificado = ?, observacion = ? WHERE id_asistencia = ?";
-        return $this->executeQuery($query, [$inasistencia, $justificado, $observacion, $id_asistencia], "iisi");
+        $query = "UPDATE asistencia SET justificado = ?, observacion = ? WHERE id_asistencia = ?";
+        return $this->executeQuery($query, [$justificado, $observacion, $id_asistencia], "isi");
     }
 
     public function eliminarAsistencia($id_asistencia)
@@ -166,8 +203,8 @@ class AsistenciaModelo
                     p.nombre AS nombre_prof, 
                     p.apellido AS apellido_prof,
                     COUNT(a.id_asistencia) as total_estudiantes,
-                    SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) as ausentes,
-                    SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END) as justificados
+                    SUM(CASE WHEN a.justificado = 0 AND NOT EXISTS (SELECT 1 FROM asistencia_detalle ad WHERE ad.id_asistencia = a.id_asistencia) THEN 1 ELSE 0 END) as ausentes,
+                    SUM(a.justificado) as justificados
                   FROM asistencia a
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
@@ -182,7 +219,6 @@ class AsistenciaModelo
         $query = "SELECT 
                     a.id_asistencia,
                     a.fecha,
-                    a.inasistencia,
                     a.justificado,
                     a.observacion,
                     e.id_estudiante,
@@ -190,7 +226,8 @@ class AsistenciaModelo
                     e.apellido,
                     e.cedula,
                     s.letra,
-                    g.numero_anio
+                    g.numero_anio,
+                    (SELECT COUNT(*) FROM asistencia_detalle ad WHERE ad.id_asistencia = a.id_asistencia) > 0 as presente
                   FROM asistencia a
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
@@ -222,8 +259,8 @@ class AsistenciaModelo
                     s.letra,
                     g.numero_anio,
                     COUNT(a.id_asistencia) as total_estudiantes,
-                    SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END) as ausentes,
-                    SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END) as justificados
+                    SUM(CASE WHEN a.justificado = 0 AND NOT EXISTS (SELECT 1 FROM asistencia_detalle ad WHERE ad.id_asistencia = a.id_asistencia) THEN 1 ELSE 0 END) as ausentes,
+                    SUM(a.justificado) as justificados
                   FROM asistencia a
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado

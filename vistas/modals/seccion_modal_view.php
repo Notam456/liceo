@@ -15,7 +15,7 @@
     </div>
     <div class="row mb-3">
         <div class="col-md-12 d-flex gap-2">
-            <!-- <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc= $row['id_seccion']" role="button">Crear/modificar Horario</a> -->
+            <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=<?= (int)$row['id_seccion'] ?>" role="button">Horario</a>
             <button class="btn btn-success" onclick="abrirAsignacionEstudiantes(<?= (int)$row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')">Asignar Estudiantes</button>
         </div>
     </div>
