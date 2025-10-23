@@ -29,7 +29,7 @@ $modulos_por_rol = [
         ],
         'Control y Reportes' => [
             'asistencia' => 'bi-card-checklist',
-            'reporte' => 'bi-file-check',
+            'ausencia' => 'bi-file-check',
             'visita' => 'bi-calendar-check',
         ]
     ],
