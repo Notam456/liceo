@@ -172,7 +172,7 @@ if (!isset($reporte)) {
                                             </td>
                                             <td>
                                                 <?php if ($item['total'] > 0): ?>
-                                                    <a href="/liceo/controladores/reporte_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $item['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
+                                                    <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $item['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
                                                         class="btn btn-secondary btn-sm" target="_blank">
                                                         Generar Reporte
                                                     </a>

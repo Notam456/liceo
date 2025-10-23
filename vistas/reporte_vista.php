@@ -123,16 +123,16 @@ if (!isset($_SESSION['profesor'])) {
                                     <p>Consulta y genera reportes detallados de inasistencias estudiantiles</p>
                                 </div>
                                 
-                                <div class="modulo" data-url="/liceo/controladores/asistencia_controlador.php">
-                                    <img src="/liceo/icons/calendar-check.svg" alt="Registro de Asistencia">
-                                    <h2>Registro de Asistencia</h2>
-                                    <p>Gestiona y consulta los registros diarios de asistencia</p>
-                                </div>
-                                
                                 <div class="modulo" data-url="/liceo/controladores/visita_controlador.php">
                                     <img src="/liceo/icons/house-door.svg" alt="Reporte de Visitas">
                                     <h2>Reporte de Visitas</h2>
                                     <p>Genera reportes de visitas domiciliarias programadas</p>
+                                </div>
+
+                                <div class="modulo" data-url="/liceo/controladores/seccion_controlador.php">
+                                    <img src="/liceo/icons/collection.svg" alt="Reporte por Secciones">
+                                    <h2>Reporte por Secciones</h2>
+                                    <p>Genera un Reporte con el Porcentaje de inasistencia de cada seccion</p>
                                 </div>
                             </section>
                         </div>
@@ -149,12 +149,12 @@ if (!isset($_SESSION['profesor'])) {
                                     <h2>Reporte de Estudiantes</h2>
                                     <p>Listados y constancias de estudiantes matriculados</p>
                                 </div>
-                                
-                                <!-- <div class="modulo" data-url="/liceo/controladores/seccion_controlador.php">
-                                    <img src="/liceo/icons/collection.svg" alt="Reporte por Secciones">
-                                    <h2>Reporte por Secciones</h2>
-                                    <p>Reportes generales organizados por grado y sección</p>
-                                </div> -->
+
+                                <div class="modulo" data-url="/liceo/controladores/asistencia_controlador.php">
+                                    <img src="/liceo/icons/calendar-check.svg" alt="Registro de Asistencia">
+                                    <h2>Registro de Asistencia</h2>
+                                    <p>Gestiona y consulta los registros diarios de asistencia</p>
+                                </div>
                             </section>
                         </div>
 

@@ -39,6 +39,11 @@
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Agregar
                             </button>
+                            
+                            <a href="/liceo/controladores/seccion_controlador.php?action=generar_reporte_inasistencias" 
+                                class="float-end btn btn-secondary me-2" target="_blank">
+                                    Reporte General de Inasistencias
+                                </a>
                         </h4>
                     </div>
                     <div class="card-body">
