@@ -49,6 +49,24 @@ class ProfesorModelo
         return mysqli_query($this->conn, $query);
     }
 
+    public function obtenerDirector()
+{
+    $query = "SELECT p.nombre, p.apellido, p.cedula 
+              FROM profesor p 
+              INNER JOIN asigna_cargo ac ON p.id_profesor = ac.id_profesor 
+              INNER JOIN cargo c ON ac.id_cargo = c.id_cargo 
+              WHERE c.nombre = 'Director' AND ac.estado = 'activa' 
+              LIMIT 1";
+
+    $result = mysqli_query($this->conn, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        return mysqli_fetch_assoc($result);
+    }
+    
+    return null; 
+}
+
     public function actualizarProfesor($id, $nombre, $apellido, $cedula)
     {
         $id = (int)$id;

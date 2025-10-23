@@ -8,6 +8,9 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/grado_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/parroquia_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/municipio_modelo.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/sector_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
+
 
 
 $estudianteModelo = new EstudianteModelo($conn);
@@ -15,6 +18,9 @@ $gradoModelo = new GradoModelo($conn);
 $parroquiaModelo = new ParroquiaModelo($conn);
 $municipioModelo = new MunicipioModelo($conn);
 $sectorModelo = new SectorModelo($conn);
+$profesorModelo = new profesorModelo($conn);
+$anioAcademicoModelo = new AnioAcademicoModelo($conn);
+
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
@@ -107,6 +113,17 @@ switch ($action) {
             $id_estudiante = $_GET['id'];
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id_estudiante);
 
+            $director = $profesorModelo->obtenerDirector();
+            $result_periodo = $anioAcademicoModelo->obtenerAnioActivo();
+
+            $periodo_escolar = "Año Escolar no definido";
+            if ($result_periodo && mysqli_num_rows($result_periodo) > 0) {
+                $periodo = mysqli_fetch_assoc($result_periodo);
+                $desde = date('m-Y ', strtotime($periodo['desde']));
+                $hasta = date(' m-Y', strtotime($periodo['hasta']));
+                $periodo_escolar = $desde . '-' . $hasta;
+            }
+
             if ($row = mysqli_fetch_array($resultado)) {
                 require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
     
@@ -135,6 +152,11 @@ switch ($action) {
                 $pdf->SetMargins(15, 60, 15);
                 $pdf->SetY(50);
 
+                $nombre_director = $director ? $director['nombre'] . ' ' . $director['apellido'] : 'NOMBRE DEL DIRECTOR';
+                $cedula_director = $director ? $director['cedula'] : 'C.I DEL DIRECTOR';
+
+                // $periodo_escolar = date('F Y', strtotime($periodo['desde'])) . ' - ' . date('F Y', strtotime($periodo['hasta']));
+
                 // jose yajure, EN EL PARRAFO DIRECTOR HAY QUE COLOCAR LA CONSULTA 
                 //QUE NOS TRAIGA EL NOMBRE Y CEDULA DEL DIRECTOR!!
 
@@ -148,14 +170,15 @@ switch ($action) {
                     '.$pdf->Ln(10).'
     
                     <p style="text-align: justify; line-height: 1.5;">
-                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> “NOMBRE del DIRECTOR”, </strong> titular de la Cédula de Identidad 
-                        N° <strong style="text-transform: uppercase;">“ C.I del Director”</strong> Director del 
+                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> '. $nombre_director . ', </strong> titular de la Cédula de Identidad 
+                        N°<strong style="text-transform: uppercase;">'. $cedula_director .'</strong> Director del 
                         <strong style="text-transform: uppercase;">LICEO PROFESOR FERNANDO RAMÍREZ</strong> ubicada en el Barrio las Madres detrás del Polideportivo San Felipe Edo. Yaracuy. 
                         Hace constar por medio de la presente que el (la) Estudiante <strong style="text-transform: uppercase;">' .
-                         $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula 
-                         <strong style="text-transform: uppercase;"> ' . 
-                         $row['cedula'] . ' </strong>, cursa el Grado ' . $row['id_grado'] . ' durante el periodo escolar ' . 
-                         $row['id_grado'] . ' de Educación Secundaria y Reside en el Municipio ' . $row['id_parroquia'] . '
+                         $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula <strong style="text-transform: uppercase;"> ' . 
+                         $row['cedula'] . ' </strong>, cursa el<strong> Año ' . $row['numero_anio'] .' Seccion '. $row['letra'] .
+                         '</strong> durante el periodo escolar<strong> ' . $periodo_escolar . 
+                         '</strong> de Educación Secundaria y Reside en el Municipio:<strong> ' . $row['municipio'] .
+                         '</strong> Parroquia: <strong>'. $row['parroquia'] .'</strong> Sector: <strong>'. $row['sector'] . '</strong>
                     </p>
                     <br>
                     <p style="text-align: justify;">
@@ -171,7 +194,7 @@ switch ($action) {
                 // TUVE QUE USAR LA FUNCIONA Ln PARA PODER AÑADIR MAS ESPACIO EN DONDE SE FIRMA Y SELLA
                 $html2 = '                    
                 <p style="text-align: center;">__________________________________</p>
-                <p style="text-align: center;">Prof. NOMBRE DIRECTOR</p> 
+                <p style="text-align: center;">Prof. '.$nombre_director.'</p> 
                 <p style="text-align: center;">Barrio Las Madres</p>
                 <p style="text-align: center;">Municipio San Felipe</p>';
 
