@@ -51,7 +51,7 @@
                         <h4>Usuarios <img src="/liceo/icons/people.svg">
                             <!-- Boton modulo crear -->
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
-                                Crear
+                                Agregar
                             </button>
                         </h4>
                     </div>

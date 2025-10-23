@@ -34,7 +34,7 @@
                     <div class="card-header">
                         <h4>Coordinadores <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
-                                Inscribir Coordinador
+                                Agregar
                             </button>
                         </h4>
                     </div>

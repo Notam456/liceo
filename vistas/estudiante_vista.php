@@ -28,7 +28,7 @@
                     <div class="card-header">
                         <h4>Estudiantes <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
-                                Inscribir
+                                Agregar
                             </button>
                         </h4>
                     </div>
