@@ -20,7 +20,7 @@
                 <hr>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Cargo Asignado:</strong> <?= htmlspecialchars($row['nombre_cargo']) ?>
+                        <strong>Materia Asignada:</strong> <?= htmlspecialchars($row['nombre_materia']) ?>
                     </div>
                 </div>
             </div>

@@ -106,12 +106,22 @@
     </div>
 </div>
 
-    <div class="portada">
-        <img src="/liceo/imgs/portada3.jpeg" alt="">
-    </div>
-    <section class="description">
-        <h1>“LICEO PROF.FERNANDO RAMÍREZ”</h1>
-        <p>Institución comprometida con la formación integral de los jóvenes, fomentando valores, disciplina y excelencia académica en cada etapa educativa.</p>
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="hero-image">
+                        <img src="/liceo/imgs/portada3.jpeg" alt="Liceo Prof. Fernando Ramírez" class="img-fluid rounded">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">"LICEO PROF. FERNANDO RAMÍREZ"</h1>
+                        <p class="hero-description">Institución comprometida con la formación integral de los jóvenes, fomentando valores, disciplina y excelencia académica en cada etapa educativa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <section class="cajaTarjetas">
         <div class="Tarjeta">
@@ -136,13 +146,12 @@
     </footer>
     <script>
         const myModal = new bootstrap.Modal(
-            document.getElementById("modalId"),
-            options,
+            document.getElementById("modalId")
         );
     </script>
     <?php if (isset($_SESSION['status'])): ?>
         <script>
-            console.log('status exists you dumbass');
+            console.log('Status exists, showing modal');
             window.addEventListener('load', function() {
                 var myModal = new bootstrap.Modal(document.getElementById('modalId'));
                 myModal.show();

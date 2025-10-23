@@ -63,6 +63,56 @@ switch ($action) {
             exit();
         }
         break;
+
+    case 'ver':
+        if (isset($_POST['id_asignacion'])) {
+            $id = $_POST['id_asignacion'];
+            $resultado = $modelo->obtenerAsignacionPorId($id);
+            if ($resultado) {
+                $row = $resultado;
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/asigna_cargo_modal_view.php');
+            } else {
+                $row = [];
+                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/asigna_cargo_modal_view.php');
+            }
+            exit();
+        }
+        break;
+
+    case 'editar':
+        if (isset($_POST['id_asignacion'])) {
+            $asignacion = $modelo->obtenerAsignacionPorId($_POST['id_asignacion']);
+            if ($asignacion) {
+                echo json_encode([$asignacion]);
+            } else {
+                echo json_encode([]);
+            }
+            exit();
+        }
+        break;
+
+    case 'actualizar':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id_asignacion = $_POST['id_asignacion'] ?? '';
+            $id_profesor = $_POST['id_profesor'] ?? '';
+            $id_cargo = $_POST['id_cargo'] ?? '';
+
+            if (empty($id_asignacion) || empty($id_profesor) || empty($id_cargo)) {
+                $_SESSION['status'] = 'Error: Debe completar todos los campos';
+            } else {
+                if ($modelo->actualizarAsignacion($id_asignacion, $id_profesor, $id_cargo)) {
+                    $_SESSION['status'] = '✅ Asignación actualizada exitosamente';
+                } else {
+                    $_SESSION['status'] = '⚠️ Error: No se pudo actualizar la asignación';
+                }
+            }
+            // Mantener parámetros de paginación en la redirección
+            $por_pagina = $_GET['por_pagina'] ?? 10;
+            $pagina = $_GET['pagina'] ?? 1;
+            header('Location: asigna_cargo_controlador.php?pagina=' . $pagina . '&por_pagina=' . $por_pagina);
+            exit();
+        }
+        break;
 }
 
 // Obtener datos para la vista

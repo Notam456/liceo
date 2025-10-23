@@ -14,6 +14,50 @@
   --ancho-max: 1200px;
 }
 
+/* Hero Section - Nueva sección principal */
+.hero-section {
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+}
+
+.hero-section .container {
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: var(--borde-radio);
+  box-shadow: var(--sombra);
+  transition: transform 0.3s ease;
+}
+
+.hero-image img:hover {
+  transform: scale(1.02);
+}
+
+.hero-content {
+  padding: 2rem;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primario);
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  color: var(--color-texto);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Mantener estilos antiguos para compatibilidad */
 .portada img {
   width: 100%;
   margin: var(--espaciado) auto;
@@ -148,11 +192,49 @@ section {
   margin: 0;
 }
 
+/* Estilos para categorías del menú principal */
+.categoria-section {
+  margin-bottom: 3rem;
+  max-width: var(--ancho-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--espaciado);
+}
+
+.categoria-titulo {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-texto);
+  margin-bottom: 0.5rem;
+  text-align: left;
+  position: relative;
+}
+
+.categoria-linea {
+  border: none;
+  height: 2px;
+  background-color: #000000;
+  margin: 1rem 0 2rem 0;
+  width: 100%;
+}
+
 /* ============================
    Media Queries Responsive
 ===============================*/
 
 @media (max-width: 1024px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+  }
+
+  .hero-image img {
+    height: 280px;
+  }
+
   .description h1 {
     font-size: 1.8rem;
   }
@@ -165,6 +247,10 @@ section {
   .modulo {
     max-width: 160px;
   }
+
+  .categoria-titulo {
+    font-size: 1.6rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -172,6 +258,29 @@ section {
     --espaciado: 0.8rem;
     --esoaciado-grande: 1.5rem;
     --borde-radio: 0.5rem;
+  }
+
+  .hero-section {
+    padding: 2rem 0;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .hero-content {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .hero-image img {
+    height: 250px;
   }
 
   .portada img {
@@ -225,9 +334,29 @@ section {
     width: 35px;
     height: 35px;
   }
+
+  .categoria-titulo {
+    font-size: 1.4rem;
+  }
+
+  .categoria-section {
+    margin-bottom: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
+  .hero-image img {
+    height: 200px;
+  }
+
   .description h1 {
     font-size: 1.3rem;
   }
@@ -245,4 +374,27 @@ section {
     flex-direction: column;
     gap: 0.2rem;
   }
+
+  .categoria-titulo {
+    font-size: 1.2rem;
+  }
+
+  .categoria-linea {
+    max-width: 150px;
+  }
+}
+
+/* Estilos para el widget de ayuda */
+.widget-ayuda-panel {
+    display: block;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none; /* Evita interacción cuando está oculto */
+}
+
+.widget-ayuda-panel.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto; /* Permite interacción cuando es visible */
 }

@@ -141,5 +141,54 @@ class AsignaCargoModelo {
 
         return $profesores;
     }
+
+    // Obtener asignación por ID
+    public function obtenerAsignacionPorId($id_asignacion) {
+        $query = "SELECT
+                    ac.id_asignacion,
+                    p.id_profesor,
+                    p.nombre,
+                    p.apellido,
+                    p.cedula,
+                    c.id_cargo,
+                    c.nombre AS nombre_cargo,
+                    ac.fecha_asignacion,
+                    ac.estado
+                  FROM asigna_cargo ac
+                  JOIN profesor p ON ac.id_profesor = p.id_profesor
+                  JOIN cargo c ON ac.id_cargo = c.id_cargo
+                  WHERE ac.id_asignacion = ?";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $id_asignacion);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    // Actualizar asignación
+    public function actualizarAsignacion($id_asignacion, $id_profesor, $id_cargo) {
+        // Verificar si ya existe otra asignación con el mismo profesor y cargo
+        $query_check = "SELECT COUNT(*) as count FROM asigna_cargo
+                       WHERE id_profesor = ? AND id_cargo = ? AND id_asignacion != ? AND estado = 'activa'";
+
+        $stmt_check = $this->db->prepare($query_check);
+        $stmt_check->bind_param("iii", $id_profesor, $id_cargo, $id_asignacion);
+        $stmt_check->execute();
+
+        $result = $stmt_check->get_result();
+        $row = $result->fetch_assoc();
+
+        if ($row['count'] > 0) {
+            return false; // Ya existe otra asignación con estos datos
+        }
+
+        $query = "UPDATE asigna_cargo SET id_profesor = ?, id_cargo = ? WHERE id_asignacion = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("iii", $id_profesor, $id_cargo, $id_asignacion);
+
+        return $stmt->execute();
+    }
 }
 ?>

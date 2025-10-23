@@ -1,268 +1,100 @@
-<?php
-if (!isset($asignaciones)) {
-    die("Error: No se pudieron cargar los datos");
-}
-
-// Configuración de paginación
-$por_pagina = $_GET['por_pagina'] ?? 10;
-$pagina_actual = $_GET['pagina'] ?? 1;
-$total_asignaciones = count($asignaciones);
-$total_paginas = ceil($total_asignaciones / $por_pagina);
-
-// Aplicar paginación
-$asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por_pagina, $por_pagina);
-?>
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
-    <?php
-    $head_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php';
-    if (file_exists($head_path)) {
-        include($head_path);
-    } else {
-        echo '<title>Asignar Cargos a Profesores</title>';
-        echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">';
-        echo '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">';
-    }
-    ?>
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Asignar Cargos a Profesores</title>
-    <style>
-        .card-header {
-            background-color: #ffffff;
-            color: #ffffff;
-            border-bottom: 2px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-asignar {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: white;
-        }
-        .btn-asignar:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
-        .filter-section {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .table thead th {
-            background-color: #2c3e50;
-            color: white;
-        }
-        .badge-activa {
-            background-color: #28a745;
-        }
-        .badge-inactiva {
-            background-color: #dc3545;
-        }
-        .modal-header {
-            background-color: #ffffff;
-            color: white;
-        }
-        .pagination {
-            margin-bottom: 0;
-        }
-        .registros-por-pagina {
-            width: 80px;
-        }
-        .search-box {
-            max-width: 300px;
-        }
-    </style>
 </head>
+
 <body>
-    <?php
-    $navbar_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php';
-    if (file_exists($navbar_path)) {
-        include($navbar_path);
-    }
-    ?>
-
-    <?php
-    $sidebar_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/sidebar.php';
-    if (file_exists($sidebar_path)) {
-        include($sidebar_path);
-    }
-    ?>
-
+    <nav>
+        <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
+    </nav>
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/sidebar.php') ?>
     <div class="container" style="margin-top: 30px;">
         <div class="row justify-content-center">
-            <div class="col-md-12">
-                <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') : ?>
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <?php echo $_SESSION['status']; ?>
+            <div class="col-md-8">
+                <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <?php unset($_SESSION['status']); ?>
-                <?php endif; ?>
-
+                <?php unset($_SESSION['status']);
+                } ?>
                 <div class="card">
                     <div class="card-header">
-                        <div>
-                            <h4 class="mb-0"><i class="bi bi-person-badge"></i> Asignar Cargos a Profesores</h4>
-                            <p class="mb-0 text-muted">Sistema de gestión de asignaciones de cargos</p>
-                        </div>
-                        <button type="button" class="btn btn-asignar" data-bs-toggle="modal" data-bs-target="#modalAsignacion">
-                            <i class="bi bi-plus-circle"></i> Nueva Asignación
-                        </button>
+                        <h4>Asignar Cargos a Profesores <img src="/liceo/icons/people.svg">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                                Asignar
+                            </button>
+                        </h4>
                     </div>
-
                     <div class="card-body">
-                        <!-- Filtros y Búsqueda -->
-                        <div class="filter-section">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control" id="buscarInput" placeholder="Buscar por profesor, cargo o cédula...">
-                                        <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
-                                            Buscar
-                                        </button>
-                                        <button class="btn btn-outline-secondary" type="button" id="btnLimpiar">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Mostrar</span>
-                                        <select class="form-select registros-por-pagina" id="porPagina">
-                                            <option value="10" <?= $por_pagina == 10 ? 'selected' : '' ?>>10</option>
-                                            <option value="20" <?= $por_pagina == 20 ? 'selected' : '' ?>>20</option>
-                                            <option value="30" <?= $por_pagina == 30 ? 'selected' : '' ?>>30</option>
-                                            <option value="50" <?= $por_pagina == 50 ? 'selected' : '' ?>>50</option>
-                                            <option value="100" <?= $por_pagina == 100 ? 'selected' : '' ?>>100</option>
-                                        </select>
-                                        <span class="input-group-text">registros</span>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <div class="d-flex justify-content-end">
-                                        <span class="badge bg-secondary align-self-center">
-                                            Total: <?= $total_asignaciones ?> asignaciones
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tabla de asignaciones existentes -->
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="tablaAsignaciones">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Profesor</th>
-                                        <th>Cargo</th>
-                                        <th>Fecha Asignación</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (count($asignaciones_paginadas) > 0): ?>
-                                        <?php foreach ($asignaciones_paginadas as $asignacion): ?>
-                                        <tr class="fila-asignacion">
-                                            <td><?= $asignacion['id_asignacion'] ?></td>
-                                            <td>
-                                                <strong><?= htmlspecialchars($asignacion['apellido'] . ', ' . $asignacion['nombre']) ?></strong>
-                                                <br><small class="text-muted">Cédula: <?= htmlspecialchars($asignacion['cedula']) ?></small>
-                                            </td>
-                                            <td>
-                                                <strong><?= htmlspecialchars($asignacion['nombre_cargo']) ?></strong>
-                                                <br><small class="text-muted">ID: <?= $asignacion['id_cargo'] ?></small>
-                                            </td>
-                                            <td><?= date('d/m/Y H:i', strtotime($asignacion['fecha_asignacion'])) ?></td>
-
-                                            <td>
-                                                <a href="asigna_cargo_controlador.php?action=eliminar&id=<?= $asignacion['id_asignacion'] ?>"
-                                                   class="btn btn-danger btn-sm"
-                                                   onclick="return confirm('¿Estás seguro de eliminar esta asignación?')">
-                                                    <i class="bi bi-trash"></i> Eliminar
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
+                        <table class="table table-striped" id="myTable">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th style="display: none;" scope="col">#</th>
+                                    <th scope="col">Profesor</th>
+                                    <th scope="col">Cargo</th>
+                                    <th scope="col">Fecha Asignación</th>
+                                    <th scope="col" class="action">Acción</th>
+                                    <th scope="col" class="action"></th>
+                                    <th scope="col" class="action"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (!empty($asignaciones)) {
+                                    foreach ($asignaciones as $asignacion) {
+                                ?>
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted py-4">
-                                                <i class="bi bi-inbox display-4"></i>
-                                                <p class="mt-2">No hay asignaciones registradas</p>
-                                                <small>Use el botón "Nueva Asignación" para crear una</small>
+                                            <td class="id_asignacion" style="display: none;"> <?php echo $asignacion['id_asignacion'] ?> </td>
+                                            <td> 
+                                                <strong><?php echo htmlspecialchars($asignacion['apellido'] . ', ' . $asignacion['nombre']) ?></strong>
                                             </td>
+                                            <td> 
+                                                <strong><?php echo htmlspecialchars($asignacion['nombre_cargo']) ?></strong>
+                                            </td>
+                                            <td> <?php echo date('d/m/Y H:i', strtotime($asignacion['fecha_asignacion'])) ?> </td>
+                                            <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
+                                            <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
+                                            <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
                                         </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-
-                            <!-- Paginación -->
-                            <?php if ($total_paginas > 1): ?>
-                            <nav aria-label="Paginación de asignaciones">
-                                <ul class="pagination justify-content-center">
-                                    <!-- Botón Anterior -->
-                                    <li class="page-item <?= $pagina_actual == 1 ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?pagina=<?= $pagina_actual - 1 ?>&por_pagina=<?= $por_pagina ?>">
-                                            <i class="bi bi-chevron-left"></i>
-                                        </a>
-                                    </li>
-
-                                    <!-- Números de página -->
-                                    <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                                        <li class="page-item <?= $i == $pagina_actual ? 'active' : '' ?>">
-                                            <a class="page-link" href="?pagina=<?= $i ?>&por_pagina=<?= $por_pagina ?>">
-                                                <?= $i ?>
-                                            </a>
-                                        </li>
-                                    <?php endfor; ?>
-
-                                    <!-- Botón Siguiente -->
-                                    <li class="page-item <?= $pagina_actual == $total_paginas ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?pagina=<?= $pagina_actual + 1 ?>&por_pagina=<?= $por_pagina ?>">
-                                            <i class="bi bi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                            <?php endif; ?>
-
-                            <!-- Información de paginación -->
-                            <div class="text-center text-muted mt-2">
-                                Mostrando <?= count($asignaciones_paginadas) ?> de <?= $total_asignaciones ?> registros
-                                <?php if ($total_asignaciones > 0): ?>
-                                    (Página <?= $pagina_actual ?> de <?= $total_paginas ?>)
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                                    <?php }
+                                } else { ?>
+                                    <tr>
+                                        <td style="display: none;"></td>
+                                        <td>No se encontraron asignaciones de cargos.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para nueva asignación -->
-    <div class="modal fade" id="modalAsignacion" tabindex="-1" aria-labelledby="modalAsignacionLabel" aria-hidden="true">
+    <!-- Modulo Editar -->
+    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAsignacionLabel">
-                        <i class="bi bi-plus-circle"></i> Nueva Asignación de Cargo
-                    </h5>
+                    <h1 class="modal-title fs-5" id="editmodalLabel">Editar Asignación de Cargo</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="asigna_cargo_controlador.php">
-                    <input type="hidden" name="action" value="crear">
-
+                <form id="edit-form" action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
+                    <input type="hidden" name="action" value="actualizar">
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Seleccionar Profesor</label>
-                            <select class="form-select" name="id_profesor" required>
+                        <input type="hidden" id="id_asignacion_edit" name="id_asignacion">
+                        <div class="form-group mb-3">
+                            <label>Profesor</label>
+                            <select id="id_profesor_edit" class="form-control" name="id_profesor" required>
                                 <option value="">Seleccionar profesor</option>
                                 <?php foreach ($profesores as $profesor): ?>
                                 <option value="<?= $profesor['id_profesor'] ?>">
@@ -271,10 +103,9 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                                 <?php endforeach; ?>
                             </select>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Seleccionar Cargo</label>
-                            <select class="form-select" name="id_cargo" required>
+                        <div class="form-group mb-3">
+                            <label>Cargo</label>
+                            <select id="id_cargo_edit" class="form-control" name="id_cargo" required>
                                 <option value="">Seleccionar cargo</option>
                                 <?php foreach ($cargos as $cargo): ?>
                                 <option value="<?= $cargo['id_cargo'] ?>">
@@ -284,81 +115,192 @@ $asignaciones_paginadas = array_slice($asignaciones, ($pagina_actual - 1) * $por
                             </select>
                         </div>
                     </div>
-
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-asignar">
-                            <i class="bi bi-check-lg"></i> Asignar Cargo
-                        </button>
+                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <?php
-    $footer_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php';
-    if (file_exists($footer_path)) {
-        include($footer_path);
-    }
-    ?>
+    <!-- Modulo Mostrar -->
+    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos de la Asignación</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="view_asignacion_data"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Scripts necesarios -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modulo Crear -->
+    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Nueva Asignación de Cargo</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
+                    <input type="hidden" name="action" value="crear">
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label>Seleccionar Profesor</label>
+                            <select class="form-control" name="id_profesor" required>
+                                <option value="">Seleccionar profesor</option>
+                                <?php foreach ($profesores as $profesor): ?>
+                                <option value="<?= $profesor['id_profesor'] ?>">
+                                    <?= htmlspecialchars($profesor['apellido'] . ', ' . $profesor['nombre'] . ' (' . $profesor['cedula'] . ')') ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Seleccionar Cargo</label>
+                            <select class="form-control" name="id_cargo" required>
+                                <option value="">Seleccionar cargo</option>
+                                <?php foreach ($cargos as $cargo): ?>
+                                <option value="<?= $cargo['id_cargo'] ?>">
+                                    <?= htmlspecialchars($cargo['nombre']) ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-    $(document).ready(function() {
-        // Función para buscar en la tabla
-        function buscarEnTabla() {
-            var texto = $('#buscarInput').val().toLowerCase();
-
-            $('.fila-asignacion').each(function() {
-                var fila = $(this);
-                var textoFila = fila.text().toLowerCase();
-
-                if (textoFila.indexOf(texto) > -1) {
-                    fila.show();
-                } else {
-                    fila.hide();
+        new DataTable('#myTable', {
+            language: {
+                search: 'Buscar',
+                info: 'Mostrando pagina _PAGE_ de _PAGES_',
+                infoEmpty: 'No se han encontrado resultados',
+                infoFiltered: '(se han encontrado _MAX_ resultados)',
+                lengthMenu: 'Mostrar _MENU_ por pagina',
+                zeroRecords: '0 resultados encontrados'
+            },
+            columnDefs: [{
+                    width: '93px',
+                    targets: [4, 5, 6]
+                },
+                {
+                    visible: false,
+                    target: 0
                 }
+            ]
+        });
+
+        $(document).ready(function() {
+            // Ver
+            $(document).on('click', '.view-data', function(e) {
+                e.preventDefault();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                var id = data[0];
+                $.ajax({
+                    type: "POST",
+                    url: "/liceo/controladores/asigna_cargo_controlador.php",
+                    data: {
+                        'action': 'ver',
+                        'id_asignacion': id
+                    },
+                    success: function(response) {
+                        $('.view_asignacion_data').html(response);
+                        $('#viewmodal').modal('show');
+                    }
+                });
             });
-        }
 
-        // Buscar al escribir
-        $('#buscarInput').on('keyup', function() {
-            buscarEnTabla();
+            // Cargar para Editar
+            $(document).on('click', '.edit-data', function(e) {
+                e.preventDefault();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                var id = data[0];
+                $.ajax({
+                    type: "POST",
+                    url: "/liceo/controladores/asigna_cargo_controlador.php",
+                    data: {
+                        'action': 'editar',
+                        'id_asignacion': id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        var data = response[0];
+                        $('#id_asignacion_edit').val(data.id_asignacion);
+                        $('#id_profesor_edit').val(data.id_profesor);
+                        $('#id_cargo_edit').val(data.id_cargo);
+                        $('#editmodal').modal('show');
+                    }
+                });
+            });
+
+            // Eliminar
+            $(document).on('click', '.delete-data', function(e) {
+                e.preventDefault();
+                var tabla = $('#myTable').DataTable();
+
+                // obtenemos la fila DataTables desde el botón clicado
+                var fila = tabla.row($(this).closest('tr'));
+
+                // traemos los datos de esa fila (array con todas las columnas)
+                var data = fila.data();
+
+                var id = data[0];
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: '¡Esta acción eliminará la asignación permanentemente!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/liceo/controladores/asigna_cargo_controlador.php",
+                            data: {
+                                'action': 'eliminar',
+                                'id_asignacion': id
+                            },
+                            success: function(response) {
+                                Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
+                            }
+                        });
+                    }
+                });
+            });
         });
-
-        // Botón buscar
-        $('#btnBuscar').click(function() {
-            buscarEnTabla();
-        });
-
-        // Botón limpiar
-        $('#btnLimpiar').click(function() {
-            $('#buscarInput').val('');
-            $('.fila-asignacion').show();
-        });
-
-        // Cambiar número de registros por página
-        $('#porPagina').change(function() {
-            var por_pagina = $(this).val();
-            window.location.href = '?por_pagina=' + por_pagina + '&pagina=1';
-        });
-
-        // Limpiar formulario al cerrar modal
-        $('#modalAsignacion').on('hidden.bs.modal', function() {
-            $('#modalAsignacion form')[0].reset();
-        });
-
-        // Mostrar modal si hay error en la asignación
-        <?php if (isset($_SESSION['show_modal']) && $_SESSION['show_modal']): ?>
-            $('#modalAsignacion').modal('show');
-            <?php unset($_SESSION['show_modal']); ?>
-        <?php endif; ?>
-    });
     </script>
+
+    <footer>
+        <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
+    </footer>
 </body>
+
 </html>

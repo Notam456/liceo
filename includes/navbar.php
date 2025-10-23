@@ -1,3 +1,20 @@
+<?php
+// Obtener el año académico activo
+$anio_activo = null;
+if (isset($_SESSION['usuario'])) {
+    include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
+    include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
+    
+    $anioModelo = new AnioAcademicoModelo($conn);
+    
+    $resultado = $anioModelo->obtenerAnioActivo();
+    if ($resultado && mysqli_num_rows($resultado) > 0) {
+        $anio = mysqli_fetch_assoc($resultado);
+        $anio_activo = date('Y', strtotime($anio['desde'])) . '-' . date('Y', strtotime($anio['hasta']));
+    }
+}
+?>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
     <div class="container-fluid">
 
@@ -19,10 +36,15 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
+                <li class="nav-item d-flex align-items-center">
                     <?php if (isset($_SESSION['usuario'])) { ?>
-                        <p class="d-inline text-light my-auto align-middle fw-bold"><?= $_SESSION['nombre_prof']?></p>
-                        <a href="/liceo/logout.php" class="btn btn-outline-danger ms-lg-3 mt-2 mt-lg-0">
+                        <div class="text-light me-3">
+                            <p class="mb-0 fw-bold"><?= $_SESSION['nombre_prof']?></p>
+                            <?php if ($anio_activo): ?>
+                                <p class="mb-0 small" style="color: #adb5bd;"><?= $anio_activo ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <a href="/liceo/logout.php" class="btn btn-outline-danger">
                             Cerrar Sesión
                         </a>
                     <?php } elseif (basename($_SERVER['PHP_SELF']) !== 'index.php') {

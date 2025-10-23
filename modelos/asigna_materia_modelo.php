@@ -141,5 +141,54 @@ class AsignaMateriaModelo {
 
         return $profesores;
     }
+
+    // Obtener asignación por ID
+    public function obtenerAsignacionPorId($id_asignacion) {
+        $query = "SELECT 
+                    am.id_asignacion,
+                    p.id_profesor,
+                    p.nombre, 
+                    p.apellido,
+                    p.cedula,
+                    m.id_materia,
+                    m.nombre AS nombre_materia,
+                    am.fecha_asignacion,
+                    am.estado
+                  FROM asigna_materia am
+                  JOIN profesor p ON am.id_profesor = p.id_profesor
+                  JOIN materia m ON am.id_materia = m.id_materia
+                  WHERE am.id_asignacion = ?";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $id_asignacion);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    // Actualizar asignación
+    public function actualizarAsignacion($id_asignacion, $id_profesor, $id_materia) {
+        // Verificar si ya existe otra asignación con el mismo profesor y materia
+        $query_check = "SELECT COUNT(*) as count FROM asigna_materia
+                       WHERE id_profesor = ? AND id_materia = ? AND id_asignacion != ? AND estado = 'activa'";
+
+        $stmt_check = $this->db->prepare($query_check);
+        $stmt_check->bind_param("iii", $id_profesor, $id_materia, $id_asignacion);
+        $stmt_check->execute();
+
+        $result = $stmt_check->get_result();
+        $row = $result->fetch_assoc();
+
+        if ($row['count'] > 0) {
+            return false; // Ya existe otra asignación con estos datos
+        }
+
+        $query = "UPDATE asigna_materia SET id_profesor = ?, id_materia = ? WHERE id_asignacion = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("iii", $id_profesor, $id_materia, $id_asignacion);
+
+        return $stmt->execute();
+    }
 }
 ?>

@@ -20,47 +20,61 @@ define('ROOT_PATH', __DIR__ . '/');
         </nav>
         <?php include(ROOT_PATH . 'includes/sidebar.php') ?>
         <main>
-            <h6 class="d-flex justify-content-center mt-5">¡Bienvenido de vuelta, <?= $_SESSION['nombre_prof'] ?>!</h6>
-            <br>
+            <h4 class="d-flex justify-content-center mt-4 mb-3 fw-bold">¡Bienvenido de vuelta, <?= $_SESSION['nombre_prof'] ?>!</h4>
             <section class="cabecera">
-
                 <h1>Menu</h1>
                 <img src="/liceo/imgs/cuadricula.png" alt="">
             </section>
             <?php
-            // Define los módulos visibles para cada rol
+            // Define los módulos visibles para cada rol organizados por categorías
             $modulos_por_rol = [
                 'admin' => [
-                    'usuario' => '/liceo/imgs/agregar-usuario.png',
-                    'profesor' => '/liceo/imgs/masculino.png',
-                    'estudiante' => '/liceo/imgs/estudiando.png',
-                    'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                    'reporte' => '/liceo/imgs/reporte.png',
-                    'visita' => '/liceo/imgs/calendar-check.svg',
-                    'anio_academico' => '/liceo/imgs/calendario.png',
-                    'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
-                    'seccion' => '/liceo/imgs/secciones.png',
-                    'materia' => '/liceo/imgs/libros.png',
-                    'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                    'sector' => '/liceo/imgs/pueblo.png',
-                    'parroquia' => '/liceo/imgs/pueblo.png',
-                    'municipio' => '/liceo/imgs/cataluna.png',
-                    'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
-                    'cargo' => '/liceo/imgs/suitcase-lg.svg'
+                    'Gestión de Usuarios' => [
+                        'usuario' => '/liceo/imgs/agregar-usuario.png',
+                        'profesor' => '/liceo/imgs/masculino.png',
+                        'estudiante' => '/liceo/imgs/estudiando.png',
+                    ],
+                    'Gestión Académica' => [
+                        'anio_academico' => '/liceo/imgs/calendario.png',
+                        'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
+                        'seccion' => '/liceo/imgs/secciones.png',
+                        'materia' => '/liceo/imgs/libros.png',
+                    ],
+                    'Asignaciones' => [
+                        'cargo' => '/liceo/imgs/suitcase-lg.svg',
+                        'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
+                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+                    ],
+                    'Ubicación' => [
+                        'sector' => '/liceo/imgs/pueblo.png',
+                        'parroquia' => '/liceo/imgs/pueblo.png',
+                        'municipio' => '/liceo/imgs/cataluna.png',
+                    ],
+                    'Control y Reportes' => [
+                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                        'reporte' => '/liceo/imgs/reporte.png',
+                        'visita' => '/liceo/imgs/calendar-check.svg',
+                    ]
                 ],
                 'coordinador' => [
-                    'estudiante' => '/liceo/imgs/estudiando.png',
-                    'profesor' => '/liceo/imgs/masculino.png',
-                    'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                    'reporte' => '/liceo/imgs/reporte.png',
-                    'visita' => '/liceo/imgs/calendar-check.svg',
-                    'materia' => '/liceo/imgs/libros.png',
-                    'seccion' => '/liceo/imgs/secciones.png',
-                    'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+                    'Gestión de Usuarios' => [
+                        'estudiante' => '/liceo/imgs/estudiando.png',
+                        'profesor' => '/liceo/imgs/masculino.png',
+                    ],
+                    'Gestión Académica' => [
+                        'materia' => '/liceo/imgs/libros.png',
+                        'seccion' => '/liceo/imgs/secciones.png',
+                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+                    ],
+                    'Control y Reportes' => [
+                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                        'reporte' => '/liceo/imgs/reporte.png',
+                        'visita' => '/liceo/imgs/calendar-check.svg',
+                    ]
                 ],
                 'user' => [
-                   'seccion' => '/liceo/imgs/secciones.png',
-                   'visita' => '/liceo/imgs/calendar-check.svg'
+                    'seccion' => '/liceo/imgs/secciones.png',
+                    'visita' => '/liceo/imgs/calendar-check.svg'
                 ]
             ];
             $nombre_legible = [
@@ -80,24 +94,56 @@ define('ROOT_PATH', __DIR__ . '/');
 
             ?>
 
-            <section class="modulos">
-                <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url) {
-                    $ruta = isset($rutas_controladores[$nombre_modulo])
-                        ? $rutas_controladores[$nombre_modulo]
-                        : 'controladores/' . $nombre_modulo . '_controlador.php';
-                    if (isset($nombre_legible[$nombre_modulo])) {
-                        $texto = $nombre_legible[$nombre_modulo];
-                    } else {
-                        // Si no, reemplaza guiones bajos y capitaliza
-                        $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
-                    }
+            <div class="container-fluid">
+                <?php 
+                // Para el rol 'user' que no tiene categorías, mostrar directamente los módulos
+                if ($rol_usuario === 'user' && !empty($modulos_visibles)): 
                 ?>
-                    <div class="modulo" data-url="<?php echo $ruta; ?>">
-                        <img src="<?php echo $imagen_url; ?>" alt="">
-                        <h2><?php echo $texto; ?></h2>
-                    </div>
-                <?php } ?>
-            </section>
+                    <section class="modulos">
+                        <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url):
+                            $ruta = isset($rutas_controladores[$nombre_modulo])
+                                ? $rutas_controladores[$nombre_modulo]
+                                : 'controladores/' . $nombre_modulo . '_controlador.php';
+
+                            if (isset($nombre_legible[$nombre_modulo])) {
+                                $texto = $nombre_legible[$nombre_modulo];
+                            } else {
+                                $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
+                            }
+                        ?>
+                            <div class="modulo" data-url="<?php echo $ruta; ?>">
+                                <img src="<?php echo $imagen_url; ?>" alt="">
+                                <h2><?php echo $texto; ?></h2>
+                            </div>
+                        <?php endforeach; ?>
+                    </section>
+                <?php else: ?>
+                    <?php foreach ($modulos_visibles as $categoria => $modulos): ?>
+                        <div class="categoria-section">
+                            <h2 class="categoria-titulo"><?php echo $categoria; ?></h2>
+                            <hr class="categoria-linea">
+                            <section class="modulos">
+                                <?php foreach ($modulos as $nombre_modulo => $imagen_url):
+                                    $ruta = isset($rutas_controladores[$nombre_modulo])
+                                        ? $rutas_controladores[$nombre_modulo]
+                                        : 'controladores/' . $nombre_modulo . '_controlador.php';
+
+                                    if (isset($nombre_legible[$nombre_modulo])) {
+                                        $texto = $nombre_legible[$nombre_modulo];
+                                    } else {
+                                        $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
+                                    }
+                                ?>
+                                    <div class="modulo" data-url="<?php echo $ruta; ?>">
+                                        <img src="<?php echo $imagen_url; ?>" alt="">
+                                        <h2><?php echo $texto; ?></h2>
+                                    </div>
+                                <?php endforeach; ?>
+                            </section>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </main>
         <script>
             document.querySelectorAll('.modulo').forEach(modulo => {
@@ -109,6 +155,9 @@ define('ROOT_PATH', __DIR__ . '/');
                 });
             });
         </script>
+
+        <?php include(ROOT_PATH . 'includes/widget_de_ayuda.php') ?>
+
         <footer>
             <?php include(ROOT_PATH . 'includes/footer.php') ?>
         </footer>
