@@ -150,6 +150,18 @@ if (!isset($_SESSION['profesor'])) {
                                     <p>Listados y constancias de estudiantes matriculados</p>
                                 </div>
 
+                                <div class="modulo" data-url="/liceo/controladores/seccion_controlador.php">
+                                    <img src="/liceo/icons/table.svg" alt="Registro de Asistencia">
+                                    <h2>Reporte de Matricula</h2>
+                                    <p>Genera un reporte de la matricula de estudiantes en una seccion</p>
+                                </div>
+
+                                <div class="modulo" data-url="/liceo/controladores/profesor_controlador.php">
+                                    <img src="/liceo/icons/person-workspace.svg" alt="Registro de Asistencia">
+                                    <h2>Reporte de Profesores</h2>
+                                    <p>Genera un reporte en donde puedas ver los datos de los profesores, sus materias y su cargo</p>
+                                </div>
+
                                 <div class="modulo" data-url="/liceo/controladores/asistencia_controlador.php">
                                     <img src="/liceo/icons/calendar-check.svg" alt="Registro de Asistencia">
                                     <h2>Registro de Asistencia</h2>

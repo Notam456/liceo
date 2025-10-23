@@ -43,6 +43,43 @@ class ProfesorModelo
         return mysqli_query($this->conn, $query);
     }
 
+    public function obtenerReporteCompletoProfesores()
+    {
+    $query = "SELECT 
+                p.id_profesor,
+                p.nombre,
+                p.apellido,
+                p.cedula,
+                GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ') AS cargos,
+                GROUP_CONCAT(DISTINCT m.nombre SEPARATOR ', ') AS materias
+             FROM profesor p
+             LEFT JOIN asigna_cargo ac ON p.id_profesor = ac.id_profesor AND ac.estado = 'activa'
+             LEFT JOIN cargo c ON ac.id_cargo = c.id_cargo
+             LEFT JOIN asigna_materia am ON p.id_profesor = am.id_profesor AND am.estado = 'activa'
+             LEFT JOIN materia m ON am.id_materia = m.id_materia
+             GROUP BY p.id_profesor, p.nombre, p.apellido, p.cedula
+             ORDER BY p.apellido, p.nombre";
+    
+    $result = $this->conn->query($query);
+    
+    if (!$result) {
+        throw new Exception("Error en la consulta: " . $this->conn->error);
+    }
+    
+    $profesores = [];
+    while ($row = $result->fetch_assoc()) {
+        $profesores[] = [
+            'nombre' => $row['nombre'],
+            'apellido' => $row['apellido'],
+            'cedula' => $row['cedula'],
+            'cargos' => $row['cargos'] ?: 'Sin cargo asignado',
+            'materias' => $row['materias'] ?: 'Sin materia asignada'
+        ];
+    }
+    
+    return $profesores;
+}
+
     public function obtenerTodosLosProfesoresConCargo()
     {
         $query = "SELECT p.* FROM profesor p INNER JOIN asigna_cargo a ON a.id_profesor = p.id_profesor ";

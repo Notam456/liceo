@@ -1,77 +1,79 @@
-<?php if (!empty($row)): ?>
-<div id="seccion-contenido-<?= (int)$row['id_seccion'] ?>" class="container-fluid float-md-end">
+<?php
+// Obtener información de la sección para el modal
+$id_seccion = $_POST['id_seccion'] ?? '';
+$seccion_info = $seccionModelo->obtenerSeccionPorId($id_seccion);
+$seccion_data = mysqli_fetch_assoc($seccion_info);
+?>
+
+<div class="modal-header">
+    <h1 class="modal-title fs-5" id="viewmodalLabel">
+        Información de la Sección - <?php echo $seccion_data['numero_anio'] ?? ''; ?>°<?php echo $seccion_data['letra'] ?? ''; ?>
+    </h1>
+</div>
+<div class="modal-body">
     <div class="row mb-3">
         <div class="col-md-6">
-            <strong>Sección:</strong> <?= htmlspecialchars($row['numero_anio']) . '° ' . htmlspecialchars($row['letra']) ?>
+            <strong>Grado:</strong> <?php echo $seccion_data['numero_anio'] ?? ''; ?>° Año
         </div>
         <div class="col-md-6">
-            <strong>Tutor:</strong>
-            <?php if (!empty($row['nombre_tutor'])): ?>
-                <?= htmlspecialchars($row['nombre_tutor']) . ' ' . htmlspecialchars($row['apellido_tutor']) ?>
-            <?php else: ?>
-                <span class="text-muted">No asignado</span>
-            <?php endif; ?>
+            <strong>Sección:</strong> <?php echo $seccion_data['letra'] ?? ''; ?>
         </div>
     </div>
+    
+    <?php if (!empty($seccion_data['nombre_tutor'])): ?>
     <div class="row mb-3">
-        <div class="col-md-12 d-flex gap-2">
-            <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=<?= (int)$row['id_seccion'] ?>" role="button">Horario</a>
-            <button class="btn btn-success" onclick="abrirAsignacionEstudiantes(<?= (int)$row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')">Asignar Estudiantes</button>
+        <div class="col-12">
+            <strong>Tutor:</strong> <?php echo $seccion_data['nombre_tutor'] . ' ' . $seccion_data['apellido_tutor']; ?>
         </div>
     </div>
-    <hr>
-    <div class="row mb-2">
-        <div class="col-md-6">
-            <label class="form-label">Buscar en listado</label>
-            <input type="text" class="form-control" id="filtroEstudiantes-<?= (int)$row['id_seccion'] ?>" placeholder="Filtrar por nombre o apellido...">
+    <?php endif; ?>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="/liceo/controladores/seccion_controlador.php?action=generar_matricula_completa&id_seccion=<?php echo $id_seccion; ?>" 
+               target="_blank" 
+               class="btn btn-secondary">
+                <i class="fas fa-file-pdf"></i> Generar Matrícula Completa
+            </a>
         </div>
     </div>
-    <h6>Listado de estudiantes</h6>
+    
+    <h5>Estudiantes en esta Sección</h5>
+    
     <?php if ($estudiantes && mysqli_num_rows($estudiantes) > 0): ?>
-        <div class="table-responsive" style="max-height: 360px; overflow-y: auto;">
-            <table class="table table-sm table-striped" id="tablaEstudiantes-<?= (int)$row['id_seccion'] ?>">
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Apellidos</th>
                         <th>Nombres</th>
-                        <th>C.I</th>
+                        <th>Cédula</th>
+                        <th>Contacto</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($estu = mysqli_fetch_assoc($estudiantes)): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($estu['apellido']) ?></td>
-                            <td><?= htmlspecialchars($estu['nombre']) ?></td>
-                            <td><?= htmlspecialchars($estu['cedula']) ?></td>
-                        </tr>
+                    <?php 
+                    $contador = 1;
+                    while ($estudiante = mysqli_fetch_array($estudiantes)): 
+                    ?>
+                    <tr>
+                        <td><?php echo $contador++; ?></td>
+                        <td><?php echo $estudiante['apellido']; ?></td>
+                        <td><?php echo $estudiante['nombre']; ?></td>
+                        <td><?php echo $estudiante['cedula']; ?></td>
+                        <td><?php echo $estudiante['contacto']; ?></td>
+                    </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
         </div>
-        <script>
-            (function() {
-                var input = document.getElementById('filtroEstudiantes-<?= (int)$row['id_seccion'] ?>');
-                var table = document.getElementById('tablaEstudiantes-<?= (int)$row['id_seccion'] ?>');
-                if (!input || !table) return;
-                input.addEventListener('keyup', function() {
-                    var term = this.value.toLowerCase();
-                    var rows = table.querySelectorAll('tbody tr');
-                    rows.forEach(function(tr) {
-                        var apellido = tr.cells[0].textContent.toLowerCase();
-                        var nombre = tr.cells[1].textContent.toLowerCase();
-                        var ci = tr.cells[2].textContent.toLowerCase();
-                        var match = apellido.indexOf(term) !== -1 || nombre.indexOf(term) !== -1 || ci.indexOf(term) !== -1;
-                        tr.style.display = match ? '' : 'none';
-                    });
-                });
-            })();
-        </script>
+        <div class="mt-3">
+            <strong>Total de estudiantes:</strong> <?php echo mysqli_num_rows($estudiantes); ?>
+        </div>
     <?php else: ?>
-        <p class="text-muted">No hay estudiantes asignados a esta sección.</p>
+        <div class="alert alert-info">
+            No hay estudiantes asignados a esta sección.
+        </div>
     <?php endif; ?>
 </div>
-<?php else: ?>
-<div class="alert alert-warning" role="alert">
-    <h4>No se han encontrado datos de la sección.</h4>
-</div>
-<?php endif; ?>

@@ -27,6 +27,11 @@
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Agregar
                             </button>
+                            <a href="/liceo/controladores/profesor_controlador.php?action=generar_reporte_profesores" 
+                            target="_blank" 
+                            class="btn btn-secondary float-end me-2">
+                                Reporte de Profesores
+                            </a>
                         </h4>
                     </div>
                     <div class="card-body">
