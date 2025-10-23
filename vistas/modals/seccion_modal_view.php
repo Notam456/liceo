@@ -30,6 +30,9 @@ $seccion_data = mysqli_fetch_assoc($seccion_info);
     
     <div class="row mb-4">
         <div class="col-12">
+                    <div class="col-md-12 d-flex gap-2">
+            <a class="btn btn-primary" href="/liceo/controladores/horario_controlador.php?secc=<?= (int)$row['id_seccion'] ?>" role="button">Horario</a>
+            <button class="btn btn-success" onclick="abrirAsignacionEstudiantes(<?= (int)$row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>')">Asignar Estudiantes</button>
             <a href="/liceo/controladores/seccion_controlador.php?action=generar_matricula_completa&id_seccion=<?php echo $id_seccion; ?>" 
                target="_blank" 
                class="btn btn-secondary">
