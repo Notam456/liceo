@@ -84,7 +84,7 @@ CREATE TABLE estudiante (
 
 CREATE TABLE materia (
     id_materia INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) UNIQUE NOT NULL,
     descripcion TEXT
 );
 
@@ -197,6 +197,9 @@ CREATE TABLE logs_anio (
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);
+
+INSERT INTO cargo (tipo, nombre) 
+VALUES ('superior', 'Director');
 
 
 INSERT INTO municipio (municipio) VALUES
