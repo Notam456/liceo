@@ -29,120 +29,143 @@ define('ROOT_PATH', __DIR__ . '/');
             // Define los módulos visibles para cada rol organizados por categorías
             $modulos_por_rol = [
                 'admin' => [
-                    'Gestión de Usuarios' => [
-                        'usuario' => '/liceo/imgs/agregar-usuario.png',
-                        'profesor' => '/liceo/imgs/masculino.png',
-                        'estudiante' => '/liceo/imgs/estudiando.png',
+                    'Registro de datos' => [
+                        'Usuario' => [
+                            'usuario' => '/liceo/imgs/agregar-usuario.png',
+                        ],
+                        'Gestión Académica' => [
+                            'profesor' => '/liceo/imgs/masculino.png',
+                            'estudiante' => '/liceo/imgs/estudiando.png',
+                            'anio_academico' => '/liceo/imgs/calendario.png',
+                            'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
+                            'seccion' => '/liceo/imgs/secciones.png',
+                            'materia' => '/liceo/imgs/libros.png',
+                            'cargo' => '/liceo/imgs/suitcase-lg.svg',
+                        ],
+                        'Ubicación' => [
+                            'municipio' => '/liceo/imgs/cataluna.png',
+                            'parroquia' => '/liceo/imgs/pueblo.png',
+                            'sector' => '/liceo/imgs/pueblo.png',
+                        ]
                     ],
-                    'Gestión Académica' => [
-                        'anio_academico' => '/liceo/imgs/calendario.png',
-                        'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
-                        'seccion' => '/liceo/imgs/secciones.png',
-                        'materia' => '/liceo/imgs/libros.png',
-                    ],
-                    'Asignaciones' => [
-                        'cargo' => '/liceo/imgs/suitcase-lg.svg',
+                    'Gestión Operativa' => [
+                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
                         'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
                         'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                    ],
-                    'Ubicación' => [
-                        'sector' => '/liceo/imgs/pueblo.png',
-                        'parroquia' => '/liceo/imgs/pueblo.png',
-                        'municipio' => '/liceo/imgs/cataluna.png',
-                    ],
-                    'Control y Reportes' => [
-                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'reporte' => '/liceo/imgs/reporte.png',
                         'visita' => '/liceo/imgs/calendar-check.svg',
+                    ],
+                    'Reportes' => [
+                        'reporte' => '/liceo/imgs/reporte.png'
                     ]
                 ],
                 'coordinador' => [
-                    'Gestión de Usuarios' => [
+                    'Registro de datos' => [
                         'estudiante' => '/liceo/imgs/estudiando.png',
                         'profesor' => '/liceo/imgs/masculino.png',
-                    ],
-                    'Gestión Académica' => [
                         'materia' => '/liceo/imgs/libros.png',
                         'seccion' => '/liceo/imgs/secciones.png',
-                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
                     ],
-                    'Control y Reportes' => [
+                    'Gestión Operativa' => [
                         'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'reporte' => '/liceo/imgs/reporte.png',
+                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
                         'visita' => '/liceo/imgs/calendar-check.svg',
+                    ],
+                    'Reportes' => [
+                        'reporte' => '/liceo/imgs/reporte.png'
                     ]
                 ],
                 'user' => [
-                    'seccion' => '/liceo/imgs/secciones.png',
-                    'visita' => '/liceo/imgs/calendar-check.svg'
+                    'Gestión Operativa' => [
+                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                        'visita' => '/liceo/imgs/calendar-check.svg',
+                        'seccion' => '/liceo/imgs/secciones.png'
+                    ]
+                ],
+                'profesor' => [
+                    'Gestión Operativa' => [
+                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                        'visita' => '/liceo/imgs/calendar-check.svg',
+                    ],
+                    'Reportes' => [
+                        'reporte' => '/liceo/imgs/reporte.png'
+                    ]
                 ]
             ];
             $nombre_legible = [
                 'anio_academico' => 'Año académico',
                 'asigna_cargo' => 'Asignación de cargo',
-                'asigna_materia' => 'Asignación de materia'
+                'asigna_materia' => 'Asignación de materia',
+                'usuario' => 'Usuarios',
+                'estudiante' => 'Estudiantes',
+                'profesor' => 'Profesores',
+                'materia' => 'Materias',
+                'seccion' => 'Secciones',
+                'grado' => 'Grados',
+                'cargo' => 'Cargos',
+                'municipio' => 'Municipios',
+                'parroquia' => 'Parroquias',
+                'sector' => 'Sectores',
+                'asistencia' => 'Asistencia',
+                'visita' => 'Visita',
+                'reporte' => 'Reporte'
             ];
             // Obtén el rol del usuario de la sesión
-            $rol_usuario = $_SESSION['rol'];
+            $rol_usuario = $_SESSION['rol'] ?? 'default';
 
             // Verifica si el rol existe en la configuración de módulos
-            if (isset($modulos_por_rol[$rol_usuario])) {
-                $modulos_visibles = $modulos_por_rol[$rol_usuario];
-            } else {
-                $modulos_visibles = []; // No hay módulos si el rol no está definido
-            }
+            $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
 
+            // Función para renderizar un módulo individual
+            function render_modulo($nombre_modulo, $imagen_url, $nombre_legible) {
+                $ruta = 'controladores/' . $nombre_modulo . '_controlador.php';
+                $texto = $nombre_legible[$nombre_modulo] ?? ucfirst(str_replace('_', ' ', $nombre_modulo));
+                
+                echo '<div class="modulo" data-url="' . htmlspecialchars($ruta) . '">';
+                echo '<img src="' . htmlspecialchars($imagen_url) . '" alt="' . htmlspecialchars($texto) . '">';
+                echo '<h2>' . htmlspecialchars($texto) . '</h2>';
+                echo '</div>';
+            }
             ?>
 
             <div class="container-fluid">
-                <?php 
-                // Para el rol 'user' que no tiene categorías, mostrar directamente los módulos
-                if ($rol_usuario === 'user' && !empty($modulos_visibles)): 
-                ?>
-                    <section class="modulos">
-                        <?php foreach ($modulos_visibles as $nombre_modulo => $imagen_url):
-                            $ruta = isset($rutas_controladores[$nombre_modulo])
-                                ? $rutas_controladores[$nombre_modulo]
-                                : 'controladores/' . $nombre_modulo . '_controlador.php';
-
-                            if (isset($nombre_legible[$nombre_modulo])) {
-                                $texto = $nombre_legible[$nombre_modulo];
-                            } else {
-                                $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
+                <?php foreach ($modulos_visibles as $categoria => $modulos): ?>
+                    <div class="categoria-section">
+                        <h2 class="categoria-titulo"><?php echo htmlspecialchars($categoria); ?></h2>
+                        <hr class="categoria-linea">
+                        
+                        <?php
+                        $has_sub_categories = false;
+                        if (!empty($modulos)) {
+                            // Revisa si hay sub-categorías (arrays anidados)
+                            foreach ($modulos as $item) {
+                                if (is_array($item)) {
+                                    $has_sub_categories = true;
+                                    break;
+                                }
                             }
-                        ?>
-                            <div class="modulo" data-url="<?php echo $ruta; ?>">
-                                <img src="<?php echo $imagen_url; ?>" alt="">
-                                <h2><?php echo $texto; ?></h2>
-                            </div>
-                        <?php endforeach; ?>
-                    </section>
-                <?php else: ?>
-                    <?php foreach ($modulos_visibles as $categoria => $modulos): ?>
-                        <div class="categoria-section">
-                            <h2 class="categoria-titulo"><?php echo $categoria; ?></h2>
-                            <hr class="categoria-linea">
-                            <section class="modulos">
-                                <?php foreach ($modulos as $nombre_modulo => $imagen_url):
-                                    $ruta = isset($rutas_controladores[$nombre_modulo])
-                                        ? $rutas_controladores[$nombre_modulo]
-                                        : 'controladores/' . $nombre_modulo . '_controlador.php';
+                        }
 
-                                    if (isset($nombre_legible[$nombre_modulo])) {
-                                        $texto = $nombre_legible[$nombre_modulo];
-                                    } else {
-                                        $texto = ucfirst(str_replace('_', ' ', $nombre_modulo));
-                                    }
-                                ?>
-                                    <div class="modulo" data-url="<?php echo $ruta; ?>">
-                                        <img src="<?php echo $imagen_url; ?>" alt="">
-                                        <h2><?php echo $texto; ?></h2>
-                                    </div>
-                                <?php endforeach; ?>
-                            </section>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                        if ($has_sub_categories) {
+                            // Renderiza con sub-categorías
+                            foreach ($modulos as $sub_categoria => $sub_modulos) {
+                                echo '<h4 class="sub-categoria-titulo mt-3 mb-2">' . htmlspecialchars($sub_categoria) . '</h4>';
+                                echo '<section class="modulos">';
+                                foreach ($sub_modulos as $nombre_modulo => $imagen_url) {
+                                    render_modulo($nombre_modulo, $imagen_url, $nombre_legible);
+                                }
+                                echo '</section>';
+                            }
+                        } else {
+                            // Renderiza como una lista plana
+                            echo '<section class="modulos">';
+                            foreach ($modulos as $nombre_modulo => $imagen_url) {
+                                render_modulo($nombre_modulo, $imagen_url, $nombre_legible);
+                            }
+                            echo '</section>';
+                        }
+                        ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </main>
         <script>
