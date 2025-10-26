@@ -124,7 +124,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Generar grados para el año académico actual</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Crear grados para el año académico actual</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/grado_controlador.php" method="POST">

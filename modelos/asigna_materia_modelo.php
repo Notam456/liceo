@@ -21,6 +21,7 @@ class AsignaMateriaModelo {
                   FROM asigna_materia am
                   JOIN profesor p ON am.id_profesor = p.id_profesor
                   JOIN materia m ON am.id_materia = m.id_materia
+                  WHERE am.estado = 'activa'
                   ORDER BY p.apellido, p.nombre, m.nombre";
         
         $result = $this->db->query($query);
@@ -80,7 +81,7 @@ class AsignaMateriaModelo {
 
     // Eliminar asignación
     public function eliminarAsignacion($id_asignacion) {
-        $query = "DELETE FROM asigna_materia WHERE id_asignacion = ?";
+        $query = "UPDATE asigna_materia SET estado = 'inactiva' WHERE id_asignacion = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_asignacion);
         

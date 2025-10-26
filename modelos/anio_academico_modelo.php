@@ -22,7 +22,7 @@ class AnioAcademicoModelo {
     }
 
     public function obtenerTodosLosAniosAcademicos() {
-        $query = "SELECT *,  CONCAT(YEAR(desde), '-', YEAR(hasta)) AS periodo FROM anio_academico";
+        $query = "SELECT *,  CONCAT(YEAR(desde), '-', YEAR(hasta)) AS periodo FROM anio_academico WHERE visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -37,7 +37,7 @@ class AnioAcademicoModelo {
 
     public function eliminarAnioAcademico($id) {
         $id = (int)$id;
-        $delete_query = "DELETE FROM anio_academico WHERE id_anio ='$id'";
+        $delete_query = "UPDATE anio_academico SET visibilidad = FALSE WHERE id_anio ='$id'";
         return mysqli_query($this->conn, $delete_query);
     }
 
@@ -130,7 +130,7 @@ class AnioAcademicoModelo {
         return mysqli_query($this->conn, $query);
     }
     public function obtenerAnioActivo(){
-        $query = "SELECT * FROM anio_academico WHERE estado = 1";
+        $query = "SELECT * FROM anio_academico WHERE estado = 1 AND visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 }

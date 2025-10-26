@@ -22,13 +22,13 @@ class ParroquiaModelo {
     }
 
     public function obtenerTodasLasParroquias() {
-        $query = "SELECT p.*, m.municipio FROM parroquia as p LEFT JOIN municipio as m ON p.id_municipio = m.id_municipio";
+        $query = "SELECT p.*, m.municipio FROM parroquia as p LEFT JOIN municipio as m ON p.id_municipio = m.id_municipio WHERE p.visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
     public function obtenerParroquiasPorMunicipio($id_municipio) {
         $id_municipio = (int)$id_municipio;
-        $query = "SELECT * FROM parroquia WHERE id_municipio = $id_municipio";
+        $query = "SELECT * FROM parroquia WHERE id_municipio = $id_municipio AND visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -43,7 +43,7 @@ class ParroquiaModelo {
 
     public function eliminarParroquia($id) {
         $id = (int)$id;
-        $query = "DELETE FROM parroquia WHERE id_parroquia ='$id'";
+        $query = "UPDATE parroquia SET visibilidad = FALSE WHERE id_parroquia ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
