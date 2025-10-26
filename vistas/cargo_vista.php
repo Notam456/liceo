@@ -93,8 +93,9 @@
                                 name="tipo_edit"
                                 id="tipo_edit" required>
                                 <option selected value="">Seleccione...</option>
-                                <option value="inferior">Inferior (1er, 2do y 3er año)</option>
-                                <option value="superior">Superior (4to y 5to año)</option>
+                                <option value="inferior">Media General (1er, 2do y 3er año)</option>
+                                <option value="superior">Media General (4to y 5to año)</option>
+                                <option value="directivo">Directivo</option>
                             </select>
                         </div>
 
@@ -144,8 +145,9 @@
                                 name="tipo"
                                 required>
                                 <option selected value="">Seleccione...</option>
-                                <option value="inferior">Inferior (1er, 2do y 3er año)</option>
-                                <option value="superior">Superior (4to y 5to año)</option>
+                                <option value="inferior">Media General (1er, 2do y 3er año)</option>
+                                <option value="superior">Media General (4to y 5to año)</option>
+                                <option value="directivo">Directivo</option>
                             </select>
                         </div>
                     </div>

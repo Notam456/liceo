@@ -31,6 +31,7 @@ class GradoModelo
         $id = (int)$id;
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT g.*,  CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE id_grado = '$id'";
                 break;
             case 'inferior':
@@ -47,6 +48,7 @@ class GradoModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND g.visibilidad = TRUE";
                 break;
             case 'inferior':

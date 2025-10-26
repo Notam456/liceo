@@ -200,7 +200,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Inscribe a un Nuevo Estudiante</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Crear Nuevo Estudiante</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/estudiante_controlador.php" method="POST">

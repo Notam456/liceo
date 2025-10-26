@@ -175,6 +175,7 @@ class AsistenciaModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 ORDER BY g.numero_anio";
                 break;
             case 'inferior':

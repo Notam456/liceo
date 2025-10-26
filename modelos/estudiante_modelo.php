@@ -60,6 +60,7 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT * FROM estudiante WHERE visibilidad = TRUE";
                 break;
             case 'inferior':
@@ -119,6 +120,7 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT * FROM estudiante WHERE (id_seccion IS NULL OR id_seccion = 0) AND visibilidad = TRUE";
                 break;
             case 'inferior':

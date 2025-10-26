@@ -159,8 +159,8 @@
                             <select
                                 class="form-select form-select-lg"
                                 name="rol"
-                                id="rolEdit">
-                                <option selected>Seleccione un rol...</option>
+                                id="rolEdit" required>
+                                <option selected value="">Seleccione un rol...</option>
                                 <option value="admin">Administrador</option>
                                 <option value="coordinador">Coordinador</option>
                                 <option value="user">Usuario</option>
@@ -256,8 +256,9 @@
                             <select
                                 class="form-select form-select-lg"
                                 name="rol"
-                                id="rol">
-                                <option selected>Seleccione un rol...</option>
+                                id="rol"
+                                required>
+                                <option selected value="">Seleccione un rol...</option>
                                 <option value="admin">Administrador</option>
                                 <option value="coordinador">Coordinador</option>
                                 <option value="user">Usuario</option>
