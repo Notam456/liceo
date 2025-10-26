@@ -28,7 +28,7 @@ class MunicipioModelo {
     }
 
     public function obtenerTodosLosMunicipios() {
-        $query = "SELECT m.* FROM municipio as m";
+        $query = "SELECT m.* FROM municipio as m WHERE m.visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -46,7 +46,7 @@ class MunicipioModelo {
 
     public function eliminarMunicipio($id) {
         $id = (int)$id;
-        $query = "DELETE FROM municipio WHERE id_municipio ='$id'";
+        $query = "UPDATE municipio SET visibilidad = FALSE WHERE id_municipio ='$id'";
         return mysqli_query($this->conn, $query);
     }
 }

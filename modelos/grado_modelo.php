@@ -47,13 +47,13 @@ class GradoModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1";
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND g.visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio < 4";
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio < 4 AND g.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio > 3";
+                $query = "SELECT g.* FROM grado g JOIN anio_academico a ON g.id_anio = a.id_anio WHERE a.estado = 1 AND numero_anio > 3 AND g.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -71,7 +71,7 @@ class GradoModelo
     public function eliminarGrado($id)
     {
         $id = (int)$id;
-        $query = "DELETE FROM grado WHERE id_grado ='$id'";
+        $query = "UPDATE grado SET visibilidad = FALSE WHERE id_grado ='$id'";
         return mysqli_query($this->conn, $query);
     }
 }

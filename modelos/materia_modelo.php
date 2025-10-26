@@ -30,7 +30,7 @@ class MateriaModelo {
     }
 
     public function obtenerTodasLasMaterias() {
-        $query = "SELECT * FROM materia";
+        $query = "SELECT * FROM materia WHERE visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -45,7 +45,7 @@ class MateriaModelo {
 
     public function eliminarMateria($id) {
         $id = (int)$id;
-        $query = "DELETE FROM materia WHERE id_materia ='$id'";
+        $query = "UPDATE materia SET visibilidad = FALSE WHERE id_materia ='$id'";
         return mysqli_query($this->conn, $query);
     }
 }

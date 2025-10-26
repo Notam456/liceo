@@ -21,6 +21,7 @@ class AsignaCargoModelo {
                   FROM asigna_cargo ac
                   JOIN profesor p ON ac.id_profesor = p.id_profesor
                   JOIN cargo c ON ac.id_cargo = c.id_cargo
+                  WHERE ac.estado = 'activa'
                   ORDER BY p.apellido, p.nombre, c.nombre";
 
         $result = $this->db->query($query);
@@ -80,7 +81,7 @@ class AsignaCargoModelo {
 
     // Eliminar asignación
     public function eliminarAsignacion($id_asignacion) {
-        $query = "DELETE FROM asigna_cargo WHERE id_asignacion = ?";
+        $query = "UPDATE asigna_cargo SET estado = 'inactiva' WHERE id_asignacion = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_asignacion);
 

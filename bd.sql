@@ -5,13 +5,15 @@ USE liceoo;
 
 CREATE TABLE municipio (
     id_municipio INT AUTO_INCREMENT PRIMARY KEY,
-    municipio VARCHAR(20) NOT NULL
+    municipio VARCHAR(20) NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE parroquia (
     id_parroquia INT AUTO_INCREMENT PRIMARY KEY,
     parroquia VARCHAR(20) NOT NULL,
     id_municipio INT NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
           ON UPDATE CASCADE
 );
@@ -20,6 +22,7 @@ CREATE TABLE sector (
     id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
     sector VARCHAR(50) NOT NULL,
     id_parroquia INT(11) NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
           ON UPDATE CASCADE
 );
@@ -28,7 +31,8 @@ CREATE TABLE profesor (
     id_profesor INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
     nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL
+    apellido VARCHAR(50) NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE
 );
 
 
@@ -36,7 +40,8 @@ CREATE TABLE anio_academico (
     id_anio INT AUTO_INCREMENT PRIMARY KEY,
     desde DATE NOT NULL,
     hasta DATE NOT NULL,
-    estado TINYINT NOT NULL
+    estado TINYINT NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE
 );
 
 
@@ -44,6 +49,7 @@ CREATE TABLE grado (
     id_grado INT AUTO_INCREMENT PRIMARY KEY,
     id_anio INT NOT NULL,
     numero_anio INT NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio)
           ON UPDATE CASCADE
 );
@@ -54,6 +60,7 @@ CREATE TABLE seccion (
     id_grado INT NOT NULL,
     letra CHAR(1) NOT NULL,
     id_tutor INT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
           ON UPDATE CASCADE,
     FOREIGN KEY (id_tutor) REFERENCES profesor(id_profesor)
@@ -73,6 +80,7 @@ CREATE TABLE estudiante (
     id_sector INT,
     direccion_exacta TEXT,
     punto_referencia TEXT,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
           ON UPDATE CASCADE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
@@ -85,14 +93,16 @@ CREATE TABLE estudiante (
 CREATE TABLE materia (
     id_materia INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) UNIQUE NOT NULL,
-    descripcion TEXT
+    descripcion TEXT,
+    visibilidad BOOLEAN DEFAULT TRUE
 );
 
 
 CREATE TABLE cargo (
     id_cargo INT AUTO_INCREMENT PRIMARY KEY,
     tipo ENUM('inferior', 'superior'),
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE asigna_cargo (
@@ -178,6 +188,7 @@ CREATE TABLE usuario (
     contrasena VARCHAR(255) NOT NULL,
     rol VARCHAR(255) NOT NULL, -- Posibles roles: admin, coordinador, user
     id_profesor int(11) NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
           ON UPDATE CASCADE
 
