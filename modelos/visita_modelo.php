@@ -105,7 +105,7 @@ class VisitaModelo {
                   WHERE v.id_visita = $id";
         return mysqli_query($this->conn, $query);
     }
-
+    
     public function eliminarVisita($id) {
         $id = (int)$id;
         $query = "DELETE FROM visita WHERE id_visita = $id";

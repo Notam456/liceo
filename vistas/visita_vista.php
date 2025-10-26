@@ -43,6 +43,7 @@
                                     <th>Acciones</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,6 +87,10 @@
                                             <td>
                                                 <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
                                             </td>
+                                            <td>
+                                                <a href="/liceo/controladores/visita_controlador.php?action=generar_reporte_visita_individual&id_visita=<?php echo $row['id_visita']; ?>" 
+                                                   class="btn btn-secondary btn-sm" target="_blank">Reporte</a>
+                                            </td>
                                         </tr>
                                     <?php }
                                 } else { ?>
@@ -93,6 +98,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>No hay visitas agendadas.</td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>

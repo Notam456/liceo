@@ -3,8 +3,14 @@ if (!isset($reporte)) {
     header("Location: /liceo/error.php");
     exit();
 }
-?>
 
+// Calcular estudiantes en alerta para determinar si abrir el modal automáticamente
+$estudiantesAlerta = array_filter($reporte, function($item) {
+    return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
+});
+$totalAlertas = count($estudiantesAlerta);
+$abrirModalAutomaticamente = $totalAlertas > 0;
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -45,6 +51,71 @@ if (!isset($reporte)) {
             border-radius: 6px;
             padding: 8px 12px;
         }
+
+        /* Estilos para el modal de alertas */
+        .seccion-group {
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .seccion-header {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+        }
+
+        .seccion-body {
+            padding: 15px;
+        }
+
+        .estudiante-alerta-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .estudiante-alerta-item:last-child {
+            border-bottom: none;
+        }
+
+        .estudiante-info {
+            flex: 1;
+        }
+
+        .estudiante-acciones {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .contador-alertas {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        /* Animación para el modal automático */
+        @keyframes pulse-alert {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .modal-alerta-automatica .modal-content {
+            animation: pulse-alert 2s ease-in-out;
+            border: 3px solid #ffc107;
+        }
     </style>
 </head>
 
@@ -68,10 +139,18 @@ if (!isset($reporte)) {
 
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">Reporte de Ausencias <i class="bi bi-clipboard2-pulse"></i></h4>
-                        <button class="btn btn-secondary btn-sm" id="generarReporteGeneral">
-                            Reporte General por Sección
-                        </button>
+                        <h4 class="mb-0">Ausencias <i class="bi bi-clipboard2-pulse"></i></h4>
+                        <div>
+                            <button class="btn btn-warning btn-sm me-2" id="verAlertasAusencias" data-bs-toggle="modal" data-bs-target="#alertasModal">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Alertas
+                                <?php if ($totalAlertas > 0): ?>
+                                    <span class="contador-alertas"><?= $totalAlertas ?></span>
+                                <?php endif; ?>
+                            </button>
+                            <button class="btn btn-secondary btn-sm" id="generarReporteGeneral">
+                                Reporte General por Sección
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <?php
@@ -88,6 +167,9 @@ if (!isset($reporte)) {
                             </div>
                             <div class="stat">
                                 Justificados: <span class="badge bg-warning text-dark"><?php echo $totalJustificados; ?></span>
+                            </div>
+                            <div class="stat">
+                                En alerta: <span class="badge bg-danger"><?= $totalAlertas ?></span>
                             </div>
                         </div>
 
@@ -123,11 +205,6 @@ if (!isset($reporte)) {
                                     <button class="btn btn-secondary" id="limpiarFiltros">Limpiar</button>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="alert alert-danger" id="alert-ausencias" style="display: none;">
-                            <h6 class="mb-1"><i class="bi bi-exclamation-triangle-fill"></i> Estudiantes con 3 o más ausencias</h6>
-                            <div id="lista-alertas" class="mt-2"></div>
                         </div>
 
                         <div class="table-responsive">
@@ -191,6 +268,102 @@ if (!isset($reporte)) {
 
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/visita_modal_view.php'); ?>
 
+    <!-- Modal para Alertas de Ausencias -->
+    <div class="modal fade <?= $abrirModalAutomaticamente ? 'modal-alerta-automatica' : '' ?>" id="alertasModal" tabindex="-1" aria-labelledby="alertasModalLabel" aria-hidden="true" data-bs-backdrop="<?= $abrirModalAutomaticamente ? 'static' : 'true' ?>" data-bs-keyboard="<?= $abrirModalAutomaticamente ? 'false' : 'true' ?>">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="alertasModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill"></i> 
+                        <?= $abrirModalAutomaticamente ? 'ALERTA: ' : '' ?>Estudiantes con 3 o más Ausencias
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <?php if (!$abrirModalAutomaticamente): ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-body">
+                    <?php if ($abrirModalAutomaticamente): ?>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-bell-fill"></i> 
+                            <strong>Se detectaron <?= $totalAlertas ?> estudiante(s) con 3 o más ausencias que requieren atención inmediata.</strong>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <div id="contenedor-alertas">
+                        <!-- Aquí se cargarán las alertas agrupadas por sección -->
+                        <?php
+                        // Agrupar estudiantes en alerta por sección
+                        $agrupadosPorSeccion = [];
+                        foreach ($estudiantesAlerta as $estudiante) {
+                            $seccion = $estudiante['seccion'] ?: 'Sin Sección';
+                            if (!isset($agrupadosPorSeccion[$seccion])) {
+                                $agrupadosPorSeccion[$seccion] = [];
+                            }
+                            $agrupadosPorSeccion[$seccion][] = $estudiante;
+                        }
+                        
+                        if (empty($agrupadosPorSeccion)): ?>
+                            <div class="text-center py-4">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                                <h5 class="mt-3">¡No hay alertas!</h5>
+                                <p class="text-muted">No hay estudiantes con 3 o más ausencias sin visita agendada.</p>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($agrupadosPorSeccion as $seccion => $estudiantes): ?>
+                                <div class="seccion-group">
+                                    <div class="seccion-header">
+                                        <?= htmlspecialchars($seccion) ?> 
+                                        <span class="badge bg-danger"><?= count($estudiantes) ?> estudiantes</span>
+                                    </div>
+                                    <div class="seccion-body">
+                                        <?php foreach ($estudiantes as $estudiante): ?>
+                                            <div class="estudiante-alerta-item">
+                                                <div class="estudiante-info">
+                                                    <strong><?= htmlspecialchars($estudiante['nombre']) ?></strong>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        Cédula: <?= htmlspecialchars($estudiante['cedula']) ?> | 
+                                                        Contacto: <?= htmlspecialchars($estudiante['contacto']) ?>
+                                                    </small>
+                                                    <br>
+                                                    <span class="badge bg-danger"><?= $estudiante['ausencias'] ?> ausencias</span>
+                                                    <span class="badge bg-warning text-dark"><?= $estudiante['justificadas'] ?> justificadas</span>
+                                                    <span class="badge bg-secondary">Total: <?= $estudiante['total'] ?></span>
+                                                </div>
+                                                <div class="estudiante-acciones">
+                                                    <button type="button" 
+                                                            class="btn btn-primary btn-sm schedule-visit-modal" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#visitaModal" 
+                                                            data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
+                                                            data-bs-dismiss="modal">
+                                                        Agendar Visita
+                                                    </button>
+                                                    <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $estudiante['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
+                                                       class="btn btn-secondary btn-sm" target="_blank">
+                                                        Generar Reporte
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <?php if ($abrirModalAutomaticamente): ?>
+
+                    <?php else: ?>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
@@ -220,34 +393,53 @@ if (!isset($reporte)) {
             ]
         });
 
+        // Abrir modal automáticamente si hay alertas
+        <?php if ($abrirModalAutomaticamente): ?>
+        $(window).on('load', function() {
+            // Pequeño delay para asegurar que todo esté cargado
+            setTimeout(function() {
+                var alertasModal = new bootstrap.Modal(document.getElementById('alertasModal'));
+                alertasModal.show();
+                
+                // Agregar clase para la animación especial
+                $('#alertasModal').addClass('modal-alerta-automatica');
+            }, 500);
+        });
+        <?php endif; ?>
+
         $('#filtroCedula').keyup(function() {
             table.column(4).search(this.value).draw();
         });
 
-        var alertas = <?= json_encode(array_filter($reporte, function ($item) {
-                            return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
-                        })) ?>;
-        if (alertas.length > 0) {
-            $('#alert-ausencias').show();
-            $('#lista-alertas').html(
-                alertas.map(item =>
-                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
-                    <div>
-                        ${item.nombre} (${item.cedula}) -
-                        <span class="badge bg-danger">${item.total} ausencias en el rango de tiempo especificado</span>
-                    </div>
-                    ${item.tiene_visita_agendada
-                        ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
-                        : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
-                    }
-                </div>`
-                ).join('')
-            );
+        // Función para actualizar el contador de alertas
+        function actualizarContadorAlertas() {
+            var totalAlertas = $('.estudiante-alerta-item').length;
+            var $contador = $('.contador-alertas');
+            
+            if (totalAlertas > 0) {
+                if ($contador.length === 0) {
+                    $('#verAlertasAusencias').append('<span class="contador-alertas">' + totalAlertas + '</span>');
+                } else {
+                    $contador.text(totalAlertas);
+                }
+            } else {
+                $contador.remove();
+            }
         }
 
-        $(document).on('click', '.schedule-visit', function() {
+        // Inicializar contador
+        actualizarContadorAlertas();
+
+        $(document).on('click', '.schedule-visit, .schedule-visit-modal', function() {
             var studentId = $(this).data('id-estudiante');
             $('#visitaModal #id_estudiante_visita').val(studentId);
+        });
+
+        // Botón especial para el modal automático
+        $('#entenderYContinuar').click(function() {
+            // Aquí podrías agregar lógica adicional si necesitas
+            // como marcar las alertas como vistas, etc.
+            console.log('Usuario confirmó entender las alertas');
         });
 
         function cargarReporte() {
@@ -266,14 +458,14 @@ if (!isset($reporte)) {
                         var table = $('#tablaReportes').DataTable();
                         table.clear();
 
-                        var alertas = [];
+                        var estudiantesAlerta = [];
                         var totalEstudiantes = 0;
                         var totalAusencias = 0;
                         var totalJustificados = 0;
 
                         response.data.forEach(function(item) {
                             if (item.total >= 3 && !item.tiene_visita_agendada) {
-                                alertas.push(item);
+                                estudiantesAlerta.push(item);
                             }
 
                             // Actualizar estadísticas
@@ -316,27 +508,11 @@ if (!isset($reporte)) {
                         $('.resumen .stat:nth-child(1) .badge').text(totalEstudiantes);
                         $('.resumen .stat:nth-child(2) .badge').text(totalAusencias);
                         $('.resumen .stat:nth-child(3) .badge').text(totalJustificados);
+                        $('.resumen .stat:nth-child(4) .badge').text(estudiantesAlerta.length);
 
-                        // ACTUALIZAR ALERTAS
-                        if (alertas.length > 0) {
-                            $('#alert-ausencias').show();
-                            $('#lista-alertas').html(
-                                alertas.map(item =>
-                                    `<div class="card-alumno alert d-flex justify-content-between align-items-center">
-                                    <div>
-                                        ${item.nombre} (${item.cedula}) -
-                                        <span class="badge bg-danger">${item.total} ausencias en el rango de tiempo especificado</span>
-                                    </div>
-                                    ${item.tiene_visita_agendada
-                                        ? `<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>`
-                                        : `<button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="${item.id_estudiante}">Agendar Visita</button>`
-                                    }
-                                </div>`
-                                ).join('')
-                            );
-                        } else {
-                            $('#alert-ausencias').hide();
-                        }
+                        // ACTUALIZAR CONTADOR DE ALERTAS
+                        actualizarContadorAlertas();
+
                     } else {
                         console.error('Error fetching report data:', response.error);
                         alert('Error al cargar los datos: ' + response.error);
