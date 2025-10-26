@@ -22,7 +22,7 @@ class CargoModelo {
     }
 
     public function obtenerTodosLosCargos() {
-        $query = "SELECT * FROM cargo";
+        $query = "SELECT * FROM cargo WHERE visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -37,7 +37,7 @@ class CargoModelo {
 
     public function eliminarCargo($id) {
         $id = (int)$id;
-        $query = "DELETE FROM cargo WHERE id_cargo ='$id'";
+        $query = "UPDATE cargo SET visibilidad = FALSE WHERE id_cargo ='$id'";
         return mysqli_query($this->conn, $query);
     }
 }

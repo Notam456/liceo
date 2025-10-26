@@ -30,13 +30,13 @@ class SectorModelo {
     }
 
     public function obtenerTodosLosSectores() {
-        $query = "SELECT * FROM sector";
+        $query = "SELECT * FROM sector WHERE visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
     public function obtenerSectoresPorParroquia($id_parroquia) {
         $id_parroquia = (int)$id_parroquia;
-        $query = "SELECT * FROM sector WHERE id_parroquia = $id_parroquia";
+        $query = "SELECT * FROM sector WHERE id_parroquia = $id_parroquia AND visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -54,7 +54,7 @@ class SectorModelo {
 
     public function eliminarSector($id) {
         $id = (int)$id;
-        $query = "DELETE FROM sector WHERE id_sector ='$id'";
+        $query = "UPDATE sector SET visibilidad = FALSE WHERE id_sector ='$id'";
         return mysqli_query($this->conn, $query);
     }
 }

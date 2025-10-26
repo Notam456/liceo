@@ -244,7 +244,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea un nuevo Año Academico</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar Año Academico</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formAnio" action="/liceo/controladores/anio_academico_controlador.php" method="POST">

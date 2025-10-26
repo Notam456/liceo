@@ -52,7 +52,7 @@ class EstudianteModelo
     public function obtenerEstudiantesPorSeccion($id_seccion)
     {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' ORDER BY apellido, nombre";
+        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' AND visibilidad = TRUE ORDER BY apellido, nombre";
         return mysqli_query($this->conn, $query);
     }
 
@@ -60,13 +60,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT * FROM estudiante";
+                $query = "SELECT * FROM estudiante WHERE visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND e.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND e.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -111,7 +111,7 @@ class EstudianteModelo
     public function eliminarEstudiante($id)
     {
         $id = (int)$id;
-        $query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
+        $query = "UPDATE estudiante SET visibilidad = FALSE WHERE id_estudiante ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -119,13 +119,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT * FROM estudiante WHERE (id_seccion IS NULL OR id_seccion = 0) AND visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);

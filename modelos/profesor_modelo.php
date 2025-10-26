@@ -39,7 +39,7 @@ class ProfesorModelo
 
     public function obtenerTodosLosProfesores()
     {
-        $query = "SELECT * FROM profesor";
+        $query = "SELECT * FROM profesor WHERE visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -57,6 +57,7 @@ class ProfesorModelo
              LEFT JOIN cargo c ON ac.id_cargo = c.id_cargo
              LEFT JOIN asigna_materia am ON p.id_profesor = am.id_profesor AND am.estado = 'activa'
              LEFT JOIN materia m ON am.id_materia = m.id_materia
+             WHERE p.visibilidad = TRUE
              GROUP BY p.id_profesor, p.nombre, p.apellido, p.cedula
              ORDER BY p.apellido, p.nombre";
     
@@ -82,7 +83,7 @@ class ProfesorModelo
 
     public function obtenerTodosLosProfesoresConCargo()
     {
-        $query = "SELECT p.* FROM profesor p INNER JOIN asigna_cargo a ON a.id_profesor = p.id_profesor ";
+        $query = "SELECT p.* FROM profesor p INNER JOIN asigna_cargo a ON a.id_profesor = p.id_profesor WHERE p.visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -92,7 +93,7 @@ class ProfesorModelo
               FROM profesor p 
               INNER JOIN asigna_cargo ac ON p.id_profesor = ac.id_profesor 
               INNER JOIN cargo c ON ac.id_cargo = c.id_cargo 
-              WHERE c.nombre = 'Director' AND ac.estado = 'activa' 
+              WHERE c.nombre = 'Director' AND ac.estado = 'activa' AND p.visibilidad = TRUE
               LIMIT 1";
 
     $result = mysqli_query($this->conn, $query);
@@ -132,7 +133,7 @@ class ProfesorModelo
     public function eliminarProfesor($id)
     {
         $id = (int)$id;
-        $query = "DELETE FROM profesor WHERE id_profesor ='$id'";
+        $query = "UPDATE profesor SET visibilidad = FALSE WHERE id_profesor ='$id'";
         return mysqli_query($this->conn, $query);
     }
 

@@ -50,7 +50,7 @@ class UsuarioModelo
 
     public function obtenerTodosLosUsuarios()
     {
-        $query = "SELECT * FROM usuario";
+        $query = "SELECT * FROM usuario WHERE visibilidad = TRUE";
         $query_run = mysqli_query($this->conn, $query);
         return $query_run;
     }
@@ -83,7 +83,7 @@ class UsuarioModelo
     public function eliminarUsuario($id)
     {
         $id = (int)$id;
-        $delete_query = "DELETE FROM usuario WHERE id_usuario ='$id'";
+        $delete_query = "UPDATE usuario SET visibilidad = FALSE WHERE id_usuario ='$id'";
         $delete_query_run = mysqli_query($this->conn, $delete_query);
         return $delete_query_run;
     }

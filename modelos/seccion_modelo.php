@@ -73,13 +73,13 @@ class SeccionModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio < 4";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio < 4 AND s.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio < 4";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio > 3 AND s.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -103,7 +103,7 @@ class SeccionModelo
     public function eliminarSeccion($id)
     {
         $id = (int)$id;
-        $query = "DELETE FROM seccion WHERE id_seccion ='$id'";
+        $query = "UPDATE seccion SET visibilidad = FALSE WHERE id_seccion ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -126,7 +126,7 @@ class SeccionModelo
     public function obtenerSeccionesPorTutor($id_tutor)
     {
         $id_tutor = (int)$id_tutor;
-        $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.id_tutor = $id_tutor";
+        $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.id_tutor = $id_tutor AND s.visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
