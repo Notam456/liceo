@@ -13,7 +13,7 @@ CREATE TABLE parroquia (
     parroquia VARCHAR(20) NOT NULL,
     id_municipio INT NOT NULL,
     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE sector (
@@ -21,7 +21,7 @@ CREATE TABLE sector (
     sector VARCHAR(50) NOT NULL,
     id_parroquia INT(11) NOT NULL,
     FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE profesor (
@@ -45,7 +45,7 @@ CREATE TABLE grado (
     id_anio INT NOT NULL,
     numero_anio INT NOT NULL,
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 
@@ -55,7 +55,7 @@ CREATE TABLE seccion (
     letra CHAR(1) NOT NULL,
     id_tutor INT NULL,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_tutor) REFERENCES profesor(id_profesor)
         ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -74,11 +74,11 @@ CREATE TABLE estudiante (
     direccion_exacta TEXT,
     punto_referencia TEXT,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 
@@ -102,9 +102,9 @@ CREATE TABLE asigna_cargo (
     fecha_asignacion timestamp NOT NULL DEFAULT current_timestamp(),
     estado enum('activa','inactiva') DEFAULT 'activa',
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_cargo) REFERENCES cargo(id_cargo)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE asistencia (
@@ -117,11 +117,11 @@ CREATE TABLE asistencia (
     inasistencia BOOLEAN DEFAULT false,
     justificado BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_coordinador) REFERENCES profesor(id_profesor)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE visita (
@@ -133,7 +133,7 @@ CREATE TABLE visita (
     observaciones TEXT,
     fecha_realizada DATE,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (encargado_id) REFERENCES profesor(id_profesor)
         ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -145,9 +145,9 @@ CREATE TABLE asigna_materia (
     fecha_asignacion timestamp NOT NULL DEFAULT current_timestamp(),
     estado enum('activa','inactiva') DEFAULT 'activa',
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_materia) REFERENCES materia(id_materia)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
   
 );
 
@@ -157,9 +157,9 @@ CREATE TABLE horario (
     id_asignacion INT NOT NULL,
     dia ENUM('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'),
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE asistencia_detalle (
@@ -167,9 +167,9 @@ CREATE TABLE asistencia_detalle (
     id_asistencia INT NOT NULL,
     id_asignacion INT NOT NULL,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+          ON UPDATE CASCADE,
     FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 );
 
 CREATE TABLE usuario (
@@ -179,7 +179,7 @@ CREATE TABLE usuario (
     rol VARCHAR(255) NOT NULL, -- Posibles roles: admin, coordinador, user
     id_profesor int(11) NULL,
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
-        ON DELETE CASCADE ON UPDATE CASCADE
+          ON UPDATE CASCADE
 
 );
 

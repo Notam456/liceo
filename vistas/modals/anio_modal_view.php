@@ -15,7 +15,7 @@
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Estado:</strong> <?= htmlspecialchars($row['estado']) ?>
+                        <strong>Estado:</strong> <?php if($row['estado'] == 0){echo "Inactivo";} else {echo "Activo";} ?>
                     </div>
                 </div>
                 <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->

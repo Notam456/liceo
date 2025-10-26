@@ -116,9 +116,7 @@
                                                 <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof'].' '. $row['apellido_prof'] ?>')" title="Modificar">
                                                     <i class="bi bi-pencil"></i> Modificar
                                                 </button>
-                                                <button class="btn btn-danger btn-sm" onclick="eliminarAsistenciaFecha('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>)" title="Eliminar">
-                                                    <i class="bi bi-trash"></i> Eliminar
-                                                </button>
+
                                             </td>
                                         </tr>
                                     <?php

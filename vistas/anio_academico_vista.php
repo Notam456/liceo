@@ -70,7 +70,7 @@
                                             <th scope="col">Estado</th>
                                             <th scope="col" class="action">Acción</th>
                                             <th scope="col" class="action"></th>
-                                            <th scope="col" class="action"></th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -102,9 +102,6 @@
                                                 <a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a>
                                             </td>
 
-                                            <td>
-                                                <a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a>
-                                            </td>
                                         </tr>
                                     <?php
                                     }
@@ -117,7 +114,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
+
                                     </tr>
                                 <?php
                                 }
@@ -283,7 +280,7 @@
             },
             columnDefs: [{
                     width: '93px',
-                    targets: [3, 4, 5]
+                    targets: [3, 4]
                 },
                 {
                     visible: false,
