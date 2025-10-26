@@ -12,7 +12,15 @@ class MateriaModelo {
         $info = mysqli_real_escape_string($this->conn, $info);
 
         $query = "INSERT INTO materia(nombre, descripcion) VALUES ('$nombre', '$info')";
-        return mysqli_query($this->conn, $query);
+        try {
+            $insert_query_run = mysqli_query($this->conn, $query);
+            return true; // éxito
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062; // clave duplicada
+            }
+            return false; // otro error
+        }
     }
 
     public function obtenerMateriaPorId($id) {

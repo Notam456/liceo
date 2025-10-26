@@ -11,8 +11,14 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $resultado = $materiaModelo->crearMateria($_POST['nombre_materia'], $_POST['info_materia']);
-            $_SESSION['status'] = $resultado ? "Materia creada correctamente" : "Error al crear la materia";
-            header('Location: /liceo/controladores/materia_controlador.php');
+            if ($resultado === true) {
+                $_SESSION['status'] = "Materia creada correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "La materia ya existe. Intente agregar otra.";
+            } else {
+                $_SESSION['status'] = "Ocurrió un error inesperado.";
+            }
+            header('Location: /liceo/controladores/profesor_controlador.php');
             exit();
         }
         break;
