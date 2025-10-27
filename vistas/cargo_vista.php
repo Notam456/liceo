@@ -23,7 +23,7 @@
                 } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Cargos
+                        <h4>Cargo
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Agregar
                             </button>

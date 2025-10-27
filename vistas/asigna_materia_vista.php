@@ -23,7 +23,7 @@
                 } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Asignar Materias a Profesores <img src="/liceo/icons/people.svg">
+                        <h4>Asignar Materia a Profesor <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Asignar
                             </button>
