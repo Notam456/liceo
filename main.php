@@ -44,19 +44,24 @@ define('ROOT_PATH', __DIR__ . '/');
                         ],
                         'Ubicación' => [
                             'municipio' => '/liceo/imgs/cataluna.png',
-                            'parroquia' => '/liceo/imgs/pueblo.png',
+                            'parroquia' => '/liceo/imgs/casas.png',
                             'sector' => '/liceo/imgs/pueblo.png',
                         ]
                     ],
                     'Gestión Operativa' => [
                         'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+                        'ausencia' => '/liceo/imgs/ausencia.png',
+                        'visita' => '/liceo/imgs/calendar-check.svg',
                         'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
                         'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                        'visita' => '/liceo/imgs/calendar-check.svg',
                     ],
-                    'Reportes' => [
-                        'reporte' => '/liceo/imgs/reporte.png'
+                    'Estadisticas' => [
+                        'reporte' => '/liceo/imgs/reporte.png',
+                    ],
+                    'Soporte' => [
+                        'ayuda' => '/liceo/imgs/ayudar.png',
                     ]
+
                 ],
                 'coordinador' => [
                     'Registro de datos' => [
@@ -70,8 +75,11 @@ define('ROOT_PATH', __DIR__ . '/');
                         'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
                         'visita' => '/liceo/imgs/calendar-check.svg',
                     ],
-                    'Reportes' => [
-                        'reporte' => '/liceo/imgs/reporte.png'
+                    'Estadisticas' => [
+                        'reporte' => '/liceo/imgs/reporte.png',
+                    ],
+                    'Soporte' => [
+                        'ayuda' => '/liceo/imgs/ayudar.png',
                     ]
                 ],
                 'user' => [
@@ -79,6 +87,12 @@ define('ROOT_PATH', __DIR__ . '/');
                         'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
                         'visita' => '/liceo/imgs/calendar-check.svg',
                         'seccion' => '/liceo/imgs/secciones.png'
+                    ],
+                     'Estadisticas' => [
+                        'reporte' => '/liceo/imgs/reporte.png',
+                    ],
+                    'Soporte' => [
+                        'ayuda' => '/liceo/imgs/ayudar.png',
                     ]
                 ],
                 'profesor' => [
@@ -86,15 +100,19 @@ define('ROOT_PATH', __DIR__ . '/');
                         'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
                         'visita' => '/liceo/imgs/calendar-check.svg',
                     ],
-                    'Reportes' => [
-                        'reporte' => '/liceo/imgs/reporte.png'
+                    'Estadisticas' => [
+                        'reporte' => '/liceo/imgs/reporte.png',
+                    ],
+                    'Soporte' => [
+                        'ayuda' => '/liceo/imgs/ayudar.png',
                     ]
                 ]
             ];
             $nombre_legible = [
                 'anio_academico' => 'Año académico',
-                'asigna_cargo' => 'Asignación de cargo',
-                'asigna_materia' => 'Asignación de materia',
+                'asigna_cargo' => 'Asignación de cargos',
+                'asigna_materia' => 'Asignación de materias',
+                'ausencias' => 'Ausencias',
                 'usuario' => 'Usuarios',
                 'estudiante' => 'Estudiantes',
                 'profesor' => 'Profesores',
@@ -107,13 +125,15 @@ define('ROOT_PATH', __DIR__ . '/');
                 'sector' => 'Sectores',
                 'asistencia' => 'Asistencia',
                 'visita' => 'Visita',
-                'reporte' => 'Reporte'
+                'reporte' => 'Reporte',
+                'ayuda' => 'Ayuda'
             ];
             // Obtén el rol del usuario de la sesión
             $rol_usuario = $_SESSION['rol'] ?? 'default';
 
             // Verifica si el rol existe en la configuración de módulos
             $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
+
 
             // Función para renderizar un módulo individual
             function render_modulo($nombre_modulo, $imagen_url, $nombre_legible) {

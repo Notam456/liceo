@@ -57,6 +57,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
             margin-bottom: 20px;
             border: 1px solid #dee2e6;
             border-radius: 5px;
+            height: 100%;
         }
 
         .seccion-header {
@@ -90,6 +91,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-direction: column;
         }
 
         .contador-alertas {
@@ -115,6 +117,25 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
         .modal-alerta-automatica .modal-content {
             animation: pulse-alert 2s ease-in-out;
             border: 3px solid #ffc107;
+        }
+
+        /* Estilos para el grid de cards */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .seccion-card {
+            flex: 1 1 calc(50% - 15px);
+            min-width: 300px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .seccion-card {
+                flex: 1 1 100%;
+            }
         }
     </style>
 </head>
@@ -310,55 +331,57 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                 <p class="text-muted">No hay estudiantes con 3 o más ausencias sin visita agendada.</p>
                             </div>
                         <?php else: ?>
-                            <?php foreach ($agrupadosPorSeccion as $seccion => $estudiantes): ?>
-                                <div class="seccion-group">
-                                    <div class="seccion-header">
-                                        <?= htmlspecialchars($seccion) ?> 
-                                        <span class="badge bg-danger"><?= count($estudiantes) ?> estudiantes</span>
-                                    </div>
-                                    <div class="seccion-body">
-                                        <?php foreach ($estudiantes as $estudiante): ?>
-                                            <div class="estudiante-alerta-item">
-                                                <div class="estudiante-info">
-                                                    <strong><?= htmlspecialchars($estudiante['nombre']) ?></strong>
-                                                    <br>
-                                                    <small class="text-muted">
-                                                        Cédula: <?= htmlspecialchars($estudiante['cedula']) ?> | 
-                                                        Contacto: <?= htmlspecialchars($estudiante['contacto']) ?>
-                                                    </small>
-                                                    <br>
-                                                    <span class="badge bg-danger"><?= $estudiante['ausencias'] ?> ausencias</span>
-                                                    <span class="badge bg-warning text-dark"><?= $estudiante['justificadas'] ?> justificadas</span>
-                                                    <span class="badge bg-secondary">Total: <?= $estudiante['total'] ?></span>
-                                                </div>
-                                                <div class="estudiante-acciones">
-                                                    <button type="button" 
-                                                            class="btn btn-primary btn-sm schedule-visit-modal" 
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#visitaModal" 
-                                                            data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
-                                                            data-bs-dismiss="modal">
-                                                        Agendar Visita
-                                                    </button>
-                                                    <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $estudiante['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
-                                                       class="btn btn-secondary btn-sm" target="_blank">
-                                                        Generar Reporte
-                                                    </a>
-                                                </div>
+                            <div class="cards-container">
+                                <?php foreach ($agrupadosPorSeccion as $seccion => $estudiantes): ?>
+                                    <div class="seccion-card">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+                                                <strong><?= htmlspecialchars($seccion) ?></strong>
+                                                <span class="badge bg-danger"><?= count($estudiantes) ?> estudiantes</span>
                                             </div>
-                                        <?php endforeach; ?>
+                                            <div class="card-body">
+                                                <?php foreach ($estudiantes as $estudiante): ?>
+                                                    <div class="estudiante-alerta-item">
+                                                        <div class="estudiante-info">
+                                                            <strong><?= htmlspecialchars($estudiante['nombre']) ?></strong>
+                                                            <br>     
+                                                            <small class="text-muted">
+                                                                Cédula: <?= htmlspecialchars($estudiante['cedula']) ?> | 
+                                                                Contacto: <?= htmlspecialchars($estudiante['contacto']) ?>
+                                                            </small>
+                                                            <br>
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-danger"><?= $estudiante['ausencias'] ?> ausencias</span>
+                                                                <span class="badge bg-warning text-dark"><?= $estudiante['justificadas'] ?> justificadas</span>
+                                                                <span class="badge bg-secondary">Total: <?= $estudiante['total'] ?></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="estudiante-acciones">
+                                                            <button type="button" 
+                                                                    class="btn btn-primary btn-sm schedule-visit-modal" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#visitaModal" 
+                                                                    data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
+                                                                    data-bs-dismiss="modal">
+                                                                Agendar Visita
+                                                            </button>
+                                                            <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $estudiante['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
+                                                               class="btn btn-secondary btn-sm mt-1" target="_blank">
+                                                                Generar Reporte
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <?php if ($estudiante !== end($estudiantes)): ?>
+                                                        <hr class="my-2">
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <?php if ($abrirModalAutomaticamente): ?>
-
-                    <?php else: ?>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -213,6 +213,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'generar_reporte_ausencias') {
             die("Estudiante no encontrado");
         }
         
+        // Obtener información de ubicación desde los datos del estudiante
+        $municipio = isset($estudiante['municipio']) ? $estudiante['municipio'] : "No especificado";
+        $parroquia = isset($estudiante['parroquia']) ? $estudiante['parroquia'] : "No especificada";
+        $sector = isset($estudiante['sector']) ? $estudiante['sector'] : "No especificado";
+        
         // Obtener fechas de ausencias
         $desde = isset($_GET['desde']) ? $_GET['desde'] : $anio_desde;
         $hasta = isset($_GET['hasta']) ? $_GET['hasta'] : $anio_hasta;
@@ -293,7 +298,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'generar_reporte_ausencias') {
             </tr>
             <tr>
                 <td><strong>Dirección:</strong></td>
-                <td>' . $estudiante['direccion_exacta'] . '</td>
+                <td>' . $municipio .' - '. $parroquia .' - '. $sector .' '.$estudiante['direccion_exacta'] .'</td>
             </tr>
         </table>
         ';

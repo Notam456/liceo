@@ -29,8 +29,11 @@ $modulos_por_rol = [
             'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
             'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
         ],
-        'Reporte' => [
+        'Estadisticas' => [
             'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
+        ],
+        'Soporte' => [
+            'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
         ]
     ],
     'coordinador' => [
@@ -45,19 +48,24 @@ $modulos_por_rol = [
             'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
             'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
         ],
-        'Reporte' => [
+        'Estadisticas' => [
             'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
+        ],
+        'Soporte' => [
+            'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
         ]
     ],
     'user' => [
         'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
         'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
-        'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion']
+        'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion'],
+        'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
     ],
     'profesor' => [
         'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
         'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
-        'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
+        'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte'],
+        'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
     ]
 ];
 
@@ -78,7 +86,8 @@ $nombre_legible = [
     'sector' => 'Sectores',
     'asistencia' => 'Asistencia',
     'visita' => 'Visita',
-    'reporte' => 'Reporte'
+    'reporte' => 'Reporte',
+    'ayuda' => 'Ayuda'
 ];
 
 $rol_usuario = $_SESSION['rol'] ?? null;
@@ -254,7 +263,6 @@ $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
         echo renderMenuItems($modulos_visibles);
     }
     ?>
-
     <a href="/liceo/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</a>
 </div>
 

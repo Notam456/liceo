@@ -18,7 +18,7 @@ switch ($action) {
             } else {
                 $_SESSION['status'] = "Ocurrió un error inesperado.";
             }
-            header('Location: /liceo/controladores/profesor_controlador.php');
+            header('Location: /liceo/controladores/materia_controlador.php');
             exit();
         }
         break;
