@@ -278,8 +278,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="guardarCambios">Guardar Cambios</button>
+                    <button type="button" class="btn btn-success" id="guardarCambios">Guardar datos</button>
                 </div>
             </div>
         </div>

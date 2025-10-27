@@ -85,7 +85,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Editar Asignación de Cargo</h1>
+                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Asignación de Cargo</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
+                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
             </div>

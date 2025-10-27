@@ -23,7 +23,7 @@
                 } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Parroquias <img src="/liceo/icons/people.svg">
+                        <h4>Parroquia <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Agregar
                             </button>
@@ -78,7 +78,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
+                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Parroquía</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/parroquia_controlador.php" method="POST">
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
+                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
             </div>
@@ -130,7 +130,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea una nueva parroquia</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar una nueva parroquia</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/parroquia_controlador.php" method="POST">

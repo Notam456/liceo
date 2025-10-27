@@ -20,5 +20,5 @@ if (!isset($row)) {
     <?php else: ?>
         <input type="hidden" name="fecha_realizada" value="<?php echo date('Y-m-d'); ?>">
     <?php endif; ?>
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <button type="submit" class="btn <?php if ($action=='realizada') { ?> btn-success <?php } else {?> btn-danger <?php } ?> float-end">Guardar datos</button>
 </form>

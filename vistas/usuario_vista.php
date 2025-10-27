@@ -118,7 +118,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Editar</h1>
+                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/usuario_controlador.php" method="POST">
@@ -183,7 +183,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Editar datos</button>
+                        <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
             </div>
@@ -214,7 +214,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Crea un nuevo usuario</h1>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar un nuevo usuario</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/usuario_controlador.php" method="POST">
