@@ -1,3 +1,5 @@
+
+
 <div class="modal fade" id="visitaModal" tabindex="-1" aria-labelledby="visitaModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -11,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group mb-3">
                         <label for="fecha_visita">Fecha de la Visita</label>
-                        <input type="date" class="form-control" id="fecha_visita" name="fecha_visita" required>
+                        <input type="date" class="form-control" id="fecha_visita" name="fecha_visita" required min="<?= $today ?>" <?php if ($min_date): ?> max="<?= $min_date ?>" <?php endif; ?>>
                     </div>
                 </div>
                 <div class="modal-footer">

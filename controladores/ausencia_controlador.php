@@ -12,6 +12,13 @@ $anio_modelo = new AnioAcademicoModelo($conn);
 $anio_activo_result = $anio_modelo->obtenerAnioActivo();
 $anio_activo = mysqli_fetch_assoc($anio_activo_result);
 
+
+$today = date('Y-m-d');
+$min_date = '';
+if (isset($anio_activo) && $anio_activo) {
+        $min_date = date('Y-m-d', strtotime($anio_activo['hasta']));
+}
+
 $anio_desde = $anio_activo ? $anio_activo['desde'] : date('Y-01-01');
 $anio_hasta = $anio_activo ? $anio_activo['hasta'] : date('Y-12-31');
 
