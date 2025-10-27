@@ -417,8 +417,9 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
         });
 
         // Abrir modal automáticamente si hay alertas
-        <?php if ($abrirModalAutomaticamente): ?>
-        $(window).on('load', function() {
+        <?php if ($abrirModalAutomaticamente){ ?>
+        $(document).ready( function() {
+            console.log("asas");
             // Pequeño delay para asegurar que todo esté cargado
             setTimeout(function() {
                 var alertasModal = new bootstrap.Modal(document.getElementById('alertasModal'));
@@ -428,7 +429,8 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                 $('#alertasModal').addClass('modal-alerta-automatica');
             }, 500);
         });
-        <?php endif; ?>
+        <?php
+     } ?>
 
         $('#filtroCedula').keyup(function() {
             table.column(4).search(this.value).draw();

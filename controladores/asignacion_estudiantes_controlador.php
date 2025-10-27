@@ -14,7 +14,7 @@ switch ($action) {
     case 'obtener_estudiantes':
         if (isset($_POST['id_seccion'])) {
             $id_seccion = $_POST['id_seccion'];
-            $estudiantes = $estudianteModelo->obtenerEstudiantesSinSeccion();
+            $estudiantes = $estudianteModelo->obtenerEstudiantesSinSeccion($id_seccion);
             
             if ($estudiantes && mysqli_num_rows($estudiantes) > 0) {
                 echo '<div class="mb-3">

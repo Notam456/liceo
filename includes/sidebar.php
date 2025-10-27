@@ -25,6 +25,7 @@ $modulos_por_rol = [
         ],
         'Gestión Operativa' => [
             'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
+            'ausencia' => ['icon' => 'bi-card-list', 'ruta' => 'ausencia'],
             'asigna_cargo' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_cargo'],
             'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
             'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
@@ -45,6 +46,7 @@ $modulos_por_rol = [
         ],
         'Gestión Operativa' => [
             'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
+            'ausencia' => ['icon' => 'bi-card-list', 'ruta' => 'ausencia'],
             'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
             'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
         ],

@@ -38,13 +38,15 @@ class EstudianteModelo
     public function obtenerEstudiantePorId($id)
     {
         $id = (int)$id;
-        $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio, s.letra, g.numero_anio
+        $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio, s.letra, g.numero_anio,
+                        g.numero_anio as numero_anio_seccion, g_directo.numero_anio
                     FROM estudiante e
                     JOIN sector sec ON e.id_sector = sec.id_sector
                     JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
                     JOIN municipio m ON p.id_municipio = m.id_municipio
                     LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
                     LEFT JOIN grado g ON s.id_grado = g.id_grado
+                    JOIN grado g_directo ON e.id_grado = g_directo.id_grado
                     WHERE id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
@@ -52,7 +54,7 @@ class EstudianteModelo
     public function obtenerEstudiantesPorSeccion($id_seccion)
     {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' AND visibilidad = TRUE ORDER BY apellido, nombre";
+        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' ORDER BY apellido, nombre";
         return mysqli_query($this->conn, $query);
     }
 
@@ -60,14 +62,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-            case 'directivo':
-                $query = "SELECT * FROM estudiante WHERE visibilidad = TRUE";
+                $query = "SELECT * FROM estudiante";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -112,7 +113,7 @@ class EstudianteModelo
     public function eliminarEstudiante($id)
     {
         $id = (int)$id;
-        $query = "UPDATE estudiante SET visibilidad = FALSE WHERE id_estudiante ='$id'";
+        $query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -120,14 +121,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-            case 'directivo':
-                $query = "SELECT * FROM estudiante WHERE (id_seccion IS NULL OR id_seccion = 0) AND visibilidad = TRUE";
+                $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND id_seccion IS NULL OR id_seccion = 0";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND id_seccion IS NULL OR id_seccion = 0";
                 break;
         }
         return mysqli_query($this->conn, $query);

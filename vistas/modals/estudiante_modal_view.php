@@ -31,16 +31,16 @@
                     <div class="col-md-6">
                         <strong>Fecha de Nacimiento:</strong> <?= $row['fecha_nacimiento']?>
                     </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Seccion:</strong>
-                        <?php if (!empty($row['numero_anio']) && !empty($row['letra'])): ?>
-                            <?= htmlspecialchars($row['numero_anio'])."°".htmlspecialchars($row['letra']); ?>
-                        <?php else: ?>
-                            Sin sección asignada
-                        <?php endif; ?>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Sección:</strong> 
+                            <?php if (!empty($row['numero_anio_seccion']) && !empty($row['letra'])): ?>
+                                <?= htmlspecialchars($row['numero_anio_seccion'])."°".htmlspecialchars($row['letra']); ?>
+                            <?php else: ?>
+                                <?= htmlspecialchars($row['numero_anio'])."° año (Sin sección asignada)" ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
