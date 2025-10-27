@@ -1,33 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
 
-html,
+/* CORRECCIÓN PRINCIPAL - Cambiar height por min-height */
+html {
+    min-height: 100vh;
+}
+
 body {
-    height: 100%;
+    min-height: 100vh;
     margin: 0;
     display: flex;
     flex-direction: column;
+    font-family: "Barlow", sans-serif;
+    color: var(--body);
+    line-height: 1.7;
 }
 
 #mainContent {
-  min-height: 100%;
+  flex: 1 0 auto; /* Este debe crecer */
   display: flex;
   flex-direction: column;
 }
 
 main {
-    flex: 1;
-    /* ocupa todo el espacio disponible */
+    flex: 1 0 auto; /* ocupa todo el espacio disponible */
 }
 
 footer {
-    margin-top: auto;
-    /* empuja el footer hacia abajo */
-}
-
-body {
-    font-family: "Barlow", sans-serif;
-    color: var(--body);
-    line-height: 1.7;
+    flex-shrink: 0; /* empuja el footer hacia abajo */
+    margin-top: auto; /* Asegura que se quede abajo */
 }
 
 h1,
@@ -112,4 +112,19 @@ section {
 
 .action {
     width: 93px;
+}
+
+/* MANTENER estos estilos para SweetAlert por si acaso */
+body.swal2-shown {
+    height: auto !important;
+    overflow-y: visible !important;
+}
+
+html.swal2-shown {
+    height: auto !important;
+    overflow-y: visible !important;
+}
+
+.swal2-container {
+    z-index: 10000;
 }
