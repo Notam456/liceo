@@ -36,7 +36,7 @@ switch ($action) {
                 $row = mysqli_fetch_array($resultado);
                 $cargos = $profesorModelo->obtenerCargosPorProfesor($id);
                 $materias = $profesorModelo->obtenerMateriasPorProfesor($id);
-                
+
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/profesor_modal_view.php');
             } else {
 
@@ -51,7 +51,7 @@ switch ($action) {
             $id = $_POST['id_profesor'];
             $resultado = $profesorModelo->obtenerProfesorPorId($id);
             $data = [];
-            while($row = mysqli_fetch_assoc($resultado)) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -59,54 +59,57 @@ switch ($action) {
         }
         break;
 
-        case 'generar_reporte_profesores':
-            try {
-                // Obtener información del año académico activo
-                include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
-                $anioAcademicoModelo = new AnioAcademicoModelo($conn);
-                $anio_academico_result = $anioAcademicoModelo->obtenerAnioActivo();
-                
-                $periodo_academico = "No definido";
-                if ($anio_academico_result && mysqli_num_rows($anio_academico_result) > 0) {
-                    $anio_academico = mysqli_fetch_assoc($anio_academico_result);
-                    $periodo_academico = date('d/m/Y', strtotime($anio_academico['desde'])) . ' - ' . date('d/m/Y', strtotime($anio_academico['hasta']));
-                }
-                
-                // Obtener el reporte completo de profesores
-                $reporte_profesores = $profesorModelo->obtenerReporteCompletoProfesores();
-                
-                if (empty($reporte_profesores)) {
-                    throw new Exception("No hay profesores registrados en el sistema");
-                }
-                
-                $total_profesores = count($reporte_profesores);
-                
-                // Generar PDF
-                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
-                
-                $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                
-                $pdf->SetCreator(PDF_CREATOR);
-                $pdf->SetAuthor('Liceo');
-                $pdf->SetTitle('Reporte Completo de Profesores');
-                $pdf->SetSubject('Reporte de Profesores con Cargos y Materias');
-                $pdf->setPrintHeader(false);
-                $pdf->setPrintFooter(false);
-                $pdf->AddPage();
-                
-                // Membrete
-                $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
-                if (file_exists($membrete_path)) {
-                    $ancho_imagen = 180;
-                    $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
-                    $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
-                }
-                
-                $pdf->SetMargins(15, 50, 15);
-                
-                // Título
-                $pdf->Ln(30);
-                $html = '
+    case 'generar_reporte_profesores':
+        try {
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            // Obtener información del año académico activo
+            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
+            $anioAcademicoModelo = new AnioAcademicoModelo($conn);
+            $anio_academico_result = $anioAcademicoModelo->obtenerAnioActivo();
+
+            $periodo_academico = "No definido";
+            if ($anio_academico_result && mysqli_num_rows($anio_academico_result) > 0) {
+                $anio_academico = mysqli_fetch_assoc($anio_academico_result);
+                $periodo_academico = date('d/m/Y', strtotime($anio_academico['desde'])) . ' - ' . date('d/m/Y', strtotime($anio_academico['hasta']));
+            }
+
+            // Obtener el reporte completo de profesores
+            $reporte_profesores = $profesorModelo->obtenerReporteCompletoProfesores();
+
+            if (empty($reporte_profesores)) {
+                throw new Exception("No hay profesores registrados en el sistema");
+            }
+
+            $total_profesores = count($reporte_profesores);
+
+            // Generar PDF
+            require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
+
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('Liceo');
+            $pdf->SetTitle('Reporte Completo de Profesores');
+            $pdf->SetSubject('Reporte de Profesores con Cargos y Materias');
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+            $pdf->AddPage();
+
+            // Membrete
+            $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
+            if (file_exists($membrete_path)) {
+                $ancho_imagen = 180;
+                $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
+                $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
+            }
+
+            $pdf->SetMargins(15, 50, 15);
+
+            // Título
+            $pdf->Ln(30);
+            $html = '
                 <h1 style="text-align: center; margin-bottom: 20px;">REPORTE COMPLETO DE PROFESORES</h1>
                 
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -134,23 +137,23 @@ switch ($action) {
                         <th style="border: 1px solid #ddd; padding: 6px; text-align: left; width: 43%;"><strong>Materias que Imparte</strong></th>
                     </tr>
                 ';
-                
-                foreach ($reporte_profesores as $index => $profesor) {
-                    $color_fila = $index % 2 == 0 ? 'background-color: #f8f9fa;' : 'background-color: #ffffff;';
-                    
-                    // Acortar textos largos para mejor visualización
-                    $cargos = $profesor['cargos'];
-                    $materias = $profesor['materias'];
-                    
-                    if (strlen($cargos) > 50) {
-                        $cargos = substr($cargos, 0, 47) . '...';
-                    }
-                    
-                    if (strlen($materias) > 80) {
-                        $materias = substr($materias, 0, 77) . '...';
-                    }
-                    
-                    $html .= '
+
+            foreach ($reporte_profesores as $index => $profesor) {
+                $color_fila = $index % 2 == 0 ? 'background-color: #f8f9fa;' : 'background-color: #ffffff;';
+
+                // Acortar textos largos para mejor visualización
+                $cargos = $profesor['cargos'];
+                $materias = $profesor['materias'];
+
+                if (strlen($cargos) > 50) {
+                    $cargos = substr($cargos, 0, 47) . '...';
+                }
+
+                if (strlen($materias) > 80) {
+                    $materias = substr($materias, 0, 77) . '...';
+                }
+
+                $html .= '
                     <tr style="' . $color_fila . '">
                         <td style="border: 1px solid #ddd; padding: 6px;">' . $profesor['apellido'] . '</td>
                         <td style="border: 1px solid #ddd; padding: 6px;">' . $profesor['nombre'] . '</td>
@@ -159,31 +162,30 @@ switch ($action) {
                         <td style="border: 1px solid #ddd; padding: 6px; font-size: 9px;">' . $materias . '</td>
                     </tr>
                     ';
-                }
-                
-                $html .= '</table>';
-                
-                // Información adicional
-                $html .= '
+            }
+
+            $html .= '</table>';
+
+            // Información adicional
+            $html .= '
                 <div style="margin-top: 20px; font-size: 10px; color: #666;">
                     <p><strong>Nota:</strong> Este reporte incluye todos los profesores registrados en el sistema con sus cargos y materias activas.</p>
                 </div>
                 ';
-                
-                $pdf->writeHTML($html, true, false, true, false, '');
-                
-                $file_name = "Reporte_Profesores_Completo_" . date('Y-m-d') . ".pdf";
-                $pdf->Output($file_name, 'I');
-                
-            } catch (Exception $e) {
-                echo "<script>
+
+            $pdf->writeHTML($html, true, false, true, false, '');
+
+            $file_name = "Reporte_Profesores_Completo_" . date('Y-m-d') . ".pdf";
+            $pdf->Output($file_name, 'I');
+        } catch (Exception $e) {
+            echo "<script>
                     alert('Error al generar el reporte: " . addslashes($e->getMessage()) . "');
                     window.history.back();
                 </script>";
-                exit;
-            }
             exit;
-            break;
+        }
+        exit;
+        break;
 
     case 'actualizar':
         if (isset($_POST['update-data'])) {
@@ -220,4 +222,3 @@ switch ($action) {
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/profesor_vista.php');
         break;
 }
-?>

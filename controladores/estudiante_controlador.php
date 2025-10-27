@@ -27,9 +27,15 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $resultado = $estudianteModelo->crearEstudiante(
-                $_POST['nombre_estudiante'], $_POST['apellido_estudiante'], $_POST['cedula_estudiante'],
-                $_POST['contacto_estudiante'], $_POST['sector'], $_POST['grado'],
-                $_POST['fecha_nacimiento'], $_POST['direccion_exacta'], $_POST['punto_referencia']
+                $_POST['nombre_estudiante'],
+                $_POST['apellido_estudiante'],
+                $_POST['cedula_estudiante'],
+                $_POST['contacto_estudiante'],
+                $_POST['sector'],
+                $_POST['grado'],
+                $_POST['fecha_nacimiento'],
+                $_POST['direccion_exacta'],
+                $_POST['punto_referencia']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Estudiante creado correctamente";
@@ -49,7 +55,7 @@ switch ($action) {
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id);
             if (mysqli_num_rows($resultado) > 0) {
                 $row = mysqli_fetch_array($resultado);
-                
+
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/estudiante_modal_view.php');
             } else {
 
@@ -57,14 +63,14 @@ switch ($action) {
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/estudiante_modal_view.php');
             }
         }
-        break; 
+        break;
 
     case 'editar':
         if (isset($_POST['id_estudiante'])) {
             $id = $_POST['id_estudiante'];
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id);
             $data = [];
-            while($row = mysqli_fetch_assoc($resultado)) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -75,10 +81,16 @@ switch ($action) {
     case 'actualizar':
         if (isset($_POST['update-data'])) {
             $resultado = $estudianteModelo->actualizarEstudiante(
-                $_POST['id_estudiante'], $_POST['nombre_estudiante'], $_POST['apellido_estudiante'],
-                $_POST['cedula_estudiante'], $_POST['contacto_estudiante'],
-                $_POST['sector'], $_POST['grado'], $_POST['fecha_nacimiento'],
-                $_POST['direccion_exacta'], $_POST['punto_referencia']
+                $_POST['id_estudiante'],
+                $_POST['nombre_estudiante'],
+                $_POST['apellido_estudiante'],
+                $_POST['cedula_estudiante'],
+                $_POST['contacto_estudiante'],
+                $_POST['sector'],
+                $_POST['grado'],
+                $_POST['fecha_nacimiento'],
+                $_POST['direccion_exacta'],
+                $_POST['punto_referencia']
             );
             if ($resultado === true) {
                 $_SESSION['status'] = "Datos actualizados correctamente";
@@ -101,14 +113,17 @@ switch ($action) {
         break;
 
     case 'listarPorSeccion':
-        if(isset($_GET['id_seccion'])){
+        if (isset($_GET['id_seccion'])) {
             $id_seccion = $_GET['id_seccion'];
             $estudiantes = $estudianteModelo->obtenerEstudiantesPorSeccion($id_seccion);
             include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/estudiante_vista.php');
         }
         break;
-        // jose yajure, AÑADIR TCPDF PARA GENERAR EL ARCHIVO EN PDF!!
+    // jose yajure, AÑADIR TCPDF PARA GENERAR EL ARCHIVO EN PDF!!
     case 'generar_constancia':
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         if (isset($_GET['id'])) {
             $id_estudiante = $_GET['id'];
             $resultado = $estudianteModelo->obtenerEstudiantePorId($id_estudiante);
@@ -126,9 +141,9 @@ switch ($action) {
 
             if ($row = mysqli_fetch_array($resultado)) {
                 require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
-    
+
                 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    
+
                 $pdf->SetCreator(PDF_CREATOR);
                 $pdf->SetAuthor('Liceo');
                 $pdf->SetTitle('Constancia de Estudio');
@@ -141,14 +156,14 @@ switch ($action) {
                 $dia_actual = $dias[date('l')];
 
                 $fecha_actual = date('d/m/Y');
-                
+
 
                 $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
                 $ancho_imagen = 180;
                 $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
 
                 $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
-            
+
                 $pdf->SetMargins(15, 60, 15);
                 $pdf->SetY(50);
 
@@ -167,18 +182,18 @@ switch ($action) {
                         </tr>
                     </table>
 
-                    '.$pdf->Ln(10).'
+                    ' . $pdf->Ln(10) . '
     
                     <p style="text-align: justify; line-height: 1.5;">
-                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> '. $nombre_director . ', </strong> titular de la Cédula de Identidad 
-                        N°<strong style="text-transform: uppercase;">'. $cedula_director .'</strong> Director del 
+                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> ' . $nombre_director . ', </strong> titular de la Cédula de Identidad 
+                        N°<strong style="text-transform: uppercase;">' . $cedula_director . '</strong> Director del 
                         <strong style="text-transform: uppercase;">LICEO PROFESOR FERNANDO RAMÍREZ</strong> ubicada en el Barrio las Madres detrás del Polideportivo San Felipe Edo. Yaracuy. 
                         Hace constar por medio de la presente que el (la) Estudiante <strong style="text-transform: uppercase;">' .
-                         $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula <strong style="text-transform: uppercase;"> ' . 
-                         $row['cedula'] . ' </strong>, cursa el<strong> Año ' . $row['numero_anio'] .' Seccion '. $row['letra'] .
-                         '</strong> durante el periodo escolar<strong> ' . $periodo_escolar . 
-                         '</strong> de Educación Secundaria y Reside en el Municipio:<strong> ' . $row['municipio'] .
-                         '</strong> Parroquia: <strong>'. $row['parroquia'] .'</strong> Sector: <strong>'. $row['sector'] . '</strong>
+                    $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula <strong style="text-transform: uppercase;"> ' .
+                    $row['cedula'] . ' </strong>, cursa el<strong> Año ' . $row['numero_anio'] . ' Seccion ' . $row['letra'] .
+                    '</strong> durante el periodo escolar<strong> ' . $periodo_escolar .
+                    '</strong> de Educación Secundaria y Reside en el Municipio:<strong> ' . $row['municipio'] .
+                    '</strong> Parroquia: <strong>' . $row['parroquia'] . '</strong> Sector: <strong>' . $row['sector'] . '</strong>
                     </p>
                     <br>
                     <p style="text-align: justify;">
@@ -186,7 +201,7 @@ switch ($action) {
                     </p>
                     <br>
                 ';
-                
+
                 $pdf->writeHTML($html, true, false, true, false, '');
 
                 $pdf->Ln(30);
@@ -194,7 +209,7 @@ switch ($action) {
                 // TUVE QUE USAR LA FUNCIONA Ln PARA PODER AÑADIR MAS ESPACIO EN DONDE SE FIRMA Y SELLA
                 $html2 = '                    
                 <p style="text-align: center;">__________________________________</p>
-                <p style="text-align: center;">Prof. '.$nombre_director.'</p> 
+                <p style="text-align: center;">Prof. ' . $nombre_director . '</p> 
                 <p style="text-align: center;">Barrio Las Madres</p>
                 <p style="text-align: center;">Municipio San Felipe</p>';
 
@@ -203,7 +218,6 @@ switch ($action) {
                 $file_name = "Constancia_" . $row['nombre'] . "_" . $row['apellido'] . ".pdf";
                 $pdf->Output($file_name, 'I');
                 exit;
-    
             } else {
                 echo "No se encontró el estudiante con el ID proporcionado.";
             }
@@ -215,7 +229,7 @@ switch ($action) {
             $municipio_id = $_POST['municipio_id'];
             $parroquias = $parroquiaModelo->obtenerParroquiasPorMunicipio($municipio_id);
             $data = [];
-            while($row = mysqli_fetch_assoc($parroquias)) {
+            while ($row = mysqli_fetch_assoc($parroquias)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -228,7 +242,7 @@ switch ($action) {
             $parroquia_id = $_POST['parroquia_id'];
             $sectores = $sectorModelo->obtenerSectoresPorParroquia($parroquia_id);
             $data = [];
-            while($row = mysqli_fetch_assoc($sectores)) {
+            while ($row = mysqli_fetch_assoc($sectores)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -242,4 +256,3 @@ switch ($action) {
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/estudiante_vista.php');
         break;
 }
-?>

@@ -34,41 +34,44 @@ switch ($action) {
         break;
 
     case 'generar_reporte_visita_individual':
-            if (isset($_GET['id_visita'])) {
-                $id_visita = $_GET['id_visita'];
-                
-                // Obtener datos de la visita
-                $visita_result = $visitaModelo->obtenerVisitaPorId($id_visita);
-                
-                if ($visita_result && mysqli_num_rows($visita_result) > 0) {
-                    $visita = mysqli_fetch_assoc($visita_result);
-                    
-                    // Generar PDF
-                    require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
-                    
-                    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                    
-                    $pdf->SetCreator(PDF_CREATOR);
-                    $pdf->SetAuthor('Liceo');
-                    $pdf->SetTitle('Reporte de Visita Domiciliaria');
-                    $pdf->SetSubject('Reporte de Visita Domiciliaria');
-                    $pdf->setPrintHeader(false);
-                    $pdf->setPrintFooter(false);
-                    $pdf->AddPage();
-                    
-                    // Logo o membrete
-                    $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
-                    if (file_exists($membrete_path)) {
-                        $ancho_imagen = 180;
-                        $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
-                        $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
-                    }
-                    
-                    $pdf->SetMargins(15, 50, 15);
-                    
-                    // Título
-                    $pdf->Ln(30);
-                    $html = '
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        if (isset($_GET['id_visita'])) {
+            $id_visita = $_GET['id_visita'];
+
+            // Obtener datos de la visita
+            $visita_result = $visitaModelo->obtenerVisitaPorId($id_visita);
+
+            if ($visita_result && mysqli_num_rows($visita_result) > 0) {
+                $visita = mysqli_fetch_assoc($visita_result);
+
+                // Generar PDF
+                require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
+
+                $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+                $pdf->SetCreator(PDF_CREATOR);
+                $pdf->SetAuthor('Liceo');
+                $pdf->SetTitle('Reporte de Visita Domiciliaria');
+                $pdf->SetSubject('Reporte de Visita Domiciliaria');
+                $pdf->setPrintHeader(false);
+                $pdf->setPrintFooter(false);
+                $pdf->AddPage();
+
+                // Logo o membrete
+                $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
+                if (file_exists($membrete_path)) {
+                    $ancho_imagen = 180;
+                    $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
+                    $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
+                }
+
+                $pdf->SetMargins(15, 50, 15);
+
+                // Título
+                $pdf->Ln(30);
+                $html = '
                     <h1 style="text-align: center; margin-bottom: 20px;">REPORTE DE VISITA DOMICILIARIA</h1>
                     
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -128,40 +131,40 @@ switch ($action) {
                             <td><strong>Estado:</strong></td>
                             <td>' . ucfirst($visita['estado']) . '</td>
                         </tr>';
-                    
-                    if ($visita['fecha_realizada']) {
-                        $html .= '
+
+                if ($visita['fecha_realizada']) {
+                    $html .= '
                         <tr>
                             <td><strong>Fecha Realizada:</strong></td>
                             <td>' . date('d/m/Y', strtotime($visita['fecha_realizada'])) . '</td>
                         </tr>';
-                    }
-                    
-                    if ($visita['observaciones']) {
-                        $html .= '
+                }
+
+                if ($visita['observaciones']) {
+                    $html .= '
                         <tr>
                             <td><strong>Observaciones:</strong></td>
                             <td>' . $visita['observaciones'] . '</td>
                         </tr>';
-                    }
-                    
-                    if ($visita['nombre_tutor']) {
-                        $html .= '
+                }
+
+                if ($visita['nombre_tutor']) {
+                    $html .= '
                         <tr>
                             <td><strong>Tutor/Encargado:</strong></td>
                             <td>' . $visita['nombre_tutor'] . ' ' . $visita['apellido_tutor'] . '</td>
                         </tr>';
-                    }
-                    
-                    $html .= '</table>';
-                    
-                    // Información adicional según el estado
-                    $html .= '
+                }
+
+                $html .= '</table>';
+
+                // Información adicional según el estado
+                $html .= '
                     <h3 style="margin-bottom: 10px;">Detalles del Estado</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
-                    
-                    if ($visita['estado'] == 'agendada') {
-                        $html .= '
+
+                if ($visita['estado'] == 'agendada') {
+                    $html .= '
                         <tr>
                             <td style="width: 30%;"><strong>Estado Actual:</strong></td>
                             <td style="width: 70%; color: #007bff; font-weight: bold;">VISITA AGENDADA</td>
@@ -170,8 +173,8 @@ switch ($action) {
                             <td><strong>Descripción:</strong></td>
                             <td>La visita está programada y pendiente de realizar.</td>
                         </tr>';
-                    } elseif ($visita['estado'] == 'realizada') {
-                        $html .= '
+                } elseif ($visita['estado'] == 'realizada') {
+                    $html .= '
                         <tr>
                             <td style="width: 30%;"><strong>Estado Actual:</strong></td>
                             <td style="width: 70%; color: #28a745; font-weight: bold;">VISITA REALIZADA</td>
@@ -180,8 +183,8 @@ switch ($action) {
                             <td><strong>Descripción:</strong></td>
                             <td>La visita domiciliaria ha sido completada exitosamente.</td>
                         </tr>';
-                    } elseif ($visita['estado'] == 'cancelada') {
-                        $html .= '
+                } elseif ($visita['estado'] == 'cancelada') {
+                    $html .= '
                         <tr>
                             <td style="width: 30%;"><strong>Estado Actual:</strong></td>
                             <td style="width: 70%; color: #dc3545; font-weight: bold;">VISITA CANCELADA</td>
@@ -190,44 +193,47 @@ switch ($action) {
                             <td><strong>Descripción:</strong></td>
                             <td>La visita ha sido cancelada por motivos específicos.</td>
                         </tr>';
-                    }
-                    
-                    $html .= '</table>';
-                    
-                    // Fecha de generación
-                    $html .= '
+                }
+
+                $html .= '</table>';
+
+                // Fecha de generación
+                $html .= '
                     <div style="margin-top: 30px;">
                         <p><strong>Reporte generado el:</strong> ' . date('d/m/Y H:i:s') . '</p>
                     </div>
                     ';
-                    
-                    $pdf->writeHTML($html, true, false, true, false, '');
-                    
-                    $file_name = "Reporte_Visita_" . $visita['nombre'] . "_" . $visita['apellido'] . "_" . date('Y-m-d') . ".pdf";
-                    $pdf->Output($file_name, 'I');
-                    exit;
-                } else {
-                    die("Visita no encontrada");
-                }
+
+                $pdf->writeHTML($html, true, false, true, false, '');
+
+                $file_name = "Reporte_Visita_" . $visita['nombre'] . "_" . $visita['apellido'] . "_" . date('Y-m-d') . ".pdf";
+                $pdf->Output($file_name, 'I');
+                exit;
+            } else {
+                die("Visita no encontrada");
             }
-            break;
+        }
+        break;
 
     // NUEVO: Generar reporte PDF de visita
     case 'generar_reporte_visita':
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         if (isset($_GET['id_visita'])) {
             $id_visita = $_GET['id_visita'];
-            
+
             // Obtener datos de la visita
             $visita_result = $visitaModelo->obtenerVisitaPorId($id_visita);
-            
+
             if ($visita_result && mysqli_num_rows($visita_result) > 0) {
                 $visita = mysqli_fetch_assoc($visita_result);
-                
+
                 // Generar PDF
                 require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
-                
+
                 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                
+
                 $pdf->SetCreator(PDF_CREATOR);
                 $pdf->SetAuthor('Liceo');
                 $pdf->SetTitle('Reporte de Visita Domiciliaria');
@@ -235,7 +241,7 @@ switch ($action) {
                 $pdf->setPrintHeader(false);
                 $pdf->setPrintFooter(false);
                 $pdf->AddPage();
-                
+
                 // Logo o membrete
                 $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
                 if (file_exists($membrete_path)) {
@@ -243,9 +249,9 @@ switch ($action) {
                     $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
                     $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
                 }
-                
+
                 $pdf->SetMargins(15, 50, 15);
-                
+
                 // Título
                 $pdf->Ln(30);
                 $html = '
@@ -308,7 +314,7 @@ switch ($action) {
                         <td><strong>Estado:</strong></td>
                         <td>' . ucfirst($visita['estado']) . '</td>
                     </tr>';
-                
+
                 if ($visita['fecha_realizada']) {
                     $html .= '
                     <tr>
@@ -316,7 +322,7 @@ switch ($action) {
                         <td>' . date('d/m/Y', strtotime($visita['fecha_realizada'])) . '</td>
                     </tr>';
                 }
-                
+
                 if ($visita['observaciones']) {
                     $html .= '
                     <tr>
@@ -324,7 +330,7 @@ switch ($action) {
                         <td>' . $visita['observaciones'] . '</td>
                     </tr>';
                 }
-                
+
                 if ($visita['nombre_tutor']) {
                     $html .= '
                     <tr>
@@ -332,18 +338,18 @@ switch ($action) {
                         <td>' . $visita['nombre_tutor'] . ' ' . $visita['apellido_tutor'] . '</td>
                     </tr>';
                 }
-                
+
                 $html .= '</table>';
-                
+
                 // Fecha de generación
                 $html .= '
                 <div style="margin-top: 30px;">
                     <p>Reporte generado el: ' . date('d/m/Y') . '</p>
                 </div>
                 ';
-                
+
                 $pdf->writeHTML($html, true, false, true, false, '');
-                
+
                 $file_name = "Reporte_Visita_" . $visita['nombre'] . "_" . $visita['apellido'] . ".pdf";
                 $pdf->Output($file_name, 'I');
                 exit;
@@ -353,41 +359,44 @@ switch ($action) {
         }
         break;
 
-        // NUEVO: Generar reporte PDF de todas las visitas
-case 'generar_reporte_general_visitas':
-    // Obtener todas las visitas según el rol
-    if ($_SESSION['rol'] == 'user') {
-        $visitas_result = $visitaModelo->obtenerVisitasPorEncargado($_SESSION['profesor']);
-    } else {
-        $visitas_result = $visitaModelo->obtenerVisitas();
-    }
-    
-    // Generar PDF
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
-    
-    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('Liceo');
-    $pdf->SetTitle('Reporte General de Visitas Domiciliarias');
-    $pdf->SetSubject('Reporte General de Visitas Domiciliarias');
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    $pdf->AddPage();
-    
-    // Logo o membrete
-    $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
-    if (file_exists($membrete_path)) {
-        $ancho_imagen = 180;
-        $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
-        $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
-    }
-    
-    $pdf->SetMargins(15, 50, 15);
-    
-    // Título
-    $pdf->Ln(30);
-    $html = '
+    // NUEVO: Generar reporte PDF de todas las visitas
+    case 'generar_reporte_general_visitas':
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        // Obtener todas las visitas según el rol
+        if ($_SESSION['rol'] == 'user') {
+            $visitas_result = $visitaModelo->obtenerVisitasPorEncargado($_SESSION['profesor']);
+        } else {
+            $visitas_result = $visitaModelo->obtenerVisitas();
+        }
+
+        // Generar PDF
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');
+
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Liceo');
+        $pdf->SetTitle('Reporte General de Visitas Domiciliarias');
+        $pdf->SetSubject('Reporte General de Visitas Domiciliarias');
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->AddPage();
+
+        // Logo o membrete
+        $membrete_path = $_SERVER['DOCUMENT_ROOT'] . '/liceo/imgs/membrete.png';
+        if (file_exists($membrete_path)) {
+            $ancho_imagen = 180;
+            $posicion_x = ($pdf->getPageWidth() - $ancho_imagen) / 2;
+            $pdf->Image($membrete_path, $posicion_x, 5, $ancho_imagen, '', '', '', '', false, 300, '', false, false, 0);
+        }
+
+        $pdf->SetMargins(15, 50, 15);
+
+        // Título
+        $pdf->Ln(30);
+        $html = '
     <h1 style="text-align: center; margin-bottom: 20px;">REPORTE GENERAL DE VISITAS DOMICILIARIAS</h1>
     
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -400,9 +409,9 @@ case 'generar_reporte_general_visitas':
             <td>' . mysqli_num_rows($visitas_result) . '</td>
         </tr>
     </table>';
-    
-    if (mysqli_num_rows($visitas_result) > 0) {
-        $html .= '
+
+        if (mysqli_num_rows($visitas_result) > 0) {
+            $html .= '
         <h3 style="margin-bottom: 10px;">Listado de Visitas</h3>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
             <tr style="background-color: #f2f2f2;">
@@ -412,10 +421,10 @@ case 'generar_reporte_general_visitas':
                 <th style="border: 1px solid #ddd; padding: 8px; text-align: left;"><strong>Estado</strong></th>
             </tr>
         ';
-        
-        while ($visita = mysqli_fetch_assoc($visitas_result)) {
-            $estado = ucfirst($visita['estado']);
-            $html .= '
+
+            while ($visita = mysqli_fetch_assoc($visitas_result)) {
+                $estado = ucfirst($visita['estado']);
+                $html .= '
             <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">' . $visita['nombre'] . ' ' . $visita['apellido'] . '</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">' . $visita['cedula'] . '</td>
@@ -423,21 +432,21 @@ case 'generar_reporte_general_visitas':
                 <td style="border: 1px solid #ddd; padding: 8px;">' . $estado . '</td>
             </tr>
             ';
+            }
+
+            $html .= '</table>';
+        } else {
+            $html .= '<p>No hay visitas agendadas para mostrar.</p>';
         }
-        
-        $html .= '</table>';
-    } else {
-        $html .= '<p>No hay visitas agendadas para mostrar.</p>';
-    }
-    
-    // Estadísticas
-    mysqli_data_seek($visitas_result, 0); // Reset pointer para contar estados
-    $estados = ['agendada' => 0, 'realizada' => 0, 'cancelada' => 0];
-    while ($visita = mysqli_fetch_assoc($visitas_result)) {
-        $estados[$visita['estado']]++;
-    }
-    
-    $html .= '
+
+        // Estadísticas
+        mysqli_data_seek($visitas_result, 0); // Reset pointer para contar estados
+        $estados = ['agendada' => 0, 'realizada' => 0, 'cancelada' => 0];
+        while ($visita = mysqli_fetch_assoc($visitas_result)) {
+            $estados[$visita['estado']]++;
+        }
+
+        $html .= '
     <div style="margin-top: 30px;">
         <h3>Resumen por Estado</h3>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
@@ -460,13 +469,13 @@ case 'generar_reporte_general_visitas':
         </table>
     </div>
     ';
-    
-    $pdf->writeHTML($html, true, false, true, false, '');
-    
-    $file_name = "Reporte_General_Visitas_" . date('Y-m-d') . ".pdf";
-    $pdf->Output($file_name, 'I');
-    exit;
-    break;
+
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        $file_name = "Reporte_General_Visitas_" . date('Y-m-d') . ".pdf";
+        $pdf->Output($file_name, 'I');
+        exit;
+        break;
 
     case 'ver':
         if (isset($_POST['id_visita'])) {
@@ -486,7 +495,7 @@ case 'generar_reporte_general_visitas':
             $id = $_POST['id_visita'];
             $resultado = $visitaModelo->obtenerVisitaPorId($id);
             $data = [];
-            while($row = mysqli_fetch_assoc($resultado)) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -539,4 +548,3 @@ case 'generar_reporte_general_visitas':
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/visita_vista.php');
         break;
 }
-?>
