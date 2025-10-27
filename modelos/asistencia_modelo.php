@@ -44,7 +44,7 @@ class AsistenciaModelo
 
         // Insertar el registro principal de asistencia
         $query = "INSERT INTO asistencia (id_estudiante, fecha, justificado, observacion, id_seccion, id_coordinador, inasistencia)
-                  VALUES (?, ?, ?, ?, ?, ?,?)";
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
         $params = [$id_estudiante, $fecha, $justificado, $justificacion, $seccion, $idCoordinador, $inasistente];
         $types = "isisiii";
 
@@ -153,10 +153,14 @@ class AsistenciaModelo
         return $this->executeQuery($query, [$id_asistencia], "i");
     }
 
-    public function actualizarAsistencia($id_asistencia, $justificado, $observacion)
+    public function actualizarAsistencia($id_asistencia, $justificado, $observacion, $inasistencia)
     {
-        $query = "UPDATE asistencia SET justificado = ?, observacion = ? WHERE id_asistencia = ?";
-        return $this->executeQuery($query, [$justificado, $observacion, $id_asistencia], "isi");
+        $query = "UPDATE asistencia SET justificado = ?, observacion = ?, inasistencia = ? WHERE id_asistencia = ?";
+        $stmt = mysqli_prepare($this->conn, $query);
+        mysqli_stmt_bind_param($stmt, "isii", $justificado, $observacion, $inasistencia, $id_asistencia);
+        $success = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $success;
     }
 
     public function eliminarAsistencia($id_asistencia)

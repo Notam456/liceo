@@ -60,7 +60,7 @@ switch ($action) {
         if (isset($_POST['seccion']) && isset($_POST['fecha'])) {
             $id_seccion = $_POST['seccion'];
             $fecha = $_POST['fecha'];
-            
+
             // Convertir fecha a nombre del día
             $dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
             $dia_semana = $dias_semana[date('N', strtotime($fecha)) - 1];
@@ -78,7 +78,7 @@ switch ($action) {
                 echo '<div class="alert alert-warning">Ya existe un registro de asistencia para esta fecha y sección.</div>';
                 exit();
             }
-            
+
             $estudiantes = $asistenciaModelo->obtenerEstudiantesPorSeccion($id_seccion);
 
             if (mysqli_num_rows($estudiantes) > 0) {
@@ -113,7 +113,7 @@ switch ($action) {
             $fecha = $_POST['fecha'];
             $id_seccion = $_POST['id_seccion'];
             $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha, $id_seccion);
-            
+
             if (mysqli_num_rows($result) > 0) {
                 echo '<table class="table table-striped">';
                 echo '<thead><tr><th>Estudiante</th><th>C.I</th><th>Estado</th><th>Observación/Materias</th></tr></thead>';
@@ -125,7 +125,7 @@ switch ($action) {
                         $estado = '<span class="badge bg-success">Presente</span>';
                         $materias_result = $asistenciaModelo->obtenerDetalleMateriasAsistidas($row['id_asistencia']);
                         $materias = [];
-                        while($materia = mysqli_fetch_assoc($materias_result)) {
+                        while ($materia = mysqli_fetch_assoc($materias_result)) {
                             $materias[] = $materia['nombre'];
                         }
                         $detalle = 'Asistió a: ' . implode(', ', $materias);
@@ -155,7 +155,7 @@ switch ($action) {
             $seccion = $_POST['seccion'] ?? '';
             $fecha = $_POST['fecha'] ?? '';
             $grado = $_POST['grado'] ?? '';
-            
+
             $result = $asistenciaModelo->filtrarAsistenciasAgrupadas($seccion, $fecha, $grado);
 
             if (mysqli_num_rows($result) > 0) {
@@ -204,14 +204,14 @@ switch ($action) {
                     echo '<td>' . $row['nombre'] . ' ' . $row['apellido'] . '</td>';
                     echo '<td>';
                     echo '<input type="hidden" name="id_asistencia[]" value="' . $row['id_asistencia'] . '">';
-                    
+
                     $dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
                     $dia_semana = $dias_semana[date('N', strtotime($fecha)) - 1];
                     $materias_del_dia = $horarioModelo->getMateriasPorSeccionYDia($id_seccion, $dia_semana);
 
                     $materias_asistidas_result = $asistenciaModelo->obtenerDetalleMateriasAsistidas($row['id_asistencia']);
                     $materias_asistidas = [];
-                    while($materia = mysqli_fetch_assoc($materias_asistidas_result)) {
+                    while ($materia = mysqli_fetch_assoc($materias_asistidas_result)) {
                         $materias_asistidas[] = $materia['nombre'];
                     }
 
@@ -222,7 +222,7 @@ switch ($action) {
                         echo '<label class="form-check-label">' . htmlspecialchars($materia['nombre_materia']) . '</label>';
                         echo '</div>';
                     }
-                    
+
                     echo '</td>';
                     echo '<td>';
                     echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="display:none;">' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
@@ -243,26 +243,29 @@ switch ($action) {
             $fecha = $_POST['fecha'];
             $id_seccion = $_POST['id_seccion'];
             $ids_asistencia = $_POST['id_asistencia'];
-            
+
             $success = true;
-            
+
             foreach ($ids_asistencia as $id_asistencia) {
                 $materias_asistidas = isset($_POST['asistencia'][$id_asistencia]['materias']) ? $_POST['asistencia'][$id_asistencia]['materias'] : [];
                 $justificacion = isset($_POST['asistencia'][$id_asistencia]['justificacion']) ? trim($_POST['asistencia'][$id_asistencia]['justificacion']) : '';
-                
+                $inasistente = 0;
                 $justificado = 0;
-                if (empty($materias_asistidas) && !empty($justificacion)) {
-                    $justificado = 1;
+                if (empty($materias_asistidas)) {
+                    if (!empty($justificacion)) {
+                        $justificado = 1; 
+                    } else {
+                        $inasistente = 1;
+                    }
                 }
-                
-                $result = $asistenciaModelo->actualizarAsistencia($id_asistencia, $justificado, $justificacion);
-                $asistenciaModelo->actualizarAsistenciaDetallada($id_asistencia, $materias_asistidas);
 
+                $result = $asistenciaModelo->actualizarAsistencia($id_asistencia, $justificado, $justificacion, $inasistente);
+                $asistenciaModelo->actualizarAsistenciaDetallada($id_asistencia, $materias_asistidas);
                 if (!$result) {
                     $success = false;
                 }
             }
-            
+
             if ($success) {
                 echo "Asistencia actualizada correctamente";
             } else {
