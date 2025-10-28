@@ -372,3 +372,5 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         });
     });
 </script>
+
+<?php include 'widget_de_ayuda.php'; ?>

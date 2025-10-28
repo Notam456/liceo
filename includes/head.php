@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="/liceo/css/sweetalert2.css">
 
 <!-- ESTILOS PERSONALIZADOS -->
+ <link rel="stylesheet" href="/liceo/css/Estilos.css">
 <link rel="stylesheet" href="/liceo/css/style.css">
 
 <!-- LIBRERÍAS JS -->
