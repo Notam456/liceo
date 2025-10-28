@@ -110,13 +110,24 @@ class SeccionModelo
     }
 
     public function generarSecciones($cantidad, $id_grado)
-    {
-        for ($i = 0; $i < $cantidad; $i++) {
-            $this->crearSeccion(self::$letras[$i], $id_grado);
-        }
-        return "success";
+{
+    // Consultar cuántas secciones existen actualmente para ese grado
+    $query = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = ?";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("i", $id_grado);
+    $stmt->execute();
+    $resultado = $stmt->get_result()->fetch_assoc();
+
+    $cantidad_existente = (int)$resultado['total'];
+
+    // Crear las nuevas secciones empezando desde la cantidad existente
+    for ($i = 0; $i < $cantidad; $i++) {
+        $this->crearSeccion(self::$letras[$i + $cantidad_existente], $id_grado);
     }
 
+    $stmt->close();
+    return "success";
+}
     public function actualizarTutor($id_seccion, $id_tutor)
     {
         $id_seccion = (int)$id_seccion;
