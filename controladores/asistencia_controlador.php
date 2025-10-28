@@ -225,7 +225,11 @@ switch ($action) {
 
                     echo '</td>';
                     echo '<td>';
-                    echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="display:none;">' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
+                    $justificacion_style = 'display:none;';
+                    if (empty($materias_asistidas)) {
+                        $justificacion_style = '';
+                    }
+                    echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="' . $justificacion_style . '">' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
                     echo '</td>';
                     echo '</tr>';
                 }
