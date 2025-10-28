@@ -264,7 +264,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'generar_reporte_ausencias') {
             $gradoModelo = new GradoModelo($conn);
             $grado_result = $gradoModelo->obtenerGradoPorId($estudiante['id_grado']);
             if ($grado_data = mysqli_fetch_assoc($grado_result)) {
-                $grado = $grado_data['numero_anio'] . '° año';
+                $grado = $estudiante['numero_anio_seccion'] . '° año';
             }
         }
 

@@ -143,7 +143,9 @@ class AsistenciaModelo
                   JOIN estudiante e ON a.id_estudiante = e.id_estudiante
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
+                  JOIN anio_academico aa ON g.id_anio = aa.id_anio
                   JOIN profesor p ON a.id_coordinador = p.id_profesor
+                  WHERE aa.estado = 1;
                   ORDER BY a.fecha DESC";
         return $this->executeQuery($query);
     }
@@ -220,7 +222,9 @@ class AsistenciaModelo
 FROM asistencia a
 JOIN seccion s ON a.id_seccion = s.id_seccion
 JOIN grado g ON s.id_grado = g.id_grado
+JOIN anio_academico aa ON g.id_anio = aa.id_anio
 LEFT JOIN profesor p ON a.id_coordinador = p.id_profesor
+WHERE aa.estado = 1
 GROUP BY 
     a.fecha, 
     s.id_seccion, 
@@ -285,7 +289,8 @@ ORDER BY
                   FROM asistencia a
                   JOIN seccion s ON a.id_seccion = s.id_seccion
                   JOIN grado g ON s.id_grado = g.id_grado
-                  WHERE 1=1";
+                  JOIN anio_academico aa ON g.id_anio = aa.id_anio
+                  WHERE 1=1 AND aa.estado = 1";
 
         $params = [];
         $types = "";

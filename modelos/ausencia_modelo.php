@@ -13,51 +13,65 @@ class ReporteModelo
     public function obtenerReporteAusencias($desde = null, $hasta = null, $id_seccion = null)
     {
         $where_condicion = "";
-        if ($desde && $hasta) {
-            $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
-        }
+if ($desde && $hasta) {
+    $where_condicion = "AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'";
+}
 
-        $condicion = "1=1"; 
-        switch ($_SESSION['tipo_cargo']) {
-            case 'inferior':
-                $condicion = " g.numero_anio < 4";
-                break;
-            case 'superior':
-                $condicion = " g.numero_anio > 3";
-                break;
-                // en 'Administrador' no agregamos condición extra
-        }
+$condicion = "1=1"; 
+switch ($_SESSION['tipo_cargo']) {
+    case 'inferior':
+        $condicion = "g.numero_anio < 4";
+        break;
+    case 'superior':
+        $condicion = "g.numero_anio > 3";
+        break;
+    // Administrador no tiene condición extra
+}
 
-        // Jose Yajure: Condición para filtrar por sección
-        $seccion_condicion = "";
-        if ($id_seccion) {
-            $seccion_condicion = " AND asig.id_seccion = {$id_seccion}";
-        }
+// Filtro por sección (opcional)
+$seccion_condicion = "";
+if ($id_seccion) {
+    $seccion_condicion = "AND asig.id_seccion = {$id_seccion}";
+}
 
-        $query = "SELECT 
-                    e.id_estudiante,
-                    CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
-                    CONCAT(COALESCE(g.numero_anio, ''), CASE WHEN g.numero_anio IS NULL THEN '' ELSE '° ' END, COALESCE(s.letra, '')) AS seccion,
-                    e.contacto AS contacto,
-                    e.cedula AS cedula,
-                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
-                    COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
-                    COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total,
-                    (SELECT COALESCE(SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END), 0)
-                     FROM asistencia a2
-                     WHERE a2.id_estudiante = e.id_estudiante
-                     AND YEARWEEK(a2.fecha, 1) = YEARWEEK(CURDATE(), 1)) AS total_ultima_semana
-                 FROM estudiante e
-                 LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
-                 LEFT JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
-                 LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
-                 LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
-                 LEFT JOIN grado g ON s.id_grado = g.id_grado
-                  WHERE {$condicion} {$seccion_condicion}  
-                 GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula
-                ";
+$query = "
+    SELECT 
+        e.id_estudiante,
+        CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
+        CONCAT(
+            COALESCE(g.numero_anio, ''), 
+            CASE WHEN g.numero_anio IS NULL THEN '' ELSE '° ' END, 
+            COALESCE(s.letra, '')
+        ) AS seccion,
+        e.contacto AS contacto,
+        e.cedula AS cedula,
+        COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
+        COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
+        COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total,
+        (
+            SELECT COALESCE(SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END), 0)
+            FROM asistencia a2
+            WHERE a2.id_estudiante = e.id_estudiante
+            AND YEARWEEK(a2.fecha, 1) = YEARWEEK(CURDATE(), 1)
+        ) AS total_ultima_semana
+    FROM estudiante e
+    LEFT JOIN asistencia a 
+        ON a.id_estudiante = e.id_estudiante 
+        $where_condicion
+    LEFT JOIN (
+        SELECT asg.* 
+        FROM asigna_seccion asg
+        INNER JOIN anio_academico aa ON asg.id_anio = aa.id_anio
+        WHERE aa.estado = 1
+    ) AS asig ON e.id_estudiante = asig.id_estudiante
 
-        $result = $this->db->query($query);
+    LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
+    LEFT JOIN grado g ON s.id_grado = g.id_grado
+    WHERE {$condicion} {$seccion_condicion}
+    GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula
+";
+
+$result = $this->db->query($query);
 
         if (!$result) {
             throw new Exception("Error en la consulta: " . $this->db->error);
