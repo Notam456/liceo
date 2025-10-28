@@ -7,19 +7,47 @@ class MateriaModelo {
         $this->conn = $db;
     }
 
+    private function buscarPorNombre($nombre)
+    {
+        $nombre = mysqli_real_escape_string($this->conn, $nombre);
+        $query = "SELECT * FROM materia WHERE nombre = '$nombre'";
+        $result = mysqli_query($this->conn, $query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
+    }
+
     public function crearMateria($nombre, $info) {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $info = mysqli_real_escape_string($this->conn, $info);
 
+        $materiaExistente = $this->buscarPorNombre($nombre);
+
+        if ($materiaExistente) {
+            if ($materiaExistente['visibilidad'] == 0) {
+                $id_materia = $materiaExistente['id_materia'];
+                $query = "UPDATE materia SET descripcion = '$info', visibilidad = TRUE WHERE id_materia = $id_materia";
+                try {
+                    mysqli_query($this->conn, $query);
+                    return true;
+                } catch (mysqli_sql_exception $e) {
+                    return false;
+                }
+            } else {
+                return 1062;
+            }
+        }
+
         $query = "INSERT INTO materia(nombre, descripcion) VALUES ('$nombre', '$info')";
         try {
-            $insert_query_run = mysqli_query($this->conn, $query);
-            return true; // éxito
+            mysqli_query($this->conn, $query);
+            return true;
         } catch (mysqli_sql_exception $e) {
             if ($e->getCode() == 1062) {
-                return 1062; // clave duplicada
+                return 1062;
             }
-            return false; // otro error
+            return false;
         }
     }
 
@@ -39,8 +67,21 @@ class MateriaModelo {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $info = mysqli_real_escape_string($this->conn, $info);
 
+        $materiaExistente = $this->buscarPorNombre($nombre);
+        if ($materiaExistente && $materiaExistente['id_materia'] != $id) {
+            return 1062;
+        }
+
         $query = "UPDATE materia SET nombre = '$nombre', descripcion = '$info' WHERE id_materia = $id";
-        return mysqli_query($this->conn, $query);
+
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                return 1062;
+            }
+            return false;
+        }
     }
 
     public function eliminarMateria($id) {

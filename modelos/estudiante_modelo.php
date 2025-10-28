@@ -9,6 +9,17 @@ class EstudianteModelo
         $this->conn = $db;
     }
 
+    private function buscarPorCedula($cedula)
+    {
+        $cedula = mysqli_real_escape_string($this->conn, $cedula);
+        $query = "SELECT * FROM estudiante WHERE cedula = '$cedula'";
+        $result = mysqli_query($this->conn, $query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
+    }
+
     public function crearEstudiante($nombre, $apellido, $cedula, $contacto, $id_sector, $anio, $fecha, $direccion_exacta, $punto_referencia)
     {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
@@ -21,17 +32,44 @@ class EstudianteModelo
         $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
         $punto_referencia = mysqli_real_escape_string($this->conn, $punto_referencia);
 
+        $estudianteExistente = $this->buscarPorCedula($cedula);
+
+        if ($estudianteExistente) {
+            if ($estudianteExistente['visibilidad'] == 0) {
+                $id_estudiante = $estudianteExistente['id_estudiante'];
+                $query = "UPDATE estudiante SET
+                            nombre = '$nombre',
+                            apellido = '$apellido',
+                            contacto = '$contacto',
+                            id_sector = '$id_sector',
+                            id_grado = '$anio',
+                            fecha_nacimiento = '$fecha',
+                            direccion_exacta = '$direccion_exacta',
+                            punto_referencia = '$punto_referencia',
+                            visibilidad = TRUE
+                          WHERE id_estudiante = '$id_estudiante'";
+                try {
+                    mysqli_query($this->conn, $query);
+                    return true;
+                } catch (mysqli_sql_exception $e) {
+                    return false;
+                }
+            } else {
+                return 1062;
+            }
+        }
+
         $query = "INSERT INTO estudiante(nombre, apellido, cedula, contacto, id_sector, id_grado, fecha_nacimiento, direccion_exacta, punto_referencia)
                   VALUES ('$nombre', '$apellido', '$cedula', '$contacto', '$id_sector', '$anio', '$fecha', '$direccion_exacta', '$punto_referencia')";
 
         try {
-            $insert_query_run = mysqli_query($this->conn, $query);
-            return true; // éxito
+            mysqli_query($this->conn, $query);
+            return true;
         } catch (mysqli_sql_exception $e) {
             if ($e->getCode() == 1062) {
-                return 1062; // clave duplicada
+                return 1062;
             }
-            return false; // otro error
+            return false;
         }
     }
 
@@ -54,7 +92,7 @@ class EstudianteModelo
     public function obtenerEstudiantesPorSeccion($id_seccion)
     {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' ORDER BY apellido, nombre";
+        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' AND visibilidad = TRUE ORDER BY apellido, nombre";
         return mysqli_query($this->conn, $query);
     }
 
@@ -62,13 +100,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT * FROM estudiante";
+                $query = "SELECT * FROM estudiante WHERE visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND e.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND e.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -87,6 +125,11 @@ class EstudianteModelo
         $direccion_exacta = mysqli_real_escape_string($this->conn, $direccion_exacta);
         $punto_referencia = mysqli_real_escape_string($this->conn, $punto_referencia);
 
+        $estudianteExistente = $this->buscarPorCedula($cedula);
+        if ($estudianteExistente && $estudianteExistente['id_estudiante'] != $id) {
+            return 1062;
+        }
+
         $query = "UPDATE estudiante SET
                     nombre = '$nombre',
                     apellido = '$apellido',
@@ -104,16 +147,16 @@ class EstudianteModelo
             return $update_query_run;
         } catch (mysqli_sql_exception $e) {
             if ($e->getCode() == 1062) {
-                return 1062; // clave duplicada
+                return 1062;
             }
-            return false; // otro error
+            return false;
         }
     }
 
     public function eliminarEstudiante($id)
     {
         $id = (int)$id;
-        $query = "DELETE FROM estudiante WHERE id_estudiante ='$id'";
+        $query = "UPDATE estudiante SET visibilidad = FALSE WHERE id_estudiante ='$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -121,13 +164,13 @@ class EstudianteModelo
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT * FROM estudiante WHERE id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT * FROM estudiante WHERE (id_seccion IS NULL OR id_seccion = 0) AND visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND id_seccion IS NULL OR id_seccion = 0";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
