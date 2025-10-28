@@ -143,11 +143,11 @@ class SeccionModelo
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerMatriculaCompletaPorSeccion($id_seccion)
-    {
-        $id_seccion = (int)$id_seccion;
+   public function obtenerMatriculaCompletaPorSeccion($id_seccion)
+{
+    $id_seccion = (int)$id_seccion;
 
-        $query = "SELECT 
+    $query = "SELECT 
                 e.nombre,
                 e.apellido,
                 e.cedula,
@@ -171,79 +171,41 @@ class SeccionModelo
              JOIN seccion sec ON asig.id_seccion = sec.id_seccion
              JOIN grado g ON sec.id_grado = g.id_grado
              LEFT JOIN profesor prof ON sec.id_tutor = prof.id_profesor
-             WHERE asig.id_seccion = $id_seccion
+             WHERE asig.id_seccion = $id_seccion AND e.visibilidad = 1
              ORDER BY e.apellido, e.nombre";
 
-        $result = $this->conn->query($query);
+    $result = $this->conn->query($query);
 
-        if (!$result) {
-            throw new Exception("Error en la consulta: " . $this->conn->error);
-        }
-
-        $matricula = [];
-        $tutor_info = null;
-
-        while ($row = $result->fetch_assoc()) {
-            // Solo necesitamos la info del tutor una vez (es la misma para todos los estudiantes)
-            if ($tutor_info === null) {
-                $tutor_info = [
-                    'nombre_tutor' => $row['nombre_tutor'],
-                    'apellido_tutor' => $row['apellido_tutor'],
-                    'cedula_tutor' => $row['cedula_tutor']
-                ];
-            }
-
-            // Formatear la dirección completa
-            $direccion_completa = $row['direccion_exacta'];
-            if (!empty($row['punto_referencia'])) {
-                $direccion_completa .= " (Ref: " . $row['punto_referencia'] . ")";
-            }
-            $direccion_completa .= ", " . $row['sector'] . ", " . $row['parroquia'] . ", " . $row['municipio'];
-
-            // Formatear fecha de nacimiento
-            $fecha_nacimiento = $row['fecha_nacimiento'] ? date('d/m/Y', strtotime($row['fecha_nacimiento'])) : 'No registrada';
-
-            $matricula[] = [
-                'nombre' => $row['nombre'],
-                'apellido' => $row['apellido'],
-                'cedula' => $row['cedula'],
-                'fecha_nacimiento' => $fecha_nacimiento,
-                'direccion_completa' => $direccion_completa,
-                'grado_seccion' => $row['numero_anio'] . '° ' . $row['letra'],
-                'tutor' => $tutor_info
-            ];
-        }
-
-        // Si no hay estudiantes pero necesitamos la info del tutor
-        if (empty($matricula) && $tutor_info === null) {
-            // Consulta adicional para obtener solo la info del tutor
-            $query_tutor = "SELECT 
-                        sec.letra,
-                        g.numero_anio,
-                        prof.nombre AS nombre_tutor,
-                        prof.apellido AS apellido_tutor,
-                        prof.cedula AS cedula_tutor
-                     FROM seccion sec
-                     JOIN grado g ON sec.id_grado = g.id_grado
-                     LEFT JOIN profesor prof ON sec.id_tutor = prof.id_profesor
-                     WHERE sec.id_seccion = $id_seccion";
-
-            $result_tutor = $this->conn->query($query_tutor);
-            if ($result_tutor && $row_tutor = $result_tutor->fetch_assoc()) {
-                $tutor_info = [
-                    'nombre_tutor' => $row_tutor['nombre_tutor'],
-                    'apellido_tutor' => $row_tutor['apellido_tutor'],
-                    'cedula_tutor' => $row_tutor['cedula_tutor']
-                ];
-
-                // Agregar info de grado y sección
-                $matricula['grado_seccion'] = $row_tutor['numero_anio'] . '° ' . $row_tutor['letra'];
-                $matricula['tutor'] = $tutor_info;
-            }
-        }
-
-        return $matricula;
+    if (!$result) {
+        throw new Exception("Error en la consulta: " . $this->conn->error);
     }
+
+    $matricula = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $direccion_completa = $row['direccion_exacta'];
+        if (!empty($row['punto_referencia'])) {
+            $direccion_completa .= " (Ref: " . $row['punto_referencia'] . ")";
+        }
+        $direccion_completa .= ", " . $row['sector'] . ", " . $row['parroquia'] . ", " . $row['municipio'];
+
+        $fecha_nacimiento = $row['fecha_nacimiento'] ? date('d/m/Y', strtotime($row['fecha_nacimiento'])) : 'No registrada';
+
+        $matricula[] = [
+            'nombre' => $row['nombre'],
+            'apellido' => $row['apellido'],
+            'cedula' => $row['cedula'],
+            'fecha_nacimiento' => $fecha_nacimiento,
+            'direccion_completa' => $direccion_completa,
+            'grado_seccion' => $row['numero_anio'] . '° ' . $row['letra'],
+            'nombre_tutor' => $row['nombre_tutor'],
+            'apellido_tutor' => $row['apellido_tutor'],
+            'cedula_tutor' => $row['cedula_tutor']
+        ];
+    }
+
+    return $matricula;
+}
 
     public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = null)
     {
