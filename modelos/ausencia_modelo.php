@@ -31,7 +31,7 @@ class ReporteModelo
         // Jose Yajure: Condición para filtrar por sección
         $seccion_condicion = "";
         if ($id_seccion) {
-            $seccion_condicion = " AND e.id_seccion = {$id_seccion}";
+            $seccion_condicion = " AND asig.id_seccion = {$id_seccion}";
         }
 
         $query = "SELECT 
@@ -49,7 +49,9 @@ class ReporteModelo
                      AND YEARWEEK(a2.fecha, 1) = YEARWEEK(CURDATE(), 1)) AS total_ultima_semana
                  FROM estudiante e
                  LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
-                 LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                 LEFT JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                 LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                 LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
                   WHERE {$condicion} {$seccion_condicion}  
                  GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula
@@ -112,9 +114,11 @@ class ReporteModelo
                     COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
                  FROM estudiante e
                  LEFT JOIN asistencia a ON a.id_estudiante = e.id_estudiante $where_condicion
-                 LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                 LEFT JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                 LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                 LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
                  LEFT JOIN grado g ON s.id_grado = g.id_grado
-                 WHERE {$condicion} AND e.id_seccion = {$id_seccion}
+                 WHERE {$condicion} AND asig.id_seccion = {$id_seccion}
                  GROUP BY e.id_estudiante, nombre_completo, cedula, contacto, grado, seccion
                  ORDER BY nombre_completo";
 

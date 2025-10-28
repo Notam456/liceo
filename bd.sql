@@ -71,7 +71,6 @@ CREATE TABLE seccion (
 CREATE TABLE estudiante (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
-    id_seccion INT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE,
@@ -81,12 +80,23 @@ CREATE TABLE estudiante (
     direccion_exacta TEXT,
     punto_referencia TEXT,
     visibilidad BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
-          ON UPDATE CASCADE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
           ON UPDATE CASCADE,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
           ON UPDATE CASCADE
+);
+
+
+CREATE TABLE asigna_seccion (
+    id_asignacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_estudiante INT NOT NULL,
+    id_seccion INT NOT NULL,
+    id_anio INT NOT NULL,
+    visibilidad BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion) ON UPDATE CASCADE,
+    FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio) ON UPDATE CASCADE,
+    UNIQUE KEY `asignacion_unica_anio` (`id_estudiante`,`id_anio`)
 );
 
 
