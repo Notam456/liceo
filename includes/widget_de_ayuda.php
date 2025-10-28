@@ -7,22 +7,92 @@ $ayudas = [
     'main.php' => [
         "titulo" => "¿Cómo acceder a un módulo?",
         "descripcion" => "Haga click en el módulo deseado para que el sistema le redirija a su pantalla.",
-        "seccionAyuda" => "#inicio" // ancla dentro de ayuda.php
+        "seccionAyuda" => "#introduccion"
     ],
-    'anioAcademico.php' => [
-        "titulo" => "Gestión de Años Académicos",
-        "descripcion" => "Desde aquí puede crear, editar o eliminar años académicos, además de gestionar trayectos, materias, secciones y aulas.",
-        "seccionAyuda" => "#anio-academico"
+    'anio_academico_controlador.php' => [
+        "titulo" => "Gestión de Años Escolares",
+        "descripcion" => "Desde aquí puede crear, editar o eliminar años escolares y gestionar su estado.",
+        "seccionAyuda" => "#anio-escolar"
     ],
-    'docentes.php' => [
-        "titulo" => "Gestión de Docentes",
-        "descripcion" => "En este módulo puede registrar, actualizar o eliminar docentes del sistema.",
-        "seccionAyuda" => "#docentes"
+    'profesor_controlador.php' => [
+        "titulo" => "Gestión de Profesores",
+        "descripcion" => "En este módulo puede registrar, consultar, actualizar o eliminar profesores del sistema.",
+        "seccionAyuda" => "#profesor"
     ],
-    'asignacion.php' => [
-        "titulo" => "Asignación de Carga Horaria",
-        "descripcion" => "Permite asignar horas académicas a los docentes según el período, materia y sección.",
-        "seccionAyuda" => "#asignacion"
+    'usuario_controlador.php' => [
+        "titulo" => "Gestión de Usuarios",
+        "descripcion" => "Permite administrar las cuentas de usuario, asignando roles y permisos para acceder al sistema.",
+        "seccionAyuda" => "#usuario"
+    ],
+    'estudiante_controlador.php' => [
+        "titulo" => "Gestión de Estudiantes",
+        "descripcion" => "Registre, consulte, modifique y elimine la información de los estudiantes.",
+        "seccionAyuda" => "#estudiantes"
+    ],
+    'grado_controlador.php' => [
+        "titulo" => "Gestión de Grados",
+        "descripcion" => "Administre los grados académicos que ofrece la institución.",
+        "seccionAyuda" => "#grado"
+    ],
+    'materia_controlador.php' => [
+        "titulo" => "Gestión de Materias",
+        "descripcion" => "Defina las materias que se imparten, las cuales podrán ser asignadas a los profesores.",
+        "seccionAyuda" => "#materias"
+    ],
+    'seccion_controlador.php' => [
+        "titulo" => "Gestión de Secciones",
+        "descripcion" => "Cree y administre las secciones por grado, asigne estudiantes y consulte horarios.",
+        "seccionAyuda" => "#secciones"
+    ],
+    'cargo_controlador.php' => [
+        "titulo" => "Gestión de Cargos",
+        "descripcion" => "Administre los diferentes cargos que puede ocupar el personal en la institución.",
+        "seccionAyuda" => "#cargos"
+    ],
+    'municipio_controlador.php' => [
+        "titulo" => "Gestión de Municipios",
+        "descripcion" => "Administre los municipios para el registro de direcciones.",
+        "seccionAyuda" => "#municipio"
+    ],
+    'parroquia_controlador.php' => [
+        "titulo" => "Gestión de Parroquias",
+        "descripcion" => "Administre las parroquias asociadas a los municipios.",
+        "seccionAyuda" => "#parroquia"
+    ],
+    'sector_controlador.php' => [
+        "titulo" => "Gestión de Sectores",
+        "descripcion" => "Administre los sectores para completar la información de ubicación.",
+        "seccionAyuda" => "#sector"
+    ],
+    'asigna_materia_controlador.php' => [
+        "titulo" => "Asignación de Materias",
+        "descripcion" => "Asigne las materias que impartirá cada profesor en el año escolar activo.",
+        "seccionAyuda" => "#asignacion-materia"
+    ],
+    'asigna_cargo_controlador.php' => [
+        "titulo" => "Asignación de Cargos",
+        "descripcion" => "Asigne los cargos administrativos o académicos al personal de la institución.",
+        "seccionAyuda" => "#asignacion-cargo"
+    ],
+    'asistencia_controlador.php' => [
+        "titulo" => "Registro de Asistencia",
+        "descripcion" => "Registre la asistencia diaria de los estudiantes por sección y materia.",
+        "seccionAyuda" => "#asistencia"
+    ],
+    'ausencia_controlador.php' => [
+        "titulo" => "Gestión de Ausencias",
+        "descripcion" => "Consulte las ausencias de los estudiantes y agende visitas domiciliarias si es necesario.",
+        "seccionAyuda" => "#ausencias"
+    ],
+    'visita_controlador.php' => [
+        "titulo" => "Gestión de Visitas",
+        "descripcion" => "Programe y gestione las visitas a los hogares de los estudiantes con ausencias recurrentes.",
+        "seccionAyuda" => "#visita"
+    ],
+    'reporte_controlador.php' => [
+        "titulo" => "Generación de Reportes",
+        "descripcion" => "Genere reportes académicos y de asistencia en formato PDF.",
+        "seccionAyuda" => "#reporte"
     ]
 ];
 

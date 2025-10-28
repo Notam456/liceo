@@ -210,7 +210,7 @@ INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);
 
 INSERT INTO cargo (tipo, nombre) 
-VALUES ('directivo', 'Director');
+VALUES ('superior', 'Director');
 
 
 INSERT INTO municipio (municipio) VALUES
