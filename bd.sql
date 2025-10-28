@@ -100,7 +100,7 @@ CREATE TABLE materia (
 
 CREATE TABLE cargo (
     id_cargo INT AUTO_INCREMENT PRIMARY KEY,
-    tipo ENUM('inferior', 'superior'),
+    tipo ENUM('inferior', 'superior', 'directivo'),
     nombre VARCHAR(50) NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE
 );
@@ -210,7 +210,7 @@ INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
 VALUES ('administrador', 'Hola1234!', 'admin', NULL);
 
 INSERT INTO cargo (tipo, nombre) 
-VALUES ('superior', 'Director');
+VALUES ('directivo', 'Director');
 
 
 INSERT INTO municipio (municipio) VALUES
