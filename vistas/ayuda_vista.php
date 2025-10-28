@@ -168,10 +168,11 @@ $ayuda_mapping = [
       <!-- CONTENIDO -->
       <div class="content-area">
         <section id="introduccion">
-          <h2>Manual de Usuario - Sistema de Gestión Académica</h2>
-          <p>Bienvenido al manual de usuario del sistema de gestión académica. Esta documentación le guiará en el uso de todas las funcionalidades del sistema para la administración eficiente de su institución educativa.</p>
+          <h2>Manual de Usuario - Control de Asistencia Estudiantil</h2>
+          <p>Bienvenido al manual de usuario del sistema de control de asistencia estudiantil. Esta documentación le guiará en el uso de todas las funcionalidades del sistema para la administración eficiente de su institución educativa.</p>
         </section>
-
+        
+        
         <section id="inicio-sesion">
           <h3>Inicio de Sesión</h3>
           <div class="step-list">

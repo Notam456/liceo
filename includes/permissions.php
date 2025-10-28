@@ -33,6 +33,7 @@ $modulos_por_rol = [
         ],
         'Soporte' => [
             'ayuda' => '/liceo/imgs/ayudar.png',
+            'manual_sistema' => '/liceo/imgs/manual.png'
         ]
     ],
     'coordinador' => [
@@ -98,7 +99,8 @@ $nombre_legible = [
     'asistencia' => 'Asistencia',
     'visita' => 'Visita',
     'reporte' => 'Reporte',
-    'ayuda' => 'Ayuda'
+    'ayuda' => 'Ayuda',
+    'manual_sistema' => 'Manual del sistema'
 ];
 // Obtén el rol del usuario de la sesión
 $rol_usuario = $_SESSION['rol'] ?? 'default';

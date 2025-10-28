@@ -34,7 +34,8 @@ $modulos_por_rol = [
             'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
         ],
         'Soporte' => [
-            'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
+            'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda'],
+            'manual_sistema' => ['icon' => 'bi-person-gear', 'ruta' => 'manual_sistema']
         ]
     ],
     'coordinador' => [
@@ -89,7 +90,8 @@ $nombre_legible = [
     'asistencia' => 'Asistencia',
     'visita' => 'Visita',
     'reporte' => 'Reporte',
-    'ayuda' => 'Ayuda'
+    'ayuda' => 'Ayuda',
+    'manual_sistema' => 'Manual del sistema'
 ];
 
 $rol_usuario = $_SESSION['rol'] ?? null;
