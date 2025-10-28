@@ -180,7 +180,7 @@ WHERE e.id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
-    public function obtenerEstudiantesSinSeccion()
+    public function obtenerEstudiantesSinSeccion($seccion)
     {
         $query_anio = "SELECT id_anio FROM anio_academico WHERE estado = 1 AND visibilidad = TRUE LIMIT 1";
         $result_anio = mysqli_query($this->conn, $query_anio);
@@ -191,24 +191,55 @@ WHERE e.id_estudiante = '$id'";
         }
 
         if ($id_anio_activo == 0) {
-             return mysqli_query($this->conn, "SELECT * FROM estudiante WHERE 1=0");
+            return mysqli_query($this->conn, "SELECT * FROM estudiante WHERE 1=0");
         }
 
-        $sub_query = "SELECT 1 FROM asigna_seccion WHERE id_estudiante = e.id_estudiante AND id_anio = $id_anio_activo";
+        $sub_query = "
+    SELECT 1
+    FROM asigna_seccion
+    WHERE id_estudiante = e.id_estudiante
+      AND id_anio = $id_anio_activo
+";
 
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT e.* FROM estudiante e WHERE NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
+                $query = "
+            SELECT e.*
+            FROM estudiante e
+            WHERE NOT EXISTS ($sub_query)
+              AND e.visibilidad = TRUE
+              AND e.id_grado = (SELECT id_grado FROM seccion WHERE id_seccion = $seccion)
+        ";
                 break;
+
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
+                $query = "
+            SELECT e.*
+            FROM estudiante e
+            JOIN grado g ON e.id_grado = g.id_grado
+            WHERE g.numero_anio < 4
+              AND NOT EXISTS ($sub_query)
+              AND e.visibilidad = TRUE
+              AND e.id_grado = (SELECT id_grado FROM seccion WHERE id_seccion = $seccion)
+        ";
                 break;
+
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
+                $query = "
+            SELECT e.*
+            FROM estudiante e
+            JOIN grado g ON e.id_grado = g.id_grado
+            WHERE g.numero_anio > 3
+              AND NOT EXISTS ($sub_query)
+              AND e.visibilidad = TRUE
+              AND e.id_grado = (SELECT id_grado FROM seccion WHERE id_seccion = $seccion)
+        ";
                 break;
+
             default:
                 return mysqli_query($this->conn, "SELECT * FROM estudiante WHERE 1=0");
         }
+
         return mysqli_query($this->conn, $query);
     }
 
