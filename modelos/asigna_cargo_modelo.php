@@ -6,7 +6,6 @@ class AsignaCargoModelo {
         $this->db = $db;
     }
 
-    // Obtener todas las asignaciones con información de profesor y cargo
     public function obtenerAsignaciones() {
         $query = "SELECT
                     ac.id_asignacion,
@@ -38,7 +37,6 @@ class AsignaCargoModelo {
         return $asignaciones;
     }
 
-    // Obtener todos los profesores
     public function obtenerProfesores() {
         $query = "SELECT * FROM profesor ORDER BY apellido, nombre";
         $result = $this->db->query($query);
@@ -51,7 +49,6 @@ class AsignaCargoModelo {
         return $profesores;
     }
 
-    // Obtener todos los cargos
     public function obtenerCargos() {
         $query = "SELECT * FROM cargo ORDER BY nombre";
         $result = $this->db->query($query);
@@ -64,46 +61,43 @@ class AsignaCargoModelo {
         return $cargos;
     }
 
-    // Crear nueva asignación en la tabla intermedia
     public function crearAsignacion($id_profesor, $id_cargo) {
-        // Verificar si ya existe la asignación activa
-        if ($this->existeAsignacion($id_profesor, $id_cargo)) {
-            return false;
+        $asignacionExistente = $this->existeAsignacion($id_profesor, $id_cargo);
+
+        if ($asignacionExistente) {
+            if ($asignacionExistente['estado'] == 'inactiva') {
+                $id_asignacion = $asignacionExistente['id_asignacion'];
+                $query = "UPDATE asigna_cargo SET estado = 'activa' WHERE id_asignacion = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param("i", $id_asignacion);
+                return $stmt->execute();
+            } else {
+                return false;
+            }
         }
 
         $query = "INSERT INTO asigna_cargo (id_profesor, id_cargo) VALUES (?, ?)";
-
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("ii", $id_profesor, $id_cargo);
-
         return $stmt->execute();
     }
 
-    // Eliminar asignación
     public function eliminarAsignacion($id_asignacion) {
         $query = "UPDATE asigna_cargo SET estado = 'inactiva' WHERE id_asignacion = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_asignacion);
-
         return $stmt->execute();
     }
 
-    // Verificar si ya existe la asignación
     public function existeAsignacion($id_profesor, $id_cargo) {
-        $query = "SELECT COUNT(*) as count FROM asigna_cargo
-                  WHERE id_profesor = ? AND id_cargo = ? AND estado = 'activa'";
-
+        $query = "SELECT * FROM asigna_cargo WHERE id_profesor = ? AND id_cargo = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("ii", $id_profesor, $id_cargo);
         $stmt->execute();
-
         $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-
-        return $row['count'] > 0;
+        return $result->fetch_assoc();
     }
 
-    // Obtener cargos asignados a un profesor específico
     public function obtenerCargosPorProfesor($id_profesor) {
         $query = "SELECT c.* FROM cargo c
                   JOIN asigna_cargo ac ON c.id_cargo = ac.id_cargo
@@ -112,38 +106,29 @@ class AsignaCargoModelo {
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_profesor);
         $stmt->execute();
-
         $result = $stmt->get_result();
-
         $cargos = [];
         while ($row = $result->fetch_assoc()) {
             $cargos[] = $row;
         }
-
         return $cargos;
     }
 
-    // Obtener profesores que tienen un cargo específico
     public function obtenerProfesoresPorCargo($id_cargo) {
         $query = "SELECT p.* FROM profesor p
                   JOIN asigna_cargo ac ON p.id_profesor = ac.id_profesor
                   WHERE ac.id_cargo = ? AND ac.estado = 'activa'";
-
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_cargo);
         $stmt->execute();
-
         $result = $stmt->get_result();
-
         $profesores = [];
         while ($row = $result->fetch_assoc()) {
             $profesores[] = $row;
         }
-
         return $profesores;
     }
 
-    // Obtener asignación por ID
     public function obtenerAsignacionPorId($id_asignacion) {
         $query = "SELECT
                     ac.id_asignacion,
@@ -159,36 +144,22 @@ class AsignaCargoModelo {
                   JOIN profesor p ON ac.id_profesor = p.id_profesor
                   JOIN cargo c ON ac.id_cargo = c.id_cargo
                   WHERE ac.id_asignacion = ?";
-
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("i", $id_asignacion);
         $stmt->execute();
-
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
 
-    // Actualizar asignación
     public function actualizarAsignacion($id_asignacion, $id_profesor, $id_cargo) {
-        // Verificar si ya existe otra asignación con el mismo profesor y cargo
-        $query_check = "SELECT COUNT(*) as count FROM asigna_cargo
-                       WHERE id_profesor = ? AND id_cargo = ? AND id_asignacion != ? AND estado = 'activa'";
-
-        $stmt_check = $this->db->prepare($query_check);
-        $stmt_check->bind_param("iii", $id_profesor, $id_cargo, $id_asignacion);
-        $stmt_check->execute();
-
-        $result = $stmt_check->get_result();
-        $row = $result->fetch_assoc();
-
-        if ($row['count'] > 0) {
-            return false; // Ya existe otra asignación con estos datos
+        $asignacionExistente = $this->existeAsignacion($id_profesor, $id_cargo);
+        if ($asignacionExistente && $asignacionExistente['id_asignacion'] != $id_asignacion) {
+            return false;
         }
 
         $query = "UPDATE asigna_cargo SET id_profesor = ?, id_cargo = ? WHERE id_asignacion = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("iii", $id_profesor, $id_cargo, $id_asignacion);
-
         return $stmt->execute();
     }
 }

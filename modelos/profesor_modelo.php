@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 class ProfesorModelo
 {
@@ -9,24 +9,51 @@ class ProfesorModelo
         $this->conn = $db;
     }
 
+    private function buscarPorCedula($cedula)
+    {
+        $cedula = mysqli_real_escape_string($this->conn, $cedula);
+        $query = "SELECT * FROM profesor WHERE cedula = '$cedula'";
+        $result = mysqli_query($this->conn, $query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
+    }
+
     public function crearProfesor($nombre, $apellido, $cedula)
     {
         $nombre = mysqli_real_escape_string($this->conn, $nombre);
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
 
+        $profesorExistente = $this->buscarPorCedula($cedula);
+
+        if ($profesorExistente) {
+            if ($profesorExistente['visibilidad'] == 0) {
+                $id_profesor = $profesorExistente['id_profesor'];
+                $query = "UPDATE profesor SET nombre = '$nombre', apellido = '$apellido', visibilidad = TRUE WHERE id_profesor = $id_profesor";
+                try {
+                    mysqli_query($this->conn, $query);
+                    return true;
+                } catch (mysqli_sql_exception $e) {
+                    return false;
+                }
+            } else {
+                return 1062;
+            }
+        }
 
         $query = "INSERT INTO profesor(nombre, apellido, cedula)
                   VALUES ('$nombre', '$apellido', '$cedula')";
 
         try {
-            $insert_query_run = mysqli_query($this->conn, $query);
-            return true; // éxito
+            mysqli_query($this->conn, $query);
+            return true;
         } catch (mysqli_sql_exception $e) {
             if ($e->getCode() == 1062) {
-                return 1062; // clave duplicada
+                return 1062;
             }
-            return false; // otro error
+            return false;
         }
     }
 
@@ -112,6 +139,10 @@ class ProfesorModelo
         $apellido = mysqli_real_escape_string($this->conn, $apellido);
         $cedula = mysqli_real_escape_string($this->conn, $cedula);
 
+        $profesorExistente = $this->buscarPorCedula($cedula);
+        if ($profesorExistente && $profesorExistente['id_profesor'] != $id) {
+            return 1062;
+        }
 
         $query = "UPDATE profesor SET
                     nombre = '$nombre',
@@ -124,9 +155,9 @@ class ProfesorModelo
             return $update_query_run;
         } catch (mysqli_sql_exception $e) {
             if ($e->getCode() == 1062) {
-                return 1062; // clave duplicada
+                return 1062;
             }
-            return false; // otro error
+            return false;
         }
     }
 
