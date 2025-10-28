@@ -1,3 +1,29 @@
+<?php
+session_start();
+define('ROOT_PATH', dirname(__DIR__) . '/');
+include(ROOT_PATH . 'includes/permissions.php');
+
+$ayuda_mapping = [
+    'anio-escolar' => 'anio_academico',
+    'profesor' => 'profesor',
+    'usuario' => 'usuario',
+    'estudiantes' => 'estudiante',
+    'grado' => 'grado',
+    'materias' => 'materia',
+    'secciones' => 'seccion',
+    'cargos' => 'cargo',
+    'municipio' => 'municipio',
+    'parroquia' => 'parroquia',
+    'sector' => 'sector',
+    'horario' => 'seccion', // Se accede desde secciones
+    'asignacion-materia' => 'asigna_materia',
+    'asignacion-cargo' => 'asigna_cargo',
+    'asistencia' => 'asistencia',
+    'ausencias' => 'ausencia',
+    'visita' => 'visita',
+    'reporte' => 'reporte'
+];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -156,6 +182,7 @@
         </div>
       </section>
 
+      <?php if (in_array($ayuda_mapping['anio-escolar'], $modulos_visibles)): ?>
       <section id="anio-escolar">
         <h3>Agregar Año Escolar</h3>
         <div class="step-list">
@@ -175,7 +202,9 @@
 
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['profesor'], $modulos_visibles)): ?>
       <section id="profesor">
         <h3>Profesor</h3>
         <div class="step-list">
@@ -190,7 +219,9 @@
           <img class="images" src="../screenshots/8.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['usuario'], $modulos_visibles)): ?>
       <section id="usuario">
         <h3>Usuario</h3>
         <div class="step-list">
@@ -203,7 +234,9 @@
           <img class="images" src="../screenshots/10.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['estudiantes'], $modulos_visibles)): ?>
       <section id="estudiantes">
         <h3>Estudiante</h3>
         <div class="step-list">
@@ -217,7 +250,9 @@
           <img class="images" src="../screenshots/12.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['grado'], $modulos_visibles)): ?>
       <section id="grado">
         <h3>Grado</h3>
         <div class="step-list">
@@ -231,7 +266,9 @@
           <img class="images" src="../screenshots/15.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['materias'], $modulos_visibles)): ?>
       <section id="materias">
         <h3>Materia</h3>
         <div class="step-list">
@@ -244,7 +281,9 @@
           <img class="images" src="../screenshots/17.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['secciones'], $modulos_visibles)): ?>
       <section id="secciones">
         <h3>Seccion</h3>
         <div class="step-list">
@@ -261,7 +300,9 @@
           <img class="images" src="../screenshots/21.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['cargos'], $modulos_visibles)): ?>
       <section id="cargos">
         <h3>Cargo</h3>
         <div class="step-list">
@@ -275,7 +316,9 @@
           <img class="images" src="../screenshots/24.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['municipio'], $modulos_visibles)): ?>
       <section id="municipio">
         <h3>Municipio</h3>
         <div class="step-list">
@@ -288,7 +331,9 @@
           <img class="images" src="../screenshots/26.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['parroquia'], $modulos_visibles)): ?>
       <section id="parroquia">
         <h3>Parroquia</h3>
         <div class="step-list">
@@ -301,7 +346,9 @@
           <img class="images" src="../screenshots/28.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['sector'], $modulos_visibles)): ?>
       <section id="sector">
         <h3>Sector</h3>
         <div class="step-list">
@@ -314,7 +361,9 @@
           <img class="images" src="../screenshots/30.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['horario'], $modulos_visibles)): ?>
       <section id="horario">
         <h3>Horario</h3>
         <div class="step-list">
@@ -327,7 +376,9 @@
           <img class="images" src="../screenshots/32.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['asignacion-materia'], $modulos_visibles)): ?>
       <section id="asignacion-materia">
         <h3>Asignación de Materia</h3>
         <div class="step-list">
@@ -341,7 +392,9 @@
           <img class="images" src="../screenshots/35.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['asignacion-cargo'], $modulos_visibles)): ?>
       <section id="asignacion-cargo">
         <h3>Asignación de Cargo</h3>
         <div class="step-list">
@@ -355,7 +408,9 @@
           <img class="images" src="../screenshots/38.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['asistencia'], $modulos_visibles)): ?>
       <section id="asistencia">
         <h3>Asistencia</h3>
         <div class="step-list">
@@ -369,7 +424,9 @@
           <img class="images" src="../screenshots/41.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['ausencias'], $modulos_visibles)): ?>
       <section id="ausencias">
         <h3>Ausencia</h3>
         <div class="step-list">
@@ -383,7 +440,9 @@
           <img class="images" src="../screenshots/43.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['visita'], $modulos_visibles)): ?>
       <section id="visita">
         <h3>Visita</h3>
         <div class="step-list">
@@ -398,7 +457,9 @@
           <img class="images" src="../screenshots/46.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
 
+      <?php if (in_array($ayuda_mapping['reporte'], $modulos_visibles)): ?>
       <section id="reporte">
         <h3>Reporte</h3>
         <div class="step-list">
@@ -409,6 +470,7 @@
           <img class="images" src="../screenshots/47.jpg" alt="">
         </div>
       </section>
+      <?php endif; ?>
     </div>
 
     <footer>
@@ -422,24 +484,60 @@
     <nav class="nav flex-column">
       <a class="nav-link" href="#introduccion">Introducción</a>
       <a class="nav-link" href="#inicio-sesion">Inicio de Sesión</a>
+      <?php if (in_array($ayuda_mapping['anio-escolar'], $modulos_visibles)): ?>
       <a class="nav-link" href="#anio-escolar">Año Escolar</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['profesor'], $modulos_visibles)): ?>
       <a class="nav-link" href="#profesor">Profesor</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['usuario'], $modulos_visibles)): ?>
       <a class="nav-link" href="#usuario">Usuario</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['estudiantes'], $modulos_visibles)): ?>
       <a class="nav-link" href="#estudiantes">Estudiantes</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['grado'], $modulos_visibles)): ?>
       <a class="nav-link" href="#grado">Grado</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['materias'], $modulos_visibles)): ?>
       <a class="nav-link" href="#materias">Materias</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['secciones'], $modulos_visibles)): ?>
       <a class="nav-link" href="#secciones">Secciones</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['cargos'], $modulos_visibles)): ?>
       <a class="nav-link" href="#cargos">Cargos</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['municipio'], $modulos_visibles)): ?>
       <a class="nav-link" href="#municipio">Municipio</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['parroquia'], $modulos_visibles)): ?>
       <a class="nav-link" href="#parroquia">Parroquia</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['sector'], $modulos_visibles)): ?>
       <a class="nav-link" href="#sector">Sector</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['horario'], $modulos_visibles)): ?>
       <a class="nav-link" href="#horario">Horario</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['asignacion-materia'], $modulos_visibles)): ?>
       <a class="nav-link" href="#asignacion-materia">Asignación Materia</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['asignacion-cargo'], $modulos_visibles)): ?>
       <a class="nav-link" href="#asignacion-cargo">Asignación Cargo</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['asistencia'], $modulos_visibles)): ?>
       <a class="nav-link" href="#asistencia">Asistencia</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['ausencias'], $modulos_visibles)): ?>
       <a class="nav-link" href="#ausencias">Ausencias</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['visita'], $modulos_visibles)): ?>
       <a class="nav-link" href="#visita">Visita</a>
+      <?php endif; ?>
+      <?php if (in_array($ayuda_mapping['reporte'], $modulos_visibles)): ?>
       <a class="nav-link" href="#reporte">Reporte</a>
+      <?php endif; ?>
     </nav>
   </aside>
 </div>

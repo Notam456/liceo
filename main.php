@@ -26,114 +26,7 @@ define('ROOT_PATH', __DIR__ . '/');
                 <img src="/liceo/imgs/cuadricula.png" alt="">
             </section>
             <?php
-            // Define los módulos visibles para cada rol organizados por categorías
-            $modulos_por_rol = [
-                'admin' => [
-                    'Registro de datos' => [
-                        'Usuario' => [
-                            'usuario' => '/liceo/imgs/agregar-usuario.png',
-                        ],
-                        'Gestión Académica' => [
-                            'profesor' => '/liceo/imgs/masculino.png',
-                            'estudiante' => '/liceo/imgs/estudiando.png',
-                            'anio_academico' => '/liceo/imgs/calendario.png',
-                            'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
-                            'seccion' => '/liceo/imgs/secciones.png',
-                            'materia' => '/liceo/imgs/libros.png',
-                            'cargo' => '/liceo/imgs/suitcase-lg.svg',
-                        ],
-                        'Ubicación' => [
-                            'municipio' => '/liceo/imgs/cataluna.png',
-                            'parroquia' => '/liceo/imgs/casas.png',
-                            'sector' => '/liceo/imgs/pueblo.png',
-                        ]
-                    ],
-                    'Gestión Operativa' => [
-                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'ausencia' => '/liceo/imgs/ausencia.png',
-                        'visita' => '/liceo/imgs/calendar-check.svg',
-                        'asigna_cargo' => '/liceo/imgs/asignacion-de-recursos.png',
-                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                    ],
-                    'Estadisticas' => [
-                        'reporte' => '/liceo/imgs/reporte.png',
-                    ],
-                    'Soporte' => [
-                        'ayuda' => '/liceo/imgs/ayudar.png',
-                    ]
-
-                ],
-                'coordinador' => [
-                    'Registro de datos' => [
-                        'estudiante' => '/liceo/imgs/estudiando.png',
-                        'profesor' => '/liceo/imgs/masculino.png',
-                        'materia' => '/liceo/imgs/libros.png',
-                        'seccion' => '/liceo/imgs/secciones.png',
-                    ],
-                    'Gestión Operativa' => [
-                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
-                        'visita' => '/liceo/imgs/calendar-check.svg',
-                    ],
-                    'Estadisticas' => [
-                        'reporte' => '/liceo/imgs/reporte.png',
-                    ],
-                    'Soporte' => [
-                        'ayuda' => '/liceo/imgs/ayudar.png',
-                    ]
-                ],
-                'user' => [
-                    'Gestión Operativa' => [
-                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'visita' => '/liceo/imgs/calendar-check.svg',
-                        'seccion' => '/liceo/imgs/secciones.png'
-                    ],
-                     'Estadisticas' => [
-                        'reporte' => '/liceo/imgs/reporte.png',
-                    ],
-                    'Soporte' => [
-                        'ayuda' => '/liceo/imgs/ayudar.png',
-                    ]
-                ],
-                'profesor' => [
-                    'Gestión Operativa' => [
-                        'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-                        'visita' => '/liceo/imgs/calendar-check.svg',
-                    ],
-                    'Estadisticas' => [
-                        'reporte' => '/liceo/imgs/reporte.png',
-                    ],
-                    'Soporte' => [
-                        'ayuda' => '/liceo/imgs/ayudar.png',
-                    ]
-                ]
-            ];
-            $nombre_legible = [
-                'anio_academico' => 'Año académico',
-                'asigna_cargo' => 'Asignación de cargos',
-                'asigna_materia' => 'Asignación de materias',
-                'ausencias' => 'Ausencias',
-                'usuario' => 'Usuarios',
-                'estudiante' => 'Estudiantes',
-                'profesor' => 'Profesores',
-                'materia' => 'Materias',
-                'seccion' => 'Secciones',
-                'grado' => 'Grados',
-                'cargo' => 'Cargos',
-                'municipio' => 'Municipios',
-                'parroquia' => 'Parroquias',
-                'sector' => 'Sectores',
-                'asistencia' => 'Asistencia',
-                'visita' => 'Visita',
-                'reporte' => 'Reporte',
-                'ayuda' => 'Ayuda'
-            ];
-            // Obtén el rol del usuario de la sesión
-            $rol_usuario = $_SESSION['rol'] ?? 'default';
-
-            // Verifica si el rol existe en la configuración de módulos
-            $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
-
+            include(ROOT_PATH . 'includes/permissions.php');
 
             // Función para renderizar un módulo individual
             function render_modulo($nombre_modulo, $imagen_url, $nombre_legible) {
@@ -148,7 +41,7 @@ define('ROOT_PATH', __DIR__ . '/');
             ?>
 
             <div class="container-fluid">
-                <?php foreach ($modulos_visibles as $categoria => $modulos): ?>
+                <?php foreach ($modulos_visibles_por_rol as $categoria => $modulos): ?>
                     <div class="categoria-section">
                         <h2 class="categoria-titulo"><?php echo htmlspecialchars($categoria); ?></h2>
                         <hr class="categoria-linea">
