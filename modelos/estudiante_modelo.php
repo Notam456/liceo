@@ -76,19 +76,31 @@ class EstudianteModelo
     public function obtenerEstudiantePorId($id)
     {
         $id = (int)$id;
-        $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio,
-                        s.letra, g.numero_anio as numero_anio_seccion, g_directo.numero_anio,
-                        s.id_seccion, anio.id_anio
-                    FROM estudiante e
-                    JOIN sector sec ON e.id_sector = sec.id_sector
-                    JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
-                    JOIN municipio m ON p.id_municipio = m.id_municipio
-                    LEFT JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
-                    LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
-                    LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
-                    LEFT JOIN grado g ON s.id_grado = g.id_grado
-                    JOIN grado g_directo ON e.id_grado = g_directo.id_grado
-                    WHERE e.id_estudiante = '$id'";
+        $query = "SELECT 
+    e.*, 
+    sec.id_sector, sec.sector, 
+    p.id_parroquia, p.parroquia, 
+    m.id_municipio, m.municipio,
+    s.letra, 
+    g.numero_anio AS numero_anio_seccion,
+    g_directo.numero_anio,
+    s.id_seccion, 
+    anio.id_anio
+FROM estudiante e
+JOIN sector sec ON e.id_sector = sec.id_sector
+JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
+JOIN municipio m ON p.id_municipio = m.id_municipio
+LEFT JOIN (
+    SELECT a.* 
+    FROM asigna_seccion a
+    INNER JOIN anio_academico aa ON a.id_anio = aa.id_anio
+    WHERE aa.estado = 1
+) AS asig ON e.id_estudiante = asig.id_estudiante
+LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio
+LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
+LEFT JOIN grado g ON s.id_grado = g.id_grado
+JOIN grado g_directo ON e.id_grado = g_directo.id_grado
+WHERE e.id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 

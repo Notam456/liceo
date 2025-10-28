@@ -74,14 +74,14 @@ class SeccionModelo
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
             case 'directivo':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND s.visibilidad = TRUE";
 
                 break;
             case 'inferior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio < 4 AND s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio < 4 AND s.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio > 3 AND s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio > 3 AND s.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -312,7 +312,7 @@ class SeccionModelo
              LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
              LEFT JOIN estudiante e ON asig.id_estudiante = e.id_estudiante
              LEFT JOIN asistencia a ON e.id_estudiante = a.id_estudiante {$where_condicion}
-             WHERE e.id_estudiante IS NOT NULL
+             WHERE e.id_estudiante  IS NOT NULL AND anio.estado = 1
              GROUP BY s.id_seccion, g.numero_anio, s.letra
              ORDER BY g.numero_anio ASC, s.letra ASC";
 
