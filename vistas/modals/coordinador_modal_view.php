@@ -31,11 +31,6 @@
                     </div>
                     <!-- jose yajure, AÑADIR NUEVA ROW CADA DOS DATOS!! -->
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Seccion:</strong> <?= htmlspecialchars($row['id_seccion']) ?>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

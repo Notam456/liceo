@@ -253,13 +253,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'generar_reporte_ausencias') {
 
         // Obtener información de la sección
         $seccion = "No asignada";
-        if ($estudiante['id_seccion']) {
-            require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/seccion_modelo.php');
-            $seccionModelo = new SeccionModelo($conn);
-            $seccion_result = $seccionModelo->obtenerSeccionPorId($estudiante['id_seccion']);
-            if ($seccion_data = mysqli_fetch_assoc($seccion_result)) {
-                $seccion = $seccion_data['letra'];
-            }
+        if (!empty($estudiante['numero_anio_seccion']) && !empty($estudiante['letra'])) {
+            $seccion = $estudiante['letra'];
         }
 
         // Obtener información del grado

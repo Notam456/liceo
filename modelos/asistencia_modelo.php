@@ -101,8 +101,13 @@ class AsistenciaModelo
 
     public function obtenerEstudiantesPorSeccion($seccion)
     {
-        $query = "SELECT id_estudiante, nombre, apellido FROM estudiante WHERE id_seccion = ? ORDER BY apellido, nombre";
-        return $this->executeQuery($query, [$seccion], "s");
+        $query = "SELECT e.id_estudiante, e.nombre, e.apellido
+                  FROM estudiante e
+                  JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                  JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                  WHERE asig.id_seccion = ? AND e.visibilidad = TRUE AND asig.visibilidad = TRUE
+                  ORDER BY e.apellido, e.nombre";
+        return $this->executeQuery($query, [$seccion], "i");
     }
 
 

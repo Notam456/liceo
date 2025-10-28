@@ -74,14 +74,14 @@ class SeccionModelo
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
             case 'directivo':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND s.visibilidad = TRUE";
 
                 break;
             case 'inferior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio < 4 AND s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio < 4 AND s.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado WHERE g.numero_anio > 3 AND s.visibilidad = TRUE";
+                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio > 3 AND s.visibilidad = TRUE";
                 break;
         }
         return mysqli_query($this->conn, $query);
@@ -152,13 +152,15 @@ class SeccionModelo
                 prof.apellido AS apellido_tutor,
                 prof.cedula AS cedula_tutor
              FROM estudiante e
+             JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+             JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
              JOIN sector s ON e.id_sector = s.id_sector
              JOIN parroquia p ON s.id_parroquia = p.id_parroquia
              JOIN municipio m ON p.id_municipio = m.id_municipio
-             JOIN seccion sec ON e.id_seccion = sec.id_seccion
+             JOIN seccion sec ON asig.id_seccion = sec.id_seccion
              JOIN grado g ON sec.id_grado = g.id_grado
              LEFT JOIN profesor prof ON sec.id_tutor = prof.id_profesor
-             WHERE e.id_seccion = $id_seccion
+             WHERE asig.id_seccion = $id_seccion
              ORDER BY e.apellido, e.nombre";
 
         $result = $this->conn->query($query);
@@ -296,17 +298,21 @@ class SeccionModelo
                 COUNT(DISTINCT e.id_estudiante) AS total_estudiantes,
                 COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total_inasistencias,
                 (SELECT CONCAT(e2.nombre, ' ', e2.apellido) 
-                 FROM estudiante e2 
+                 FROM estudiante e2
+                 JOIN asigna_seccion asig2 ON e2.id_estudiante = asig2.id_estudiante
+                 JOIN anio_academico anio2 ON asig2.id_anio = anio2.id_anio AND anio2.estado = 1
                  LEFT JOIN asistencia a2 ON e2.id_estudiante = a2.id_estudiante {$where_condicion}
-                 WHERE e2.id_seccion = s.id_seccion
+                 WHERE asig2.id_seccion = s.id_seccion
                  GROUP BY e2.id_estudiante 
                  ORDER BY SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END) DESC 
                  LIMIT 1) AS estudiante_mas_inasistencias
              FROM seccion s
              JOIN grado g ON s.id_grado = g.id_grado
-             LEFT JOIN estudiante e ON s.id_seccion = e.id_seccion
+             LEFT JOIN asigna_seccion asig ON s.id_seccion = asig.id_seccion
+             LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+             LEFT JOIN estudiante e ON asig.id_estudiante = e.id_estudiante
              LEFT JOIN asistencia a ON e.id_estudiante = a.id_estudiante {$where_condicion}
-             WHERE e.id_estudiante IS NOT NULL
+             WHERE e.id_estudiante  IS NOT NULL AND anio.estado = 1
              GROUP BY s.id_seccion, g.numero_anio, s.letra
              ORDER BY g.numero_anio ASC, s.letra ASC";
 

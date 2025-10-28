@@ -22,7 +22,12 @@ class VisitaModelo {
             $id_asistencia = $row['id_asistencia'];
 
             // Get the tutor from the student's section
-            $query_tutor = "SELECT s.id_tutor FROM estudiante e JOIN seccion s ON e.id_seccion = s.id_seccion WHERE e.id_estudiante = $id_estudiante";
+            $query_tutor = "SELECT s.id_tutor
+                          FROM estudiante e
+                          JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                          JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                          JOIN seccion s ON asig.id_seccion = s.id_seccion
+                          WHERE e.id_estudiante = $id_estudiante";
             $result_tutor = mysqli_query($this->conn, $query_tutor);
             $id_tutor = null;
             if(mysqli_num_rows($result_tutor) > 0){
@@ -99,7 +104,9 @@ class VisitaModelo {
                   LEFT JOIN sector sec ON e.id_sector = sec.id_sector
                   LEFT JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
                   LEFT JOIN municipio m ON p.id_municipio = m.id_municipio
-                  LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
+                  LEFT JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                  LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                  LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
                   LEFT JOIN grado g ON s.id_grado = g.id_grado
                   LEFT JOIN profesor prof ON v.encargado_id = prof.id_profesor
                   WHERE v.id_visita = $id";

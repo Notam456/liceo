@@ -76,23 +76,43 @@ class EstudianteModelo
     public function obtenerEstudiantePorId($id)
     {
         $id = (int)$id;
-        $query = "SELECT e.*, sec.id_sector, sec.sector, p.id_parroquia, p.parroquia, m.id_municipio, m.municipio, s.letra, g.numero_anio,
-                        g.numero_anio as numero_anio_seccion, g_directo.numero_anio
-                    FROM estudiante e
-                    JOIN sector sec ON e.id_sector = sec.id_sector
-                    JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
-                    JOIN municipio m ON p.id_municipio = m.id_municipio
-                    LEFT JOIN seccion s ON e.id_seccion = s.id_seccion
-                    LEFT JOIN grado g ON s.id_grado = g.id_grado
-                    JOIN grado g_directo ON e.id_grado = g_directo.id_grado
-                    WHERE id_estudiante = '$id'";
+        $query = "SELECT 
+    e.*, 
+    sec.id_sector, sec.sector, 
+    p.id_parroquia, p.parroquia, 
+    m.id_municipio, m.municipio,
+    s.letra, 
+    g.numero_anio AS numero_anio_seccion,
+    g_directo.numero_anio,
+    s.id_seccion, 
+    anio.id_anio
+FROM estudiante e
+JOIN sector sec ON e.id_sector = sec.id_sector
+JOIN parroquia p ON sec.id_parroquia = p.id_parroquia
+JOIN municipio m ON p.id_municipio = m.id_municipio
+LEFT JOIN (
+    SELECT a.* 
+    FROM asigna_seccion a
+    INNER JOIN anio_academico aa ON a.id_anio = aa.id_anio
+    WHERE aa.estado = 1
+) AS asig ON e.id_estudiante = asig.id_estudiante
+LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio
+LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
+LEFT JOIN grado g ON s.id_grado = g.id_grado
+JOIN grado g_directo ON e.id_grado = g_directo.id_grado
+WHERE e.id_estudiante = '$id'";
         return mysqli_query($this->conn, $query);
     }
 
     public function obtenerEstudiantesPorSeccion($id_seccion)
     {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM estudiante WHERE id_seccion = '$id_seccion' AND visibilidad = TRUE ORDER BY apellido, nombre";
+        $query = "SELECT e.*
+                  FROM estudiante e
+                  JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+                  JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+                  WHERE asig.id_seccion = '$id_seccion' AND e.visibilidad = TRUE AND asig.visibilidad = TRUE
+                  ORDER BY e.apellido, e.nombre";
         return mysqli_query($this->conn, $query);
     }
 
@@ -162,16 +182,32 @@ class EstudianteModelo
 
     public function obtenerEstudiantesSinSeccion()
     {
+        $query_anio = "SELECT id_anio FROM anio_academico WHERE estado = 1 AND visibilidad = TRUE LIMIT 1";
+        $result_anio = mysqli_query($this->conn, $query_anio);
+        $id_anio_activo = 0;
+        if ($result_anio && mysqli_num_rows($result_anio) > 0) {
+            $anio_activo = mysqli_fetch_assoc($result_anio);
+            $id_anio_activo = $anio_activo['id_anio'];
+        }
+
+        if ($id_anio_activo == 0) {
+             return mysqli_query($this->conn, "SELECT * FROM estudiante WHERE 1=0");
+        }
+
+        $sub_query = "SELECT 1 FROM asigna_seccion WHERE id_estudiante = e.id_estudiante AND id_anio = $id_anio_activo";
+
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
-                $query = "SELECT * FROM estudiante WHERE (id_seccion IS NULL OR id_seccion = 0) AND visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e WHERE NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
                 break;
             case 'inferior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio < 4 AND NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
                 break;
             case 'superior':
-                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND (id_seccion IS NULL OR id_seccion = 0) AND e.visibilidad = TRUE";
+                $query = "SELECT e.* FROM estudiante e JOIN grado g ON e.id_grado = g.id_grado WHERE g.numero_anio > 3 AND NOT EXISTS ($sub_query) AND e.visibilidad = TRUE";
                 break;
+            default:
+                return mysqli_query($this->conn, "SELECT * FROM estudiante WHERE 1=0");
         }
         return mysqli_query($this->conn, $query);
     }
@@ -181,18 +217,40 @@ class EstudianteModelo
         $id_estudiante = (int)$id_estudiante;
         $id_seccion = (int)$id_seccion;
 
-        $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
+        $query_anio = "SELECT id_anio FROM anio_academico WHERE estado = 1 LIMIT 1";
+        $result_anio = mysqli_query($this->conn, $query_anio);
+        if (!$result_anio || mysqli_num_rows($result_anio) == 0) {
+            return false;
+        }
+        $anio_activo = mysqli_fetch_assoc($result_anio);
+        $id_anio_activo = $anio_activo['id_anio'];
+
+        $query = "INSERT INTO asigna_seccion (id_estudiante, id_seccion, id_anio)
+                  VALUES ($id_estudiante, $id_seccion, $id_anio_activo)
+                  ON DUPLICATE KEY UPDATE id_seccion = VALUES(id_seccion), visibilidad = TRUE";
+
         return mysqli_query($this->conn, $query);
     }
 
     public function asignarSeccionMasiva($estudiantes_ids, $id_seccion)
     {
         $id_seccion = (int)$id_seccion;
+
+        $query_anio = "SELECT id_anio FROM anio_academico WHERE estado = 1 LIMIT 1";
+        $result_anio = mysqli_query($this->conn, $query_anio);
+        if (!$result_anio || mysqli_num_rows($result_anio) == 0) {
+            return false;
+        }
+        $anio_activo = mysqli_fetch_assoc($result_anio);
+        $id_anio_activo = $anio_activo['id_anio'];
+
         $success = true;
 
         foreach ($estudiantes_ids as $id_estudiante) {
             $id_estudiante = (int)$id_estudiante;
-            $query = "UPDATE estudiante SET id_seccion = $id_seccion WHERE id_estudiante = $id_estudiante";
+            $query = "INSERT INTO asigna_seccion (id_estudiante, id_seccion, id_anio)
+                      VALUES ($id_estudiante, $id_seccion, $id_anio_activo)
+                      ON DUPLICATE KEY UPDATE id_seccion = VALUES(id_seccion), visibilidad = TRUE";
             if (!mysqli_query($this->conn, $query)) {
                 $success = false;
             }
