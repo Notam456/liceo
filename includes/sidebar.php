@@ -93,7 +93,7 @@ $nombre_legible = [
 ];
 
 $rol_usuario = $_SESSION['rol'] ?? null;
-$modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
+$modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
 ?>
 
 <style>
@@ -261,8 +261,8 @@ $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
     }
 
     // Renderizar el menú según el rol
-    if ($rol_usuario && !empty($modulos_visibles)) {
-        echo renderMenuItems($modulos_visibles);
+    if ($rol_usuario && !empty($modulos_accesibles)) {
+        echo renderMenuItems($modulos_accesibles);
     }
     ?>
     <a href="/liceo/logout.php"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</a>
