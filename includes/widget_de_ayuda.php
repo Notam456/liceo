@@ -99,7 +99,7 @@ $ayudas = [
 // Si no se encuentra la vista actual, se usa una ayuda por defecto
 $ayudaVista = $ayudas[$vistaActual] ?? [
     "titulo" => "Bienvenido al sistema de gestión de inasistencias estudiantiles.",
-    "descripcion" => "Inicie sesión para guiarle a través del sistema.",
+    "descripcion" => "Aquí encontrará información sobre todos los módulos del sistema.",
     "seccionAyuda" => "#general"
 ];
 ?>
@@ -114,7 +114,7 @@ $ayudaVista = $ayudas[$vistaActual] ?? [
             <h6 class="fw-bold"><?= htmlspecialchars($ayudaVista["titulo"]) ?></h6>
             <p class="small mb-3"><?= htmlspecialchars($ayudaVista["descripcion"]) ?></p>
 
-            <a href="ayuda.php<?= htmlspecialchars($ayudaVista['seccionAyuda']) ?>" 
+            <a href="/liceo/controladores/ayuda_controlador.php<?= htmlspecialchars($ayudaVista['seccionAyuda']) ?>" 
                class="btn btn-outline-primary btn-sm w-100">
                 Más información
             </a>

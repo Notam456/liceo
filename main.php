@@ -94,7 +94,6 @@ define('ROOT_PATH', __DIR__ . '/');
             });
         </script>
 
-        <?php include(ROOT_PATH . 'includes/widget_de_ayuda.php') ?>
 
         <footer>
             <?php include(ROOT_PATH . 'includes/footer.php') ?>
