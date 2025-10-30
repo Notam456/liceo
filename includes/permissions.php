@@ -41,6 +41,7 @@ $modulos_por_rol = [
             'estudiante' => '/liceo/imgs/estudiando.png',
             'profesor' => '/liceo/imgs/masculino.png',
             'materia' => '/liceo/imgs/libros.png',
+            'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
             'seccion' => '/liceo/imgs/secciones.png',
         ],
         'Gestión Operativa' => [

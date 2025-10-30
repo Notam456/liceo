@@ -120,6 +120,7 @@ WHERE e.id_estudiante = '$id'";
     {
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
+            case 'directivo':
                 $query = "SELECT * FROM estudiante WHERE visibilidad = TRUE";
                 break;
             case 'inferior':
