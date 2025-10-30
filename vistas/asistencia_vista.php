@@ -90,7 +90,7 @@
                                     <th>Grado</th>
                                     <th>Total Estudiantes</th>
                                     <th>Presentes</th>
-                                    <th>Ausentes</th>
+                                    <th>Inasistentes</th>
                                     <th>Justificados</th>
                                     <th class="action">Acciones</th>
                                 </tr>

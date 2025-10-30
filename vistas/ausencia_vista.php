@@ -160,7 +160,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">Ausencias <i class="bi bi-clipboard2-pulse"></i></h4>
+                        <h4 class="mb-0">Inasistencia<i class="bi bi-clipboard2-pulse"></i></h4>
                         <div>
                             <button class="btn btn-warning btn-sm me-2" id="verAlertasAusencias" data-bs-toggle="modal" data-bs-target="#alertasModal">
                                 <i class="bi bi-exclamation-triangle-fill"></i> Alertas
@@ -184,7 +184,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                 Total estudiantes: <span class="badge bg-secondary"><?php echo $totalEstudiantes; ?></span>
                             </div>
                             <div class="stat">
-                                Ausencias: <span class="badge bg-danger"><?php echo $totalAusencias; ?></span>
+                                Inasistencias: <span class="badge bg-danger"><?php echo $totalAusencias; ?></span>
                             </div>
                             <div class="stat">
                                 Justificados: <span class="badge bg-warning text-dark"><?php echo $totalJustificados; ?></span>
@@ -237,7 +237,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                         <th>Sección</th>
                                         <th>Contacto</th>
                                         <th>Cédula</th>
-                                        <th title="Inasistencias"><i class="bi bi-person-dash-fill"></i> Ausencias</th>
+                                        <th title="Inasistencias"><i class="bi bi-person-dash-fill"></i> Inasistencias</th>
                                         <th title="Justificados"><i class="bi bi-journal-check"></i> Justificados</th>
                                         <th>Total</th>
                                         <th>Acción</th>

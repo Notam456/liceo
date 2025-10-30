@@ -43,7 +43,6 @@ $modulos_por_rol = [
             'estudiante' => ['icon' => 'bi-person-badge', 'ruta' => 'estudiante'],
             'profesor' => ['icon' => 'bi-person-workspace', 'ruta' => 'profesor'],
             'materia' => ['icon' => 'bi-journal-bookmark', 'ruta' => 'materia'],
-            'grado' => ['icon' => 'bi-collection', 'ruta' => 'grado'],
             'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion'],
         ],
         'Gestión Operativa' => [
@@ -78,16 +77,17 @@ $nombre_legible = [
     'anio_academico' => 'Año académico',
     'asigna_cargo' => 'Asignación de cargo',
     'asigna_materia' => 'Asignación de materia',
-    'usuario' => 'Usuarios',
-    'estudiante' => 'Estudiantes',
-    'profesor' => 'Profesores',
-    'materia' => 'Materias',
-    'seccion' => 'Secciones',
-    'grado' => 'Grados',
-    'cargo' => 'Cargos',
-    'municipio' => 'Municipios',
-    'parroquia' => 'Parroquias',
-    'sector' => 'Sectores',
+    'usuario' => 'Usuario',
+    'ausencia' => 'Inasistencia',
+    'estudiante' => 'Estudiante',
+    'profesor' => 'Profesor',
+    'materia' => 'Materia',
+    'seccion' => 'Sección',
+    'grado' => 'Grado',
+    'cargo' => 'Cargo',
+    'municipio' => 'Municipio',
+    'parroquia' => 'Parroquia',
+    'sector' => 'Sector',
     'asistencia' => 'Asistencia',
     'visita' => 'Visita',
     'reporte' => 'Reporte',
@@ -143,7 +143,7 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         user-select: none;
         transition: all 0.2s ease;
     }
-
+    
     .sidebar-category:hover {
         background-color: rgba(255, 255, 255, 0.1);
     }
@@ -163,21 +163,21 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         background-color: rgba(0, 0, 0, 0.1);
         transition: max-height 0.3s ease-in-out;
     }
-
+    
     .sidebar-submenu.show {
         max-height: 2000px;
     }
-
+    
     .sidebar-submenu .sidebar-submenu {
         background-color: rgba(0, 0, 0, 0.1);
     }
-
+    
     .sidebar-submenu a {
         padding-left: 2rem;
         font-size: 0.9rem;
         position: relative;
     }
-
+    
     /* Solo mostrar puntos para los menús desplegables */
     .sidebar-submenu:not(.show) a:before {
         content: '';
@@ -204,19 +204,18 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
 <div id="sidebar" class="sidebar">
     <a href="/liceo/main.php"><i class="bi bi-house-door me-2"></i> Inicio</a>
 
-    <?php
+    <?php 
     // Función para renderizar los ítems del menú
-    function renderMenuItems($items, $level = 0, $isStatic = false)
-    {
+    function renderMenuItems($items, $level = 0, $isStatic = false) {
         global $nombre_legible;
         $output = '';
-
+        
         foreach ($items as $key => $item) {
             if (isset($item['icon'])) {
                 // Es un ítem de menú simple
                 $ruta = '/liceo/controladores/' . $item['ruta'] . '_controlador.php';
                 $texto = $nombre_legible[$item['ruta']] ?? ucfirst(str_replace('_', ' ', $item['ruta']));
-
+                
                 $output .= sprintf(
                     '<a href="%s"><i class="bi %s me-2"></i>%s</a>',
                     htmlspecialchars($ruta),
@@ -226,7 +225,7 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
             } else {
                 // Es una categoría con submenús
                 $isStaticCategory = in_array($key, ['Gestión Académica', 'Ubicación']) || $isStatic;
-
+                
                 if (!$isStaticCategory) {
                     // Menú desplegable normal
                     $output .= '<div class="sidebar-category" onclick="toggleSubmenu(this, event)">';
@@ -241,13 +240,13 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
                     $output .= htmlspecialchars($key);
                     $output .= '</div>';
                     $output .= '<div class="sidebar-submenu show">';
-
+                    
                     // Mostrar todos los subítems directamente
                     foreach ($item as $subkey => $subitem) {
                         if (is_array($subitem) && isset($subitem['icon'])) {
                             $ruta = '/liceo/controladores/' . $subitem['ruta'] . '_controlador.php';
                             $texto = $nombre_legible[$subitem['ruta']] ?? ucfirst(str_replace('_', ' ', $subitem['ruta']));
-
+                            
                             $output .= sprintf(
                                 '<a href="%s" class="ps-4"><i class="bi %s me-2"></i>%s</a>',
                                 htmlspecialchars($ruta),
@@ -256,7 +255,7 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
                             );
                         }
                     }
-
+                    
                     $output .= '</div>';
                 }
             }
@@ -284,17 +283,17 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
                 event.preventDefault();
                 event.stopPropagation();
             }
-
+            
             const submenu = element.nextElementSibling;
             const isActive = element.classList.contains('active');
-
+            
             // Si el menú ya está activo, lo cerramos
             if (isActive) {
                 element.classList.remove('active');
                 if (submenu) submenu.classList.remove('show');
                 return;
             }
-
+            
             // Cerrar otros submenús del mismo nivel
             const parentMenu = element.closest('.sidebar-submenu');
             if (parentMenu) {
@@ -308,12 +307,12 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
                     }
                 });
             }
-
+            
             // Abrir el submenú actual
             if (submenu && submenu.classList.contains('sidebar-submenu')) {
                 element.classList.add('active');
                 submenu.classList.add('show');
-
+                
                 // Asegurarse de que los menús padres también estén abiertos
                 let parent = element.parentElement.closest('.sidebar-submenu');
                 while (parent) {
@@ -340,9 +339,9 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
 
         // Cerrar sidebar al hacer clic fuera
         document.addEventListener('click', function(event) {
-            const isClickInside = sidebar.contains(event.target) ||
-                (toggleButton && toggleButton.contains(event.target));
-
+            const isClickInside = sidebar.contains(event.target) || 
+                                (toggleButton && toggleButton.contains(event.target));
+            
             if (!isClickInside && sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
                 if (mainContent) {
@@ -354,12 +353,12 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         // Abrir automáticamente el menú activo
         const currentPath = window.location.pathname;
         const menuLinks = document.querySelectorAll('.sidebar a[href]');
-
+        
         menuLinks.forEach(link => {
             if (link.getAttribute('href') === currentPath) {
                 // Marcar el enlace activo
                 link.classList.add('active');
-
+                
                 // Abrir los menús padres
                 let parent = link.parentElement;
                 while (parent && parent !== sidebar) {
@@ -376,3 +375,5 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         });
     });
 </script>
+
+<?php include 'widget_de_ayuda.php'; ?>

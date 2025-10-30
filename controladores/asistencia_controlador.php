@@ -133,7 +133,7 @@ switch ($action) {
                         $estado = '<span class="badge bg-warning">Justificado</span>';
                         $detalle = $row['observacion'] ?: 'N/A';
                     } else {
-                        $estado = '<span class="badge bg-danger">Ausente</span>';
+                        $estado = '<span class="badge bg-danger">Inasistente</span>';
                         $detalle = 'N/A';
                     }
                     echo '<tr>';

@@ -35,7 +35,7 @@
                 } ?>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Seccion <img src="/liceo/icons/people.svg">
+                        <h4>Sección <img src="/liceo/icons/people.svg">
                             <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
                                 Agregar
                             </button>

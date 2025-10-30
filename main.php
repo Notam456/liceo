@@ -24,7 +24,7 @@ define('ROOT_PATH', __DIR__ . '/');
         <main>
             <h4 class="d-flex justify-content-center mt-4 mb-3 fw-bold">¡Bienvenido de vuelta, <?= $_SESSION['nombre_prof'] ?>!</h4>
             <section class="cabecera">
-                <h1>Menu</h1>
+                <h1>Menú</h1>
                 <img src="/liceo/imgs/cuadricula.png" alt="">
             </section>
             <?php
