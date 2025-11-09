@@ -22,13 +22,13 @@ if (file_exists($model_path)) {
 $modelo = new AsignaMateriaModelo($conn);
 
 // Manejar acciones
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
 switch ($action) {
     case 'crear':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_profesor = $_POST['id_profesor'] ?? '';
-            $id_materia = $_POST['id_materia'] ?? '';
+            $id_profesor = isset($_POST['id_profesor']) ? $_POST['id_profesor'] : '';
+            $id_materia = isset($_POST['id_materia']) ? $_POST['id_materia'] : '';
             
             if (empty($id_profesor) || empty($id_materia)) {
                 $_SESSION['status'] = 'Error: Debe seleccionar profesor y materia';
@@ -42,8 +42,8 @@ switch ($action) {
                 }
             }
             // Mantener parámetros de paginación en la redirección
-            $por_pagina = $_GET['por_pagina'] ?? 10;
-            $pagina = $_GET['pagina'] ?? 1;
+            $por_pagina = isset($_GET['por_pagina']) ? $_GET['por_pagina'] : 10;
+            $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
             header('Location: asigna_materia_controlador.php?pagina=' . $pagina . '&por_pagina=' . $por_pagina);
             exit();
         }
@@ -57,8 +57,8 @@ switch ($action) {
                 $_SESSION['status'] = '❌ Error al eliminar la asignación';
             }
             // Mantener parámetros de paginación en la redirección
-            $por_pagina = $_GET['por_pagina'] ?? 10;
-            $pagina = $_GET['pagina'] ?? 1;
+            $por_pagina = isset($_GET['por_pagina']) ? $_GET['por_pagina'] : 10;
+            $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
             header('Location: asigna_materia_controlador.php?pagina=' . $pagina . '&por_pagina=' . $por_pagina);
             exit();
         }
@@ -93,9 +93,9 @@ switch ($action) {
 
     case 'actualizar':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_asignacion = $_POST['id_asignacion'] ?? '';
-            $id_profesor = $_POST['id_profesor'] ?? '';
-            $id_materia = $_POST['id_materia'] ?? '';
+            $id_asignacion = isset($_POST['id_asignacion']) ? $_POST['id_asignacion'] : '';
+            $id_profesor = isset($_POST['id_profesor']) ? $_POST['id_profesor'] : '';
+            $id_materia = isset($_POST['id_materia']) ? $_POST['id_materia'] : '';
 
             if (empty($id_asignacion) || empty($id_profesor) || empty($id_materia)) {
                 $_SESSION['status'] = 'Error: Debe completar todos los campos';
@@ -107,8 +107,8 @@ switch ($action) {
                 }
             }
             // Mantener parámetros de paginación en la redirección
-            $por_pagina = $_GET['por_pagina'] ?? 10;
-            $pagina = $_GET['pagina'] ?? 1;
+            $por_pagina = isset($_GET['por_pagina']) ? $_GET['por_pagina'] : 10;
+            $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
             header('Location: asigna_materia_controlador.php?pagina=' . $pagina . '&por_pagina=' . $por_pagina);
             exit();
         }

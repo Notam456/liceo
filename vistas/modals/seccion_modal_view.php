@@ -1,22 +1,22 @@
 <?php
 // Obtener información de la sección para el modal
-$id_seccion = $_POST['id_seccion'] ?? '';
+$id_seccion = isset($_POST['id_seccion']) ? $_POST['id_seccion'] : '';
 $seccion_info = $seccionModelo->obtenerSeccionPorId($id_seccion);
 $seccion_data = mysqli_fetch_assoc($seccion_info);
 ?>
 
 <div class="modal-header">
     <h1 class="modal-title fs-5" id="viewmodalLabel">
-        Información de la Sección - <?php echo $seccion_data['numero_anio'] ?? ''; ?>°<?php echo $seccion_data['letra'] ?? ''; ?>
+        Información de la Sección - <?php echo isset($seccion_data['numero_anio']) ? $seccion_data['numero_anio'] : ''; ?>°<?php echo isset($seccion_data['letra']) ? $seccion_data['letra'] : ''; ?>
     </h1>
 </div>
 <div class="modal-body">
     <div class="row mb-3">
         <div class="col-md-6">
-            <strong>Grado:</strong> <?php echo $seccion_data['numero_anio'] ?? ''; ?>° Año
+            <strong>Grado:</strong> <?php echo isset($seccion_data['numero_anio']) ? $seccion_data['numero_anio'] : ''; ?>° Año
         </div>
         <div class="col-md-6">
-            <strong>Sección:</strong> <?php echo $seccion_data['letra'] ?? ''; ?>
+            <strong>Sección:</strong> <?php echo isset($seccion_data['letra']) ? $seccion_data['letra'] : ''; ?>
         </div>
     </div>
     
