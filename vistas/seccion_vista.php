@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Secciones</title>
     <style>
         .tooltip .tooltip-inner {
@@ -29,14 +30,14 @@
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php unset($_SESSION['status']);
                 } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Sección <img src="/liceo/icons/people.svg">
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#insertdata">
                                 Agregar
                             </button>
                             
@@ -69,8 +70,8 @@
                                                 <?php echo $row['numero_anio'] . "° " . $row['letra'];
                                                 /*if (isset($horarios_status[$row['id_seccion']]) && !$horarios_status[$row['id_seccion']]) {
                                                     echo ' <i class="bi bi-exclamation-triangle-fill text-danger"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
                                                         title="Esta sección no cuenta con un horario. Por favor, pulse el botón consultar y posteriormente Agregar Horario">
                                                         </i>';
                                                 }*/
@@ -101,12 +102,11 @@
     </div>
 
     <!-- Modulo editar -->
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Sección</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Modificar Sección</h4>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/seccion_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -118,7 +118,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label>Año</label>
-                            <select class="form-select form-select-lg" name="añoEdit" id="añoEdit">
+                            <select class="form-control" name="añoEdit" id="añoEdit">
                                 <option selected value="">Seleccione el año</option>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
                                 while ($row = mysqli_fetch_array($grados)) {
@@ -129,7 +129,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label>Tutor</label>
-                            <select class="form-select form-select-lg" name="tutorEdit" id="tutorEdit">
+                            <select class="form-control" name="tutorEdit" id="tutorEdit">
                                 <option selected value="">Seleccione un tutor...</option>
                                 <?php
                                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/profesor_modelo.php');
@@ -143,6 +143,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -151,27 +152,28 @@
     </div>
 
     <!-- Modulo mostrar -->
-    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
+    <div class="modal" id="viewmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Datos</h4>
                 </div>
                 <div class="modal-body">
                     <div class="view_seccion_data"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Asignación de Estudiantes -->
-    <div class="modal fade" id="asignacionModal" tabindex="-1" aria-labelledby="asignacionModalLabel" aria-hidden="true">
+    <div class="modal" id="asignacionModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="asignacionModalLabel">Asignar Estudiantes a Sección</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Asignar Estudiantes a Sección</h4>
                 </div>
                 <div class="modal-body">
                     <div id="seccion-info" class="alert alert-info mb-3"></div>
@@ -187,7 +189,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-success" id="btnAsignar" onclick="asignarEstudiantesSeleccionados()">Asignar Seleccionados</button>
                 </div>
             </div>
@@ -195,12 +197,11 @@
     </div>
 
     <!-- modulo crear -->
-    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
+    <div class="modal" id="insertdata" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar secciones para un grado</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Agregar secciones para un grado</h4>
                 </div>
                 <form action="/liceo/controladores/seccion_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -211,8 +212,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label>Grado</label>
-                            <select class="form-select form-select-lg" name="grado" required>
-
+                            <select class="form-control" name="grado" required>
                                 <option selected value="">Seleccione el año</option>
                                 <?php $grados = $gradoModelo->obtenerTodosLosGrados();
                                 while ($row = mysqli_fetch_array($grados)) {
@@ -223,6 +223,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -253,11 +254,35 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
             tooltipTriggerList.forEach(function(tooltipTriggerEl) {
                 new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+
+        // Función universal para abrir modales
+        function abrirModal(modalId) {
+            // Cerrar cualquier modal abierto
+            $('.modal').removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            
+            // Abrir el modal solicitado
+            $('#' + modalId).addClass('in').show();
+            $('body').addClass('modal-open');
+            
+            // Forzar backdrop manualmente si es necesario
+            if (!$('.modal-backdrop').length) {
+                $('body').append('<div class="modal-backdrop in"></div>');
+            }
+        }
+        
+        // Cerrar modales
+        function cerrarModal(modalId) {
+            $('#' + modalId).removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
 
         $(document).ready(function() {
             // Mostrar
@@ -271,7 +296,6 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -282,7 +306,7 @@
                     },
                     success: function(response) {
                         $('.view_seccion_data').html(response);
-                        $('#viewmodal').modal('show');
+                        abrirModal('viewmodal');
                     }
                 });
             });
@@ -314,7 +338,7 @@
                         $('#nombreEdit').val(data.letra);
                         $('#añoEdit').val(data.id_grado);
                         $('#tutorEdit').val(data.id_tutor);
-                        $('#editmodal').modal('show');
+                        abrirModal('editmodal');
                     }
                 });
             });
@@ -357,12 +381,18 @@
                     }
                 });
             });
+
+            // Cerrar modales con botones
+            $('[data-dismiss="modal"]').on('click', function() {
+                var modal = $(this).closest('.modal');
+                cerrarModal(modal.attr('id'));
+            });
         });
 
         // Función para abrir modal de asignación de estudiantes
         function abrirAsignacionEstudiantes(idSeccion, nombreSeccion) {
             $('#seccion-info').html('<strong>Sección seleccionada:</strong> ' + nombreSeccion);
-            $('#asignacionModal').modal('show');
+            abrirModal('asignacionModal');
 
             // Cargar estudiantes sin sección
             $.ajax({
@@ -445,7 +475,7 @@
                         success: function(response) {
                             if (response.success) {
                                 Swal.fire('¡Éxito!', 'Estudiantes asignados correctamente', 'success').then(() => {
-                                    $('#asignacionModal').modal('hide');
+                                    cerrarModal('asignacionModal');
                                     location.reload();
                                 });
                             } else {

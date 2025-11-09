@@ -14,38 +14,36 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous"> 
 </head>
 
-<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70">
+<body data-spy="scroll" data-target=".navbar" data-offset="70">
+
+<style>
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            opacity: 0.8 !important;
+        }
+        
+        .modal-backdrop.in {
+            opacity: 0.8 !important;
+            filter: alpha(opacity=80) !important;
+        }
+        
+        .modal.in .modal-dialog {
+            transform: translate(0, 0);
+        }
+    </style>
 
 <div id="mainContent">
 
 <nav>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
 </nav>
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div
-    class="modal fade"
+    class="modal"
     id="modalId"
     tabindex="-1"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
+    data-backdrop="static"
+    data-keyboard="false"
     role="dialog"
     aria-labelledby="modalTitleId"
     aria-hidden="true">
@@ -57,11 +55,6 @@
                 <h5 class="modal-title" id="modalTitleId">
                     Inicio de sesión
                 </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <?php
@@ -69,7 +62,7 @@
                 ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php
                     }
@@ -99,6 +92,7 @@
                     </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-primary">Entrar</button>
             </div>
                 </form>
@@ -145,9 +139,7 @@
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/footer.php') ?>
     </footer>
     <script>
-        const myModal = new bootstrap.Modal(
-            document.getElementById("modalId")
-        );
+     
     </script>
     <?php if (isset($_SESSION['status'])): ?>
         <script>

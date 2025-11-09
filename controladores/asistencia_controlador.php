@@ -152,9 +152,9 @@ switch ($action) {
 
     case 'filtrar':
         if (isset($_POST['seccion']) || isset($_POST['fecha']) || isset($_POST['grado'])) {
-            $seccion = $_POST['seccion'] ?? '';
-            $fecha = $_POST['fecha'] ?? '';
-            $grado = $_POST['grado'] ?? '';
+            $seccion = $_POST['seccion'];
+            $fecha = $_POST['fecha'];
+            $grado = $_POST['grado'];
 
             $result = $asistenciaModelo->filtrarAsistenciasAgrupadas($seccion, $fecha, $grado);
 
@@ -229,7 +229,7 @@ switch ($action) {
                     if (empty($materias_asistidas)) {
                         $justificacion_style = '';
                     }
-                    echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="' . $justificacion_style . '">' . htmlspecialchars($row['observacion'] ?? '') . '</textarea>';
+                    echo '<textarea class="form-control form-control-sm justificacion-input" name="asistencia[' . $row['id_asistencia'] . '][justificacion]" rows="2" style="' . $justificacion_style . '">' . htmlspecialchars($row['observacion']) . '</textarea>';
                     echo '</td>';
                     echo '</tr>';
                 }

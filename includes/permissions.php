@@ -106,14 +106,14 @@ $nombre_legible = [
     'manual_sistema' => 'Manual del sistema'
 ];
 // Obtén el rol del usuario de la sesión
-$rol_usuario = $_SESSION['rol'] ?? 'default';
+$rol_usuario = $_SESSION['rol'];
 
 // Verifica si el rol existe en la configuración de módulos
-$modulos_visibles_por_rol = $modulos_por_rol[$rol_usuario] ?? [];
+$modulos_visibles_por_rol = $modulos_por_rol[$rol_usuario];
 
 // Obtener una lista plana de todos los módulos visibles para el rol actual
 function obtener_modulos_visibles_flat($modulos_por_rol, $rol_usuario) {
-    $modulos_visibles = $modulos_por_rol[$rol_usuario] ?? [];
+    $modulos_visibles = $modulos_por_rol[$rol_usuario];
     $modulos_flat = [];
 
     foreach ($modulos_visibles as $categoria) {

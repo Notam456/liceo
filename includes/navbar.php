@@ -14,7 +14,6 @@ if (isset($_SESSION['usuario'])) {
     }
 }
 ?>
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
     <div class="container-fluid">
 
@@ -53,8 +52,8 @@ if (isset($_SESSION['usuario'])) {
                         <button
                             type="button"
                             class="btn btn-outline-light ms-lg-3 mt-2 mt-lg-0"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalId">
+                            data-toggle="modal"
+                            data-target="#modalId">
                             Iniciar Sesión
                         </button>
                     <?php } ?>

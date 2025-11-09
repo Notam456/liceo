@@ -96,8 +96,8 @@ $nombre_legible = [
     'manual_sistema' => 'Manual del sistema'
 ];
 
-$rol_usuario = $_SESSION['rol'] ?? null;
-$modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
+$rol_usuario = $_SESSION['rol'];
+$modulos_accesibles = $modulos_por_rol[$rol_usuario];
 ?>
 
 <style>
@@ -215,7 +215,7 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
             if (isset($item['icon'])) {
                 // Es un ítem de menú simple
                 $ruta = '/liceo/controladores/' . $item['ruta'] . '_controlador.php';
-                $texto = $nombre_legible[$item['ruta']] ?? ucfirst(str_replace('_', ' ', $item['ruta']));
+                $texto = $nombre_legible[$item['ruta']];
                 
                 $output .= sprintf(
                     '<a href="%s"><i class="bi %s me-2"></i>%s</a>',
@@ -246,7 +246,7 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
                     foreach ($item as $subkey => $subitem) {
                         if (is_array($subitem) && isset($subitem['icon'])) {
                             $ruta = '/liceo/controladores/' . $subitem['ruta'] . '_controlador.php';
-                            $texto = $nombre_legible[$subitem['ruta']] ?? ucfirst(str_replace('_', ' ', $subitem['ruta']));
+                            $texto = $nombre_legible[$subitem['ruta']];
                             
                             $output .= sprintf(
                                 '<a href="%s" class="ps-4"><i class="bi %s me-2"></i>%s</a>',

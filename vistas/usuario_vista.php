@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
 
     <title>Usuarios del sistema</title>
 </head>
@@ -50,7 +51,7 @@
                     <div class="card-header">
                         <h4>Usuario <img src="/liceo/icons/people.svg">
                             <!-- Boton modulo crear -->
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#insertdata">
                                 Agregar
                             </button>
                         </h4>
@@ -114,180 +115,120 @@
     </div>
 
     <!-- Modulo editar -->
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="edit-form" action="/liceo/controladores/usuario_controlador.php" method="POST">
-                    <input type="hidden" name="action" value="actualizar">
-                    <div class="modal-body">
-
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="idEdit" class="form-control" name="id">
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="">Nombre de usuario</label>
-                            <input type="text" id="usuarioEdit" class="form-control" name="usuario"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
-                                placeholder="Edite el nombre de usuario" required>
-                        </div>
-
-
-                        <div class="form-group mb-3">
-                            <label for="">Contraseña</label>
-                            <input type="text" id="contrasenaEdit" class="form-control" name="contrasena"
-                                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}" maxlength="50" minlength="5"
-                                placeholder="Ingrese una contraseña" required>
-                            <div id="info-contrasenaEdit" class="info-contrasena">
-                                La contraseña debe cumplir con los siguientes requisitos:<br>
-                                • Al menos <strong>8 caracteres</strong> de longitud.<br>
-                                • Incluir <strong>una letra mayúscula</strong> (A-Z).<br>
-                                • Incluir <strong>una letra minúscula</strong> (a-z).<br>
-                                • Incluir <strong>un número</strong> (0-9).<br>
-                                • Incluir <strong>un carácter especial</strong> como @, #, $, !, etc.
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group mb-3">
-                            <label for="">Rol del usuario</label>
-                            <select
-                                class="form-select form-select-lg"
-                                name="rol"
-                                id="rolEdit" required>
-                                <option selected value="">Seleccione un rol...</option>
-                                <option value="admin">Administrador</option>
-                                <option value="coordinador">Coordinador</option>
-                                <option value="user">Usuario</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3" name="profesor-group">
-                            <label for="">Profesor</label>
-                            <select
-                                class="form-select form-select-lg"
-                                name="profesor"
-                                id="profesorEdit">
-                                <option selected value="">Seleccione un profesor...</option>
-                                <?php
-                                foreach ($profesores as $row) {
-                                ?>
-                                    <option value="<?php echo $row['id_profesor']; ?>"><?php echo $row['nombre'] . " " . $row['apellido']; ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="update-btn" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
-                    </div>
-                </form>
+<div class="modal" id="editmodal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modificar Usuario</h4>
             </div>
-        </div>
-    </div>
-
-    <!-- Modudlo mostrar -->
-    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+            <form id="edit-form" action="/liceo/controladores/usuario_controlador.php" method="POST">
+                <input type="hidden" name="action" value="actualizar">
                 <div class="modal-body">
-                    <div class="view_user_data">
-
+                    <div class="form-group">
+                        <input type="hidden" id="idEdit" class="form-control" name="id">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de usuario</label>
+                        <input type="text" id="usuarioEdit" class="form-control" name="usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="text" id="contrasenaEdit" class="form-control" name="contrasena" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rol del usuario</label>
+                        <select class="form-control" name="rol" id="rolEdit" required>
+                            <option value="">Seleccione un rol...</option>
+                            <option value="admin">Administrador</option>
+                            <option value="coordinador">Coordinador</option>
+                            <option value="user">Usuario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Profesor</label>
+                        <select class="form-control" name="profesor" id="profesorEdit">
+                            <option value="">Seleccione un profesor...</option>
+                            <?php foreach ($profesores as $row): ?>
+                                <option value="<?php echo $row['id_profesor']; ?>">
+                                    <?php echo $row['nombre'] . " " . $row['apellido']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" name="update-data" class="btn btn-success">Guardar datos</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+   <!-- Modulo mostrar -->
+<div class="modal" id="viewmodal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Datos del Usuario</h4>
+            </div>
+            <div class="modal-body">
+                <div class="view_user_data"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- modulo crear -->
-    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar un nuevo usuario</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/liceo/controladores/usuario_controlador.php" method="POST">
-                    <input type="hidden" name="action" value="crear">
-                    <div class="modal-body">
-
-                        <div class="form-group mb-3">
-                            <input type="hidden" id="id" class="form-control" name="id">
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="">Nombre de usuario</label>
-                            <input type="text" id="usuario" class="form-control" name="usuario"
-                                pattern="[A-Za-záéíóúÁÉÍÓÚÑñ\s]+" maxlength="50" minlength="5"
-                                placeholder="Ingrese un nombre de usuario" required>
-                        </div>
-
-
-
-                        <div class="form-group mb-3">
-                            <label for="">Contraseña</label>
-                            <input type="text" id="contrasena" class="form-control" name="contrasena"
-                                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}" maxlength="50" minlength="5"
-                                placeholder="Ingrese una contraseña" required>
-                            <div id="info-contrasena" class="info-contrasena">
-                                La contraseña debe cumplir con los siguientes requisitos:<br>
-                                • Al menos <strong>8 caracteres</strong> de longitud.<br>
-                                • Incluir <strong>una letra mayúscula</strong> (A-Z).<br>
-                                • Incluir <strong>una letra minúscula</strong> (a-z).<br>
-                                • Incluir <strong>un número</strong> (0-9).<br>
-                                • Incluir <strong>un carácter especial</strong> como @, #, $, !, etc.
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group mb-3">
-                            <label for="">Rol del usuario</label>
-                            <select
-                                class="form-select form-select-lg"
-                                name="rol"
-                                id="rol"
-                                required>
-                                <option selected value="">Seleccione un rol...</option>
-                                <option value="admin">Administrador</option>
-                                <option value="coordinador">Coordinador</option>
-                                <option value="user">Usuario</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3" name="profesor-group">
-                            <label for="">Profesor</label>
-                            <select
-                                class="form-select form-select-lg"
-                                name="profesor"
-                                id="profesor">
-                                <option selected value="">Seleccione un profesor...</option>
-                                <?php
-                                foreach ($profesores as $row) {
-                                ?>
-                                    <option value="<?php echo $row['id_profesor']; ?>"><?php echo $row['nombre'] . " " . $row['apellido']; ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
-                    </div>
-                </form>
+<!-- modulo crear -->
+<div class="modal" id="insertdata" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Nuevo Usuario</h4>
             </div>
+            <form action="/liceo/controladores/usuario_controlador.php" method="POST">
+                <input type="hidden" name="action" value="crear">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nombre de usuario</label>
+                        <input type="text" id="usuario" class="form-control" name="usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="text" id="contrasena" class="form-control" name="contrasena" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rol del usuario</label>
+                        <select class="form-control" name="rol" id="rol" required>
+                            <option value="">Seleccione un rol...</option>
+                            <option value="admin">Administrador</option>
+                            <option value="coordinador">Coordinador</option>
+                            <option value="user">Usuario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Profesor</label>
+                        <select class="form-control" name="profesor" id="profesor">
+                            <option value="">Seleccione un profesor...</option>
+                            <?php foreach ($profesores as $row): ?>
+                                <option value="<?php echo $row['id_profesor']; ?>">
+                                    <?php echo $row['nombre'] . " " . $row['apellido']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <script>
         // tabla
@@ -331,6 +272,75 @@
                 $('select[name="profesor"').val("");
             }
         }).trigger("change");
+
+        $(document).ready(function() {
+    // Función universal para abrir modales
+    function abrirModal(modalId) {
+        // Cerrar cualquier modal abierto
+        $('.modal').removeClass('in').hide();
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        
+        // Abrir el modal solicitado
+        $('#' + modalId).addClass('in').show();
+        $('body').addClass('modal-open');
+        
+        // Forzar backdrop manualmente si es necesario
+        if (!$('.modal-backdrop').length) {
+            $('body').append('<div class="modal-backdrop in"></div>');
+        }
+    }
+    
+    // Cerrar modales
+    function cerrarModal(modalId) {
+        $('#' + modalId).removeClass('in').hide();
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    }
+    
+    // Botón Consultar
+    $('.view-data').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).closest('tr').find('.id').text();
+        
+        $.ajax({
+            type: "POST",
+            url: "/liceo/controladores/usuario_controlador.php",
+            data: {'action': 'ver', 'id': id},
+            success: function(response) {
+                $('.view_user_data').html(response);
+                abrirModal('viewmodal');
+            }
+        });
+    });
+    
+    // Botón Modificar
+    $('.edit-data').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).closest('tr').find('.id').text();
+        
+        $.ajax({
+            type: "POST",
+            url: "/liceo/controladores/usuario_controlador.php",
+            data: {'action': 'editar', 'id': id},
+            success: function(response) {
+                var data = response;
+                $('#idEdit').val(data.id_usuario);
+                $('#usuarioEdit').val(data.usuario);
+                $('#contrasenaEdit').val(data.contrasena);
+                $('#rolEdit').val(data.rol);
+                $('#profesorEdit').val(data.id_profesor);
+                abrirModal('editmodal');
+            }
+        });
+    });
+    
+    // Cerrar modales con botones
+    $('[data-dismiss="modal"]').on('click', function() {
+        var modal = $(this).closest('.modal');
+        cerrarModal(modal.attr('id'));
+    });
+});
         // Mostrar script
         $(document).ready(function() {
             $('#myTable').on('click', '.view-data', function(e) {
@@ -469,6 +479,7 @@
             infoEdit.style.display = "none";
         });
     </script>
+
 
 </body>
 

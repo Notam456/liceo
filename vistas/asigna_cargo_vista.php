@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Asignar Cargos a Profesores</title>
 </head>
 
@@ -17,14 +18,14 @@
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php unset($_SESSION['status']);
                 } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Asignar Cargo a Profesor <img src="/liceo/icons/people.svg">
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#insertdata">
                                 Asignar
                             </button>
                         </h4>
@@ -81,12 +82,11 @@
     </div>
 
     <!-- Modulo Editar -->
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Asignación de Cargo</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Modificar Asignación de Cargo</h4>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -116,6 +116,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -124,27 +125,28 @@
     </div>
 
     <!-- Modulo Mostrar -->
-    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
+    <div class="modal" id="viewmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos de la Asignación</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Datos de la Asignación</h4>
                 </div>
                 <div class="modal-body">
                     <div class="view_asignacion_data"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modulo Crear -->
-    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
+    <div class="modal" id="insertdata" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Nueva Asignación de Cargo</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Nueva Asignación de Cargo</h4>
                 </div>
                 <form action="/liceo/controladores/asigna_cargo_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -173,6 +175,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -201,6 +204,30 @@
             ]
         });
 
+        // Función universal para abrir modales
+        function abrirModal(modalId) {
+            // Cerrar cualquier modal abierto
+            $('.modal').removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            
+            // Abrir el modal solicitado
+            $('#' + modalId).addClass('in').show();
+            $('body').addClass('modal-open');
+            
+            // Forzar backdrop manualmente si es necesario
+            if (!$('.modal-backdrop').length) {
+                $('body').append('<div class="modal-backdrop in"></div>');
+            }
+        }
+        
+        // Cerrar modales
+        function cerrarModal(modalId) {
+            $('#' + modalId).removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+
         $(document).ready(function() {
             // Ver
             $(document).on('click', '.view-data', function(e) {
@@ -223,7 +250,7 @@
                     },
                     success: function(response) {
                         $('.view_asignacion_data').html(response);
-                        $('#viewmodal').modal('show');
+                        abrirModal('viewmodal');
                     }
                 });
             });
@@ -253,7 +280,7 @@
                         $('#id_asignacion_edit').val(data.id_asignacion);
                         $('#id_profesor_edit').val(data.id_profesor);
                         $('#id_cargo_edit').val(data.id_cargo);
-                        $('#editmodal').modal('show');
+                        abrirModal('editmodal');
                     }
                 });
             });
@@ -294,6 +321,12 @@
                         });
                     }
                 });
+            });
+
+            // Cerrar modales con botones
+            $('[data-dismiss="modal"]').on('click', function() {
+                var modal = $(this).closest('.modal');
+                cerrarModal(modal.attr('id'));
             });
         });
     </script>

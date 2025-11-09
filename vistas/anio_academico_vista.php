@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Año Academico</title>
 </head>
 
@@ -26,7 +27,7 @@
                 ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>¡Atención!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php
                     unset($_SESSION['status']);
@@ -36,7 +37,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Año Academico <img src="/liceo/icons/people.svg">
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#insertdata">
                                 Agregar
                             </button>
                         </h4>
@@ -44,7 +45,7 @@
                         <ul class="nav nav-tabs mt-3" id="anioTabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link <?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'active' : ''; ?>" 
-                                        id="lista-tab" data-bs-toggle="tab" data-bs-target="#lista-pane" 
+                                        id="lista-tab" data-toggle="tab" data-target="#lista-pane" 
                                         type="button" role="tab" aria-controls="lista-pane" 
                                         aria-selected="<?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'true' : 'false'; ?>">
                                     Lista de Años Académicos
@@ -52,7 +53,7 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'active' : ''; ?>" 
-                                        id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial-pane" 
+                                        id="historial-tab" data-toggle="tab" data-target="#historial-pane" 
                                         type="button" role="tab" aria-controls="historial-pane" 
                                         aria-selected="<?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'true' : 'false'; ?>">
                                     Historial de Cambios
@@ -134,7 +135,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-3">
                                         <label for="filtro_usuario" class="form-label">Usuario:</label>
-                                        <select class="form-select" id="filtro_usuario" name="filtro_usuario">
+                                        <select class="form-control" id="filtro_usuario" name="filtro_usuario">
                                             <option value="">Todos los usuarios</option>
                                             <?php 
                                             if (isset($usuarios_filtro) && $usuarios_filtro && mysqli_num_rows($usuarios_filtro) > 0) {
@@ -148,7 +149,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="filtro_anio" class="form-label">Año Académico:</label>
-                                        <select class="form-select" id="filtro_anio" name="filtro_anio">
+                                        <select class="form-control" id="filtro_anio" name="filtro_anio">
                                             <option value="">Todos los años</option>
                                             <?php 
                                             if (isset($anios_filtro) && $anios_filtro && mysqli_num_rows($anios_filtro) > 0) {
@@ -162,7 +163,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="filtro_accion" class="form-label">Acción:</label>
-                                        <select class="form-select" id="filtro_accion" name="filtro_accion">
+                                        <select class="form-control" id="filtro_accion" name="filtro_accion">
                                             <option value="">Todas las acciones</option>
                                             <option value="activar" <?php echo (isset($_GET['filtro_accion']) && $_GET['filtro_accion'] == 'activar') ? 'selected' : ''; ?>>Activar</option>
                                             <option value="desactivar" <?php echo (isset($_GET['filtro_accion']) && $_GET['filtro_accion'] == 'desactivar') ? 'selected' : ''; ?>>Desactivar</option>
@@ -192,13 +193,12 @@
         </div>
     </div>
 
-
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
+    <!-- Modulo editar -->
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Año Academico</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Modificar Año Academico</h4>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/anio_academico_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -220,6 +220,7 @@
 
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -227,28 +228,30 @@
         </div>
     </div>
 
-    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
+    <!-- Modulo mostrar -->
+    <div class="modal" id="viewmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos del Año Academico</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Datos del Año Academico</h4>
                 </div>
                 <div class="modal-body">
                     <div class="view_anio_data"></div>
                 </div>
 
-                <div class="modal-footer"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
+    <!-- modulo crear -->
+    <div class="modal" id="insertdata" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar Año Academico</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Agregar Año Academico</h4>
                 </div>
                 <form id="formAnio" action="/liceo/controladores/anio_academico_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -264,6 +267,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -292,6 +296,30 @@
             ]
         });
 
+        // Función universal para abrir modales
+        function abrirModal(modalId) {
+            // Cerrar cualquier modal abierto
+            $('.modal').removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            
+            // Abrir el modal solicitado
+            $('#' + modalId).addClass('in').show();
+            $('body').addClass('modal-open');
+            
+            // Forzar backdrop manualmente si es necesario
+            if (!$('.modal-backdrop').length) {
+                $('body').append('<div class="modal-backdrop in"></div>');
+            }
+        }
+        
+        // Cerrar modales
+        function cerrarModal(modalId) {
+            $('#' + modalId).removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+
         $(document).ready(function() {
             // Ver
             $(document).on('click', '.view-data', function(e) {
@@ -315,7 +343,7 @@
                     },
                     success: function(response) {
                         $('.view_anio_data').html(response);
-                        $('#viewmodal').modal('show');
+                        abrirModal('viewmodal');
                     }
                 });
             });
@@ -347,7 +375,7 @@
                             $('#id_anio_edit').val(data.id_anio);
                             $('#inicio_edit').val(data.desde);
                             $('#fin_edit').val(data.hasta);
-                            $('#editmodal').modal('show');
+                            abrirModal('editmodal');
                         }
                     }
                 });
@@ -485,6 +513,12 @@
                     }
                 });
             }
+
+            // Cerrar modales con botones
+            $('[data-dismiss="modal"]').on('click', function() {
+                var modal = $(this).closest('.modal');
+                cerrarModal(modal.attr('id'));
+            });
         });
     </script>
 

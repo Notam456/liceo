@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Municipio</title>
 </head>
 
@@ -17,14 +18,14 @@
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php unset($_SESSION['status']);
                 } ?>
                 <div class="card">
                     <div class="card-header">
                         <h4>Municipio<img src="/liceo/icons/people.svg">
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#insertdata">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#insertdata">
                                 Agregar
                             </button>
                         </h4>
@@ -71,12 +72,11 @@
     </div>
 
     <!-- Modulo editar -->
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Municipio</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Modificar Municipio</h4>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/municipio_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -88,6 +88,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -96,27 +97,28 @@
     </div>
 
     <!-- Modulo mostrar -->
-    <div class="modal fade" id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
+    <div class="modal" id="viewmodal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Datos</h4>
                 </div>
                 <div class="modal-body">
                     <div class="view_user_data"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- modulo crear -->
-    <div class="modal fade" id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
+    <div class="modal" id="insertdata" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar un nuevo municipio</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Agregar un nuevo municipio</h4>
                 </div>
                 <form action="/liceo/controladores/municipio_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -127,6 +129,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -155,6 +158,30 @@
             ]
         });
 
+        // Función universal para abrir modales
+        function abrirModal(modalId) {
+            // Cerrar cualquier modal abierto
+            $('.modal').removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            
+            // Abrir el modal solicitado
+            $('#' + modalId).addClass('in').show();
+            $('body').addClass('modal-open');
+            
+            // Forzar backdrop manualmente si es necesario
+            if (!$('.modal-backdrop').length) {
+                $('body').append('<div class="modal-backdrop in"></div>');
+            }
+        }
+        
+        // Cerrar modales
+        function cerrarModal(modalId) {
+            $('#' + modalId).removeClass('in').hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
@@ -167,7 +194,6 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -178,7 +204,7 @@
                     },
                     success: function(response) {
                         $('.view_user_data').html(response);
-                        $('#viewmodal').modal('show');
+                        abrirModal('viewmodal');
                     }
                 });
             });
@@ -194,7 +220,6 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
-
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -208,7 +233,7 @@
                         var data = response[0];
                         $('#idEdit').val(data.id_municipio);
                         $('#municipio_edit').val(data.municipio);
-                        $('#editmodal').modal('show');
+                        abrirModal('editmodal');
                     }
                 });
             });
@@ -223,7 +248,6 @@
 
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
-
 
                 var id = data[0];
                 Swal.fire({
@@ -250,6 +274,12 @@
                         });
                     }
                 });
+            });
+
+            // Cerrar modales con botones
+            $('[data-dismiss="modal"]').on('click', function() {
+                var modal = $(this).closest('.modal');
+                cerrarModal(modal.attr('id'));
             });
         });
     </script>

@@ -185,11 +185,11 @@ switch ($action) {
                     ' . $pdf->Ln(10) . '
     
                     <p style="text-align: justify; line-height: 1.5;">
-                        Quien suscribe Prof.<strong style="text-transform: uppercase;"> ' . $nombre_director . ', </strong> titular de la Cédula de Identidad 
+                        Quien suscribe Prof.<strong> ' . $nombre_director . ', </strong> titular de la Cédula de Identidad 
                         N°<strong style="text-transform: uppercase;">' . $cedula_director . '</strong> Director del 
                         <strong style="text-transform: uppercase;">LICEO PROFESOR FERNANDO RAMÍREZ</strong> ubicada en el Barrio las Madres detrás del Polideportivo San Felipe Edo. Yaracuy. 
-                        Hace constar por medio de la presente que el (la) Estudiante <strong style="text-transform: uppercase;">' .
-                    $row['nombre'] . ' ' . $row['apellido'] . '</strong>, titular de la Cédula <strong style="text-transform: uppercase;"> ' .
+                        Hace constar por medio de la presente que el (la) Estudiante <strong>' .$row['nombre'] . ' ' .
+                        $row['apellido'] . '</strong>, titular de la Cédula de Identidad N°<strong>' .
                     $row['cedula'] . ' </strong>, cursa el<strong> Año ' . $row['numero_anio'] . ' Seccion ' . $row['letra'] .
                     '</strong> durante el periodo escolar<strong> ' . $periodo_escolar .
                     '</strong> de Educación Secundaria y Reside en el Municipio:<strong> ' . $row['municipio'] .

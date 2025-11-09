@@ -33,7 +33,7 @@ define('ROOT_PATH', __DIR__ . '/');
             // Función para renderizar un módulo individual
             function render_modulo($nombre_modulo, $imagen_url, $nombre_legible) {
                 $ruta = 'controladores/' . $nombre_modulo . '_controlador.php';
-                $texto = $nombre_legible[$nombre_modulo] ?? ucfirst(str_replace('_', ' ', $nombre_modulo));
+                $texto = $nombre_legible[$nombre_modulo];
                 
                 echo '<div class="modulo" data-url="' . htmlspecialchars($ruta) . '">';
                 echo '<img src="' . htmlspecialchars($imagen_url) . '" alt="' . htmlspecialchars($texto) . '">';
