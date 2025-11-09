@@ -5,6 +5,7 @@
 
             <!-- 1. Introducción -->
             <section class="mb-4">
+                <img class="images" src="../screenshots/Portada_manual_de_usuario.png" style="width: 80%; height: auto; display: block; margin:auto; margin-bottom: 100px">
                 <h4 class="text-primary">1. Introducción</h4>
 
                 <h5 class="mt-3">1.1 Propósito del Sistema</h5>

@@ -12,7 +12,7 @@ switch ($action) {
             $desde = $_POST['inicio'];
             $hasta = $_POST['fin'];
             $resultado = $anioAcademicoModelo->crearAnioAcademico($desde, $hasta);
-            $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error al crear el año académico";
+            $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error: Ya existe un año académico que coincide con esas fechas";
             header('Location: /liceo/controladores/anio_controlador.php');
             exit();
         }
@@ -104,7 +104,7 @@ switch ($action) {
         
         if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
             // Respuesta AJAX para actualizar solo la tabla
-            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/historial_logs_tabla.php');
+            include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/historial_anio_tabla.php');
         } else {
             // Cargar la vista completa
             include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/anio_academico_vista.php');

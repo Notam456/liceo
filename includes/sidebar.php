@@ -43,13 +43,14 @@ $modulos_por_rol = [
             'estudiante' => ['icon' => 'bi-person-badge', 'ruta' => 'estudiante'],
             'profesor' => ['icon' => 'bi-person-workspace', 'ruta' => 'profesor'],
             'materia' => ['icon' => 'bi-journal-bookmark', 'ruta' => 'materia'],
+            'grado' => ['icon' => 'bi-collection', 'ruta' => 'grado'],
             'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion'],
         ],
         'Gestión Operativa' => [
             'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
             'ausencia' => ['icon' => 'bi-card-list', 'ruta' => 'ausencia'],
-            'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
             'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
+            'asigna_materia' => ['icon' => 'bi-box-arrow-in-down-right', 'ruta' => 'asigna_materia'],
         ],
         'Estadisticas' => [
             'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
@@ -59,13 +60,13 @@ $modulos_por_rol = [
         ]
     ],
     'user' => [
-        'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
-        'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
         'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion'],
-        'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte']
+        'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
+        'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte'],
+        'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
     ],
     'profesor' => [
-        'asistencia' => ['icon' => 'bi-card-checklist', 'ruta' => 'asistencia'],
+        'seccion' => ['icon' => 'bi-diagram-3', 'ruta' => 'seccion'],
         'visita' => ['icon' => 'bi-calendar-check', 'ruta' => 'visita'],
         'reporte' => ['icon' => 'bi-file-check', 'ruta' => 'reporte'],
         'ayuda' => ['icon' => 'bi-people', 'ruta' => 'ayuda']
@@ -375,5 +376,3 @@ $modulos_accesibles = $modulos_por_rol[$rol_usuario] ?? [];
         });
     });
 </script>
-
-<?php include 'widget_de_ayuda.php'; ?>

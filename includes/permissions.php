@@ -41,12 +41,14 @@ $modulos_por_rol = [
             'estudiante' => '/liceo/imgs/estudiando.png',
             'profesor' => '/liceo/imgs/masculino.png',
             'materia' => '/liceo/imgs/libros.png',
+            'grado' => '/liceo/imgs/sombrero-de-graduacion.png',
             'seccion' => '/liceo/imgs/secciones.png',
         ],
         'Gestión Operativa' => [
             'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
-            'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
+            'ausencia' => '/liceo/imgs/ausencia.png',
             'visita' => '/liceo/imgs/calendar-check.svg',
+            'asigna_materia' => '/liceo/imgs/asignacion-de-recursos.png',
         ],
         'Estadisticas' => [
             'reporte' => '/liceo/imgs/reporte.png',
@@ -56,10 +58,11 @@ $modulos_por_rol = [
         ]
     ],
     'user' => [
+        'Gestion Academica' => [
+            'seccion' => '/liceo/imgs/secciones.png',
+        ],
         'Gestión Operativa' => [
-            'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
             'visita' => '/liceo/imgs/calendar-check.svg',
-            'seccion' => '/liceo/imgs/secciones.png'
         ],
          'Estadisticas' => [
             'reporte' => '/liceo/imgs/reporte.png',
@@ -70,7 +73,7 @@ $modulos_por_rol = [
     ],
     'profesor' => [
         'Gestión Operativa' => [
-            'asistencia' => '/liceo/imgs/lista-de-verificacion.png',
+            'seccion' => '/liceo/imgs/secciones.png',
             'visita' => '/liceo/imgs/calendar-check.svg',
         ],
         'Estadisticas' => [

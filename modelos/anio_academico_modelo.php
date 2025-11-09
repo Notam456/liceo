@@ -11,6 +11,19 @@ class AnioAcademicoModelo {
         $desde = mysqli_real_escape_string($this->conn, $desde);
         $hasta = mysqli_real_escape_string($this->conn, $hasta);
 
+        $overlap_query = "SELECT COUNT(*) AS count_overlap FROM anio_academico WHERE desde <= '$hasta' AND hasta >= '$desde'";
+
+        $result = mysqli_query($this->conn, $overlap_query);
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            $count_overlap = (int)$row['count_overlap'];
+
+            if ($count_overlap > 0) {
+                return false;
+            }
+        } else {
+            return false;
+        }
         $insert_query = "INSERT INTO anio_academico(desde, hasta) VALUES ('$desde', '$hasta')";
         return mysqli_query($this->conn, $insert_query);
     }
@@ -72,7 +85,7 @@ class AnioAcademicoModelo {
         $id_usuario = (int)$id_usuario;
         $accion = mysqli_real_escape_string($this->conn, $accion);
         
-        $insert_query = "INSERT INTO logs_anio (id_anio, id_usuario, accion) VALUES ($id_anio, $id_usuario, '$accion')";
+        $insert_query = "INSERT INTO historial_anio (id_anio, id_usuario, accion) VALUES ($id_anio, $id_usuario, '$accion')";
         return mysqli_query($this->conn, $insert_query);
     }
 
@@ -86,7 +99,7 @@ class AnioAcademicoModelo {
                     l.fecha,
                     u.usuario as nombre_usuario,
                     CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo_anio
-                  FROM logs_anio l
+                  FROM historial_anio l
                   INNER JOIN usuario u ON l.id_usuario = u.id_usuario
                   INNER JOIN anio_academico a ON l.id_anio = a.id_anio
                   WHERE 1=1";
@@ -116,7 +129,7 @@ class AnioAcademicoModelo {
     public function obtenerUsuariosParaFiltro() {
         $query = "SELECT DISTINCT u.id_usuario, u.usuario 
                   FROM usuario u 
-                  WHERE u.id_usuario IN (SELECT DISTINCT id_usuario FROM logs_anio)
+                  WHERE u.id_usuario IN (SELECT DISTINCT id_usuario FROM historial_anio)
                   ORDER BY u.usuario";
         return mysqli_query($this->conn, $query);
     }
@@ -125,7 +138,7 @@ class AnioAcademicoModelo {
     public function obtenerAniosParaFiltro() {
         $query = "SELECT DISTINCT a.id_anio, CONCAT(YEAR(a.desde), '-', YEAR(a.hasta)) AS periodo
                   FROM anio_academico a 
-                  WHERE a.id_anio IN (SELECT DISTINCT id_anio FROM logs_anio)
+                  WHERE a.id_anio IN (SELECT DISTINCT id_anio FROM historial_anio)
                   ORDER BY a.desde DESC";
         return mysqli_query($this->conn, $query);
     }

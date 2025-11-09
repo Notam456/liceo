@@ -13,7 +13,7 @@ switch ($action) {
             $desde = $_POST['inicio'];
             $hasta = $_POST['fin'];
             $resultado = $anioAcademicoModelo->crearAnioAcademico($desde, $hasta);
-            $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error al crear el año académico";
+            $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error: Ya existe un año académico que coincide con esas fechas";
             header('Location: /liceo/controladores/anio_academico_controlador.php');
             exit();
         }

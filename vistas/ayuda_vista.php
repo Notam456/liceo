@@ -164,10 +164,11 @@ $ayuda_mapping = [
       <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php');  ?>
 
       <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/sidebar.php') ?>
-
+      
       <!-- CONTENIDO -->
       <div class="content-area">
         <section id="introduccion">
+          <img class="images" src="../screenshots/Portada_manual_de_usuario.png" style="width: 80%; height: auto; display: block; margin:auto; margin-bottom: 100px">
           <h2>Manual de Usuario - Control de Asistencia Estudiantil</h2>
           <p>Bienvenido al manual de usuario del sistema de control de asistencia estudiantil. Esta documentación le guiará en el uso de todas las funcionalidades del sistema para la administración eficiente de su institución educativa.</p>
         </section>
@@ -182,8 +183,8 @@ $ayuda_mapping = [
               <li>Luego de rellenar los datos solicitados, el usuario será redirigido al apartado principal del sistema.</li>
             </ul>
 
-            <img class="images" src="../screenshots/1.jpg" alt="">
-            <img class="images" src="../screenshots/2.jpg" alt="">
+            <img class="images" src="../screenshots/1.png" alt="">
+            <img class="images" src="../screenshots/2.png" alt="" style="width: 300px; height: auto; display: block; margin-left: auto; margin-right: auto;">
 
           </div>
         </section>
@@ -194,17 +195,18 @@ $ayuda_mapping = [
             <h3>Agregar Año Escolar</h3>
             <div class="step-list">
               <ul>
-                <li>Haciendo clic en "Agregar":</li>
-                <li>Introducir la fecha de inicio y fecha final del año escolar y pulsar el botón "Guardar datos".</li>
-                <li>Aparecerá un mensaje de confirmación al momento de crear el año académico.</li>
+                <li>Paso 1: Hacer click en “agregar”</li>
+                <li>Paso 2: Introducimos la fecha de inicio del año académico.</li>
+                <li>Paso 3: Introducimos la fecha fin del año académico.</li>
+                <li>Paso 4: Hacer click en “guardar datos”.</li>
                 <li>Si hay más de un año académico registrado, hacer clic en "Establecer activo" sobre el año académico en el cual se esté trabajando.</li>
                 <li>En el apartado "Historial de cambios" se podrá visualizar y filtrar las veces que se cambió la actividad de un año académico.</li>
               </ul>
 
-              <img class="images" src="../screenshots/3.jpg" alt="">
-              <img class="images" src="../screenshots/4.jpg" alt="">
-              <img class="images" src="../screenshots/5.jpg" alt="">
-              <img class="images" src="../screenshots/6.jpg" alt="">
+              <img class="images" src="../screenshots/3.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/4.png" alt=""style="width: 400px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/5.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/6.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
 
 
             </div>
@@ -216,14 +218,16 @@ $ayuda_mapping = [
             <h3>Profesor</h3>
             <div class="step-list">
               <ul>
-                <li>Desde el menú principal, hacer clic en el icono "Profesor" o desde el menú desplegado: "Registro de datos → Gestión académica → Profesores".</li>
-                <li>Hacer clic en el botón "Agregar" y llenar los datos solicitados del profesor, luego hacer clic en "Guardar datos".</li>
-                <li>Una vez registrado el profesor, se podrá consultar, modificar y eliminar.</li>
+                <li>Desde el menú principal, hacer clic en el icono "Profesor" o desde el menú desplegado: "Registro de datos → Gestión académica → Profesor".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: llenar los datos solicitados.</li>
+                <li>Paso 3: Hacer click en “guardar datos”.</li>
+                <li>Una vez Registrado el profesor, se podrá consultar, modificar y eliminar.</li>
                 <li>Se podrán generar reportes en formato PDF con el listado de todos los profesores registrados en el sistema.</li>
               </ul>
 
-              <img class="images" src="../screenshots/7.jpg" alt="">
-              <img class="images" src="../screenshots/8.jpg" alt="">
+              <img class="images" src="../screenshots/7.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/8.png" alt=""style="width: 400px; height: auto; display: block; margin-left: auto; margin-right: auto;" >
             </div>
           </section>
         <?php endif; ?>
@@ -234,11 +238,14 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en "Usuario" o desde el menú desplegado: "Registro de datos → Usuario".</li>
-                <li>Hacer clic en "Agregar", llenar los datos solicitados, asignar el rol que tendrá dicho usuario y hacer clic en "Guardar datos".</li>
+                <li>Paso 1:Hacer click en “agregar”.</li>
+                <li>Paso 2:Llenar los datos solicitados.</li>
+                <li>Paso 3:Seleccionar el rol.</li>
+                <li>Paso 4:Hacer click en “guardar datos”.</li>
                 <li>Se podrá consultar, modificar y eliminar los usuarios agregados.</li>
               </ul>
-              <img class="images" src="../screenshots/9.jpg" alt="">
-              <img class="images" src="../screenshots/10.jpg" alt="">
+              <img class="images" src="../screenshots/9.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;" >
+              <img class="images" src="../screenshots/10.png" alt=""style="width: 400px; height: auto; display: block; margin-left: auto; margin-right: auto;" >
             </div>
           </section>
         <?php endif; ?>
@@ -249,12 +256,15 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Estudiante" o desde el menú desplegado: "Registro de datos → Gestión académica → Estudiantes".</li>
-                <li>Hacer clic en el botón "Agregar", llenar los datos solicitados del estudiante y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: Llenar los datos solicitados.</li>
+                <li>Paso 3: Seleccionar al año a cursar.</li>
+                <li>Paso 4: Hacer click en “guardar datos”.</li>
                 <li>Una vez registrado el estudiante, se podrá consultar, modificar y eliminar.</li>
                 <li>Se podrán generar constancias de estudio en formato PDF para todos los estudiantes que la soliciten.</li>
               </ul>
-              <img class="images" src="../screenshots/11.jpg" alt="">
-              <img class="images" src="../screenshots/12.jpg" alt="">
+              <img class="images" src="../screenshots/11.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/12.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -265,12 +275,13 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Grados" o desde el menú desplegado: "Registro de datos → Gestión académica → Grados".</li>
-                <li>Hacer clic en el botón "Agregar" y limitar la cantidad de grados a agregar con un máximo de 5, luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: Definir la cantidad de grados hasta un máximo de 5.</li>
+                <li>Paso 3: Hacer clik en “guardar datos”.</li>
                 <li>Una vez agregados los grados, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/13.jpg" alt="">
-              <img class="images" src="../screenshots/14.jpg" alt="">
-              <img class="images" src="../screenshots/15.jpg" alt="">
+              <img class="images" src="../screenshots/13.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/14.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -281,11 +292,14 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Materias" o desde el menú desplegado: "Registro de datos → Gestión académica → Materias".</li>
-                <li>Hacer clic en el botón "Agregar", agregar el nombre y la descripción de la materia deseada, luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: Nombre de la materia.</li>
+                <li>Paso 3: Descripción de la materia.</li>
+                <li>Paso 3: Hacer clik en “guardar datos”.</li>
                 <li>Una vez agregadas las materias, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/16.jpg" alt="">
-              <img class="images" src="../screenshots/17.jpg" alt="">
+              <img class="images" src="../screenshots/15.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/16.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -296,15 +310,22 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Secciones" o desde el menú desplegado: "Registro de datos → Gestión académica → Secciones".</li>
-                <li>Hacer clic en el botón "Agregar", agregar la cantidad y el grado al cual serán asignadas las secciones, luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “guardar datos”.</li>
+                <li>Paso 2: Agregar la cantidad de secciones.</li>
+                <li>Paso 3: seleccionar el año al cual pertenecen.</li>
+                <li>Paso 4: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregadas las secciones, se podrá consultar, modificar y eliminar.</li>
+                <li>Asignar: Hacer click en el consultar u asignar estudiantes de la sesión a llenar.</li>
+                <li>Paso 1: Seleccionar los estudiantes.</li>
+                <li>Paso 2: Seleccionar al tutor.</li>
+                <li>Paso 3: Hacer click en “guardar datos“.</li>
                 <li>Se podrán generar reportes de asistencia de las secciones en formato PDF.</li>
-                <li>Al presionar "Consultar", se podrá asignar los estudiantes a las secciones correspondientes y generar una matrícula de los estudiantes de la sección.</li>
+                <li>Se podrán generar matrículas de los estudiantes de la sección.</li>
               </ul>
-              <img class="images" src="../screenshots/18.jpg" alt="">
-              <img class="images" src="../screenshots/19.jpg" alt="">
-              <img class="images" src="../screenshots/20.jpg" alt="">
-              <img class="images" src="../screenshots/21.jpg" alt="">
+              <img class="images" src="../screenshots/17.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/18.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/19.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/20.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -315,12 +336,14 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Cargos" o desde el menú desplegado: "Registro de datos → Gestión académica → Cargos".</li>
-                <li>Hacer clic en el botón "Agregar", agregar el nombre del cargo y su tipo, luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: Asignar un nombre al cargo.</li>
+                <li>Paso 3: seleccionar el tipo.</li>
+                <li>Paso 4: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregado el cargo, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/22.jpg" alt="">
-              <img class="images" src="../screenshots/23.jpg" alt="">
-              <img class="images" src="../screenshots/24.jpg" alt="">
+              <img class="images" src="../screenshots/21.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/22.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -331,11 +354,13 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Municipio" o desde el menú desplegado: "Registro de datos → Ubicación → Municipio".</li>
-                <li>Hacer clic en el botón "Agregar", agregar el municipio y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: llenar el nombre del nuevo municipio.</li>
+                <li>Paso 3: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregado el nuevo municipio, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/25.jpg" alt="">
-              <img class="images" src="../screenshots/26.jpg" alt="">
+              <img class="images" src="../screenshots/23.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/24.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -346,11 +371,13 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Parroquia" o desde el menú desplegado: "Registro de datos → Ubicación → Parroquia".</li>
-                <li>Hacer clic en el botón "Agregar", agregar la parroquia y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar”.</li>
+                <li>Paso 2: llenar el nombre de la nueva parroquia.</li>
+                <li>Paso 3: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregada la parroquia, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/27.jpg" alt="">
-              <img class="images" src="../screenshots/28.jpg" alt="">
+              <img class="images" src="../screenshots/25.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/26.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -361,11 +388,13 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Sector" o desde el menú desplegado: "Registro de datos → Ubicación → Sector".</li>
-                <li>Hacer clic en el botón "Agregar", agregar el sector y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “agregar".</li>
+                <li>Paso 2: llenar el nombre del nuevo sector.</li>
+                <li>Paso 3: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregado el sector, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/29.jpg" alt="">
-              <img class="images" src="../screenshots/30.jpg" alt="">
+              <img class="images" src="../screenshots/27.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/28.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -376,11 +405,15 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Secciones" o desde el menú desplegado: "Registro de datos → Gestión académica → Secciones".</li>
-                <li>Hacer clic en el botón "Consultar" en la sección a elegir, llenar la matrícula de estudiantes y hacer clic en "Horario" para crearlo.</li>
+                <li>Hacer click en el botón “consultar “ y “Horario”.</li>
+                <li>Paso 1: Seleccionar la materia y profesor.</li>
+                <li>Paso 2: Seleccionar el día.</li>
+                <li>Paso 3: Hacer click en “agregar”.</li>
+                <li>Paso 4: Hacer click en “regresar a la sección”.</li>
                 <li>Seleccionar las materias con sus docentes y el día de la semana al que asisten.</li>
               </ul>
-              <img class="images" src="../screenshots/31.jpg" alt="">
-              <img class="images" src="../screenshots/32.jpg" alt="">
+              <img class="images" src="../screenshots/29.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/30.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -391,12 +424,14 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Asignación de materia" o desde el menú desplegado: "Gestión operativa → Asignación de materia".</li>
-                <li>Hacer clic en el botón "Asignar", agregar las materias al profesor y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “asignar”.</li>
+                <li>Paso 2: Seleccionar al profesor.</li>
+                <li>Paso 3: Seleccionar la materia.</li>
+                <li>Paso 4:Hacer click en guardar datos.</li>
                 <li>Una vez agregada la materia, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/33.jpg" alt="">
-              <img class="images" src="../screenshots/34.jpg" alt="">
-              <img class="images" src="../screenshots/35.jpg" alt="">
+              <img class="images" src="../screenshots/31.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/32.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -407,12 +442,14 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Asignación de cargo" o desde el menú desplegado: "Gestión operativa → Asignación de cargo".</li>
-                <li>Hacer clic en el botón "Asignar", agregar los cargos al profesor y luego hacer clic en "Guardar datos".</li>
+                <li>Paso 1: Hacer click en “guardar datos”.</li>
+                <li>Paso 2: Seleccionar el profesor.</li>
+                <li>Paso 3: Seleccionar el cargo.</li>
+                <li>Paso 4: Hacer click en “guardar datos”.</li>
                 <li>Una vez agregado el cargo, se podrá consultar, modificar y eliminar.</li>
               </ul>
-              <img class="images" src="../screenshots/36.jpg" alt="">
-              <img class="images" src="../screenshots/37.jpg" alt="">
-              <img class="images" src="../screenshots/38.jpg" alt="">
+              <img class="images" src="../screenshots/34.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/35.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -423,12 +460,17 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Asistencia" o desde el menú desplegado: "Gestión operativa → Asistencia".</li>
-                <li>Hacer clic en el botón "Registrar asistencia", llenar los datos solicitados y marcar las casillas dependiendo si los estudiantes asistieron o no, luego hacer clic en "Guardar asistencia".</li>
+                <li>Hacer click en “Registrar asistencia”.</li>
+                <li>Paso 1: llenar fecha.</li>
+                <li>Paso 2: Seleccionar grado.</li>
+                <li>Paso 3: Seleccionar sección.</li>
+                <li>Paso 4: Seleccionar las materias asistidas y justificación en caso de inasistencia.</li>
+                <li>Paso 5: Guardar asistencia.</li>
                 <li>Una vez registrada la asistencia, se podrá consultar y modificar.</li>
               </ul>
-              <img class="images" src="../screenshots/39.jpg" alt="">
-              <img class="images" src="../screenshots/40.jpg" alt="">
-              <img class="images" src="../screenshots/41.jpg" alt="">
+              <img class="images" src="../screenshots/36.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/37.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/38.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -440,11 +482,11 @@ $ayuda_mapping = [
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Ausencias" o desde el menú desplegado: "Gestión operativa → Ausencias".</li>
                 <li>El sistema genera una alerta de los estudiantes que tienen 3 o más ausencias.</li>
-                <li>Haciendo clic en "Agendar visita", el usuario será redirigido al apartado de visita.</li>
+                <li>Paso 1: Hacer click en “agendar visita” será redirigido al apartado de visita.</li>
                 <li>Se podrán generar reportes del estudiante ausente.</li>
               </ul>
-              <img class="images" src="../screenshots/42.jpg" alt="">
-              <img class="images" src="../screenshots/43.jpg" alt="">
+              <img class="images" src="../screenshots/39.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/40.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -455,13 +497,19 @@ $ayuda_mapping = [
             <div class="step-list">
               <ul>
                 <li>Desde el menú principal, hacer clic en el icono "Visita" o desde el menú desplegado: "Gestión operativa → Visita".</li>
-                <li>Se podrá elegir la fecha de la visita a voluntad del coordinador.</li>
-                <li>Una vez realizada la visita, se podrán guardar apuntes de la misma.</li>
+                <li>Paso 1: Realizado en el apartado de ausencia .</li>
+                <li>Paso 2: Asignar fecha.</li>
+                <li>Paso 3: Hacer click en “Agendar”.</li>
+                <li>Realizar visita:</li>
+                <li>Paso 1: Hacer clik en “Realizar”</li>
+                <li>Paso 2: llenar las observaciones.</li>
+                <li>Paso 3: Asignar la fecha.</li>
+                <li>Paso 4: Hacer clik en “Guardar cambios”.</li>
                 <li>Una vez agendada la visita, se podrá realizar o cancelar; a su vez, se podrá consultar, eliminar y generar un reporte.</li>
               </ul>
-              <img class="images" src="../screenshots/44.jpg" alt="">
-              <img class="images" src="../screenshots/45.jpg" alt="">
-              <img class="images" src="../screenshots/46.jpg" alt="">
+              <img class="images" src="../screenshots/41.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/42.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
+              <img class="images" src="../screenshots/43.png" alt=""style="width: 500px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>
@@ -474,7 +522,7 @@ $ayuda_mapping = [
                 <li>Desde el menú principal, hacer clic en el icono "Reporte" o desde el menú desplegado: "Reporte".</li>
                 <li>Se podrán realizar todos los reportes académicos y de asistencia haciendo clic en sus respectivos apartados.</li>
               </ul>
-              <img class="images" src="../screenshots/47.jpg" alt="">
+              <img class="images" src="../screenshots/44.png" alt=""style="width: 800px; height: auto; display: block; margin-left: auto; margin-right: auto;">
             </div>
           </section>
         <?php endif; ?>

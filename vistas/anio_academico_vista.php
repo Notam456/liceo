@@ -17,6 +17,11 @@
             <div class="col-md-8">
 
                 <?php
+                
+                $today = new DateTime();
+                $today->format('Y-m-d');
+                $yearLater = new DateTime();
+                $yearLater->add(new DateInterval('P366D'));
                 if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
                 ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -69,7 +74,7 @@
                                             <th scope="col">Período</th>
                                             <th scope="col">Estado</th>
                                             <th scope="col" class="action">Acción</th>
-                                            <th scope="col" class="action"></th>
+                                           
                                             
                                         </tr>
                                     </thead>
@@ -98,9 +103,7 @@
                                                 <a href="#" class="btn btn-warning btn-sm view-data">Consultar</a>
                                             </td>
 
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a>
-                                            </td>
+                                            
 
                                         </tr>
                                     <?php
@@ -252,12 +255,12 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label for="inicio">Fecha de inicio del año académico</label>
-                            <input type="date" class="form-control" name="inicio" required>
+                            <input type="date" class="form-control" name="inicio" min="<?= $today->format('Y-m-d');?>" max="<?= $yearLater->format('Y-m-d') ?>"  required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="fin">Fecha de fin del año académico</label>
-                            <input type="date" class="form-control" name="fin" required>
+                            <input type="date" class="form-control" name="fin" min="<?= $today->format('Y-m-d');?>" max="<?= $yearLater->format('Y-m-d') ?>" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -280,7 +283,7 @@
             },
             columnDefs: [{
                     width: '93px',
-                    targets: [3, 4]
+                    targets: [3]
                 },
                 {
                     visible: false,
