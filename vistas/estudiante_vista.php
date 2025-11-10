@@ -121,7 +121,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>Fecha de Nacimiento</label>
-                            <input type="date" id="fecha_nacimiento_edit" name="fecha_nacimiento" class="form-control" required max="<?php echo $max_date; ?>">
+                            <input type="text" class="form-control" id="fecha_nacimiento_edit_picker" name="fecha_nacimiento" placeholder="YYYY-MM-DD" required readonly>
                         </div>
                         </div> <!-- FILA2 -->
                         <div class="row mb-3"> <!-- FILA3 -->
@@ -215,7 +215,8 @@
                         </div><!-- FILA1 -->
                         <div class="row mb-3"> <!-- FILA2 -->
                         <div class="col-md-6"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
-                        <div class="col-md-6"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required max="<?php echo $max_date; ?>"></div>
+                        <div class="col-md-6"><label>Fecha de Nacimiento</label>
+                        <input type="text" class="form-control" id="fecha_nacimiento_picker" name="fecha_nacimiento" placeholder="AAAA-MM-DD" required readonly>
                         </div> <!-- FILA2 -->
                         <div class="row mb-3"> <!-- FILA3 -->
                         <div class="col-md-6">
@@ -275,6 +276,88 @@
             </div>
         </div>
     </div>
+
+    <script>
+$(document).ready(function() {
+    // Verificar que Pikaday esté cargado
+    if (typeof Pikaday !== 'undefined') {
+        console.log('Pikaday cargado correctamente');
+        
+        // Configuración común para ambos datepickers
+        var pikadayConfig = {
+            format: 'YYYY-MM-DD',
+            i18n: {
+                previousMonth: 'Mes anterior',
+                nextMonth: 'Siguiente mes',
+                months: [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ],
+                weekdays: [
+                    'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                    'Jueves', 'Viernes', 'Sábado'
+                ],
+                weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+            },
+            yearRange: [1950, new Date().getFullYear()],
+            maxDate: new Date(), // No permite fechas futuras
+            showDaysInNextAndPreviousMonths: true
+        };
+
+        // Inicializar Pikaday para el modal de CREAR
+        var pickerCrear = new Pikaday({
+            ...pikadayConfig,
+            field: document.getElementById('fecha_nacimiento_picker')
+        });
+
+        // Inicializar Pikaday para el modal de EDITAR
+        var pickerEditar = new Pikaday({
+            ...pikadayConfig,
+            field: document.getElementById('fecha_nacimiento_edit_picker')
+        });
+
+        // Mostrar datepicker cuando se abra el modal de CREAR
+        $('#insertdata').on('shown.bs.modal', function() {
+            if (pickerCrear) {
+                pickerCrear.show();
+            }
+        });
+
+        // Mostrar datepicker cuando se abra el modal de EDITAR
+        $('#editmodal').on('shown.bs.modal', function() {
+            if (pickerEditar) {
+                pickerEditar.show();
+            }
+        });
+
+        // Cuando se cargan datos en el modal de editar, establecer la fecha en Pikaday
+        $(document).on('ajaxComplete', function(event, xhr, settings) {
+            if (settings.url === '/liceo/controladores/estudiante_controlador.php' && 
+                settings.data.includes("action=editar")) {
+                
+                // Esperar un momento para que los datos se carguen en los campos
+                setTimeout(function() {
+                    var fechaInput = document.getElementById('fecha_nacimiento_edit');
+                    var fechaPicker = document.getElementById('fecha_nacimiento_edit_picker');
+                    
+                    if (fechaInput && fechaInput.value && pickerEditar) {
+                        // Convertir fecha de YYYY-MM-DD a DD-MM-YYYY para Pikaday
+                        var fechaParts = fechaInput.value.split('-');
+                        if (fechaParts.length === 3) {
+                            var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+                            fechaPicker.value = fechaFormateada;
+                            pickerEditar.setDate(new Date(fechaInput.value));
+                        }
+                    }
+                }, 100);
+            }
+        });
+
+    } else {
+        console.error('Pikaday no está cargado');
+    }
+});
+</script>
 
     <script>
         new DataTable('#myTable', {
@@ -501,7 +584,7 @@
                         $('#cedula_estudiante_edit').val(data.cedula);
                         $('#contacto_estudiante_edit').val(data.contacto);
                         $('#grado_edit').val(data.id_grado);
-                        $('#fecha_nacimiento_edit').val(data.fecha_nacimiento);
+                        $('#fecha_nacimiento_edit_picker').val(data.fecha_nacimiento);
                         $('#direccion_exacta_edit').val(data.direccion_exacta);
                         $('#punto_referencia_edit').val(data.punto_referencia);
 

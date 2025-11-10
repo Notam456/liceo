@@ -15,17 +15,19 @@ switch ($action) {
     case 'registrar':
         if (isset($_POST['guardar_asistencia'])) {
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $seccion = $_POST['seccion'];
             $profesor = $_SESSION['profesor'];
 
-            if (empty($fecha) || empty($seccion)) {
+            if (empty($fecha_mysql) || empty($seccion)) {
                 $_SESSION['status'] = "Fecha y sección son requeridas";
             } elseif (isset($_POST['asistencia']) && is_array($_POST['asistencia'])) {
                 foreach ($_POST['asistencia'] as $id_estudiante => $datos) {
                     $materias_asistidas = isset($datos['materias']) ? $datos['materias'] : [];
                     $justificacion = isset($datos['justificacion']) ? trim($datos['justificacion']) : '';
 
-                    $asistenciaModelo->registrarAsistencia($id_estudiante, $fecha, $materias_asistidas, $justificacion, $seccion, $profesor);
+                    $asistenciaModelo->registrarAsistencia($id_estudiante, $fecha_mysql, $materias_asistidas, $justificacion, $seccion, $profesor);
                 }
                 $_SESSION['status'] = "Asistencia registrada correctamente";
             } else {
@@ -60,10 +62,12 @@ switch ($action) {
         if (isset($_POST['seccion']) && isset($_POST['fecha'])) {
             $id_seccion = $_POST['seccion'];
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
 
             // Convertir fecha a nombre del día
             $dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-            $dia_semana = $dias_semana[date('N', strtotime($fecha)) - 1];
+            $dia_semana = $dias_semana[date('N', strtotime($fecha_mysql)) - 1];
 
             // Verificar si hay materias para ese día
             $materias_del_dia = $horarioModelo->getMateriasPorSeccionYDia($id_seccion, $dia_semana);
@@ -74,7 +78,7 @@ switch ($action) {
             }
 
             // Verificar si ya existe asistencia para esta fecha y sección
-            if ($asistenciaModelo->verificarAsistenciaExistente($fecha, $id_seccion)) {
+            if ($asistenciaModelo->verificarAsistenciaExistente($fecha_mysql, $id_seccion)) {
                 echo '<div class="alert alert-warning">Ya existe un registro de asistencia para esta fecha y sección.</div>';
                 exit();
             }
@@ -111,8 +115,10 @@ switch ($action) {
     case 'consultar_detalle':
         if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $id_seccion = $_POST['id_seccion'];
-            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha, $id_seccion);
+            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha_mysql, $id_seccion);
 
             if (mysqli_num_rows($result) > 0) {
                 echo '<table class="table table-striped">';
@@ -154,9 +160,11 @@ switch ($action) {
         if (isset($_POST['seccion']) || isset($_POST['fecha']) || isset($_POST['grado'])) {
             $seccion = $_POST['seccion'];
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = $fecha ? date('Y-m-d', strtotime(str_replace('-', '/', $fecha))) : '';
             $grado = $_POST['grado'];
 
-            $result = $asistenciaModelo->filtrarAsistenciasAgrupadas($seccion, $fecha, $grado);
+            $result = $asistenciaModelo->filtrarAsistenciasAgrupadas($seccion, $fecha_mysql, $grado);
 
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
@@ -188,8 +196,10 @@ switch ($action) {
     case 'consultar_detalle_editable':
         if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $id_seccion = $_POST['id_seccion'];
-            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha, $id_seccion);
+            $result = $asistenciaModelo->obtenerDetalleAsistencia($fecha_mysql, $id_seccion);
 
             if (mysqli_num_rows($result) > 0) {
                 echo '<form id="formModificarAsistencia">';
@@ -206,7 +216,7 @@ switch ($action) {
                     echo '<input type="hidden" name="id_asistencia[]" value="' . $row['id_asistencia'] . '">';
 
                     $dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-                    $dia_semana = $dias_semana[date('N', strtotime($fecha)) - 1];
+                    $dia_semana = $dias_semana[date('N', strtotime($fecha_mysql)) - 1];
                     $materias_del_dia = $horarioModelo->getMateriasPorSeccionYDia($id_seccion, $dia_semana);
 
                     $materias_asistidas_result = $asistenciaModelo->obtenerDetalleMateriasAsistidas($row['id_asistencia']);
@@ -245,6 +255,8 @@ switch ($action) {
     case 'actualizar_asistencia_masiva':
         if (isset($_POST['fecha']) && isset($_POST['id_seccion']) && isset($_POST['id_asistencia'])) {
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $id_seccion = $_POST['id_seccion'];
             $ids_asistencia = $_POST['id_asistencia'];
 
@@ -292,9 +304,11 @@ switch ($action) {
         if (isset($_POST['actualizar_asistencia'])) {
             $id_asistencia = $_POST['id_asistencia'];
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $estado = $_POST['estado'];
             $justificacion = ($estado == 'J') ? $_POST['justificacion'] : '';
-            $asistenciaModelo->actualizarAsistencia($id_asistencia, $fecha, $estado, $justificacion);
+            $asistenciaModelo->actualizarAsistencia($id_asistencia, $fecha_mysql, $estado, $justificacion);
             $_SESSION['status'] = "Asistencia actualizada correctamente";
         }
         header("Location: /liceo/controladores/asistencia_controlador.php");
@@ -311,8 +325,10 @@ switch ($action) {
     case 'eliminar_por_fecha':
         if (isset($_POST['fecha']) && isset($_POST['id_seccion'])) {
             $fecha = $_POST['fecha'];
+            // Convertir fecha de DD-MM-AAAA a AAAA-MM-DD para MySQL
+            $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
             $id_seccion = $_POST['id_seccion'];
-            $result = $asistenciaModelo->eliminarAsistenciaPorFechaSeccion($fecha, $id_seccion);
+            $result = $asistenciaModelo->eliminarAsistenciaPorFechaSeccion($fecha_mysql, $id_seccion);
             echo $result ? "Registros eliminados correctamente" : "Error al eliminar los registros";
         }
         exit();

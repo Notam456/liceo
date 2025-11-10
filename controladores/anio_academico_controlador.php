@@ -11,7 +11,11 @@ switch ($action) {
         if (isset($_POST['save_data'])) {
             $desde = $_POST['inicio'];
             $hasta = $_POST['fin'];
-            $resultado = $anioAcademicoModelo->crearAnioAcademico($desde, $hasta);
+
+            $fecha_mysql_desde = date('Y-m-d', strtotime(str_replace('-', '/', $desde)));
+            $fecha_mysql_hasta = date('Y-m-d', strtotime(str_replace('-', '/', $hasta))); 
+
+            $resultado = $anioAcademicoModelo->crearAnioAcademico($fecha_mysql_desde, $fecha_mysql_hasta);
             $_SESSION['status'] = $resultado ? "Año académico creado correctamente" : "Error: Ya existe un año académico que coincide con esas fechas";
             header('Location: /liceo/controladores/anio_controlador.php');
             exit();
