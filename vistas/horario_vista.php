@@ -115,6 +115,7 @@
             dataType: 'json',
             success: function (response) {
                 if(response.success) {
+		    console.log(response.dia);
                     const newItem = {
                         id_horario: response.id_horario,
                         nombre_materia: asignacionSelect.options[asignacionSelect.selectedIndex].text.split(' - ')[0],

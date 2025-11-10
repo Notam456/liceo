@@ -9,6 +9,8 @@
             display: none;
             margin-top: 5px;
         }
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css') ?>
+
     </style>
 </head>
 
@@ -23,7 +25,6 @@
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
     </nav>
-
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/sidebar.php') ?>
 
     <div class="container" style="margin-top: 30px;">
@@ -40,7 +41,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Registro de Asistencia <img src="/liceo/icons/calendar-check.svg">
-                            <button type="button" class="btn btn-primary float-end btn-success" data-bs-toggle="modal" data-bs-target="#registrarAsistencia">
+                            <button type="button" class="btn btn-primary float-end btn-success" data-toggle="modal" data-target="#registrarAsistencia">
                                 Registrar Asistencia
                             </button>
                         </h4>
@@ -145,7 +146,7 @@
     </div>
 
     <!-- Modal Registrar Asistencia -->
-    <div class="modal fade" id="registrarAsistencia" tabindex="-1" aria-labelledby="registrarAsistenciaLabel" aria-hidden="true">
+    <div class="modal" id="registrarAsistencia" tabindex="-1" aria-labelledby="registrarAsistenciaLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -187,7 +188,7 @@
     </div>
 
     <!-- Modal Editar Asistencia -->
-    <div class="modal fade" id="editarAsistenciaModal" tabindex="-1" aria-labelledby="editarAsistenciaModalLabel" aria-hidden="true">
+    <div class="modal" id="editarAsistenciaModal" tabindex="-1" aria-labelledby="editarAsistenciaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -238,7 +239,7 @@
     </div>
 
     <!-- Modal Consultar Detalle -->
-    <div class="modal fade" id="consultarDetalleModal" tabindex="-1" aria-labelledby="consultarDetalleModalLabel" aria-hidden="true">
+    <div class="modal" id="consultarDetalleModal" tabindex="-1" aria-labelledby="consultarDetalleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

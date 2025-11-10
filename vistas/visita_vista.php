@@ -4,6 +4,11 @@
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Visitas</title>
+<style>
+<?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css'); ?>
+
+</style>
+
 </head>
 
 <body>
@@ -15,9 +20,9 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div class="alert alert-warning alert-dismissible show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php unset($_SESSION['status']);
                 } ?>
@@ -112,12 +117,12 @@
     </div>
 
     <!-- Modulo Ver -->
-    <div class="modal fade" id="viewVisitaModal" tabindex="-1" aria-labelledby="viewVisitaModalLabel" aria-hidden="true">
+    <div class="modal" id="viewVisitaModal" tabindex="-1" aria-labelledby="viewVisitaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="viewVisitaModalLabel">Datos de la Visita</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="view_visita_data"></div>
@@ -127,12 +132,12 @@
     </div>
 
     <!-- Modulo Actualizar -->
-    <div class="modal fade" id="updateVisitaModal" tabindex="-1" aria-labelledby="updateVisitaModalLabel" aria-hidden="true">
+    <div class="modal" id="updateVisitaModal" tabindex="-1" aria-labelledby="updateVisitaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="updateVisitaModalLabel">Actualizar Visita</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="update_visita_data"></div>
