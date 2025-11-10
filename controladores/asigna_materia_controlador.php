@@ -35,9 +35,9 @@ switch ($action) {
                 $_SESSION['show_modal'] = true;
             } else {
                 if ($modelo->crearAsignacion($id_profesor, $id_materia)) {
-                    $_SESSION['status'] = '✅ Materia asignada exitosamente al profesor';
+                    $_SESSION['status'] = 'Materia asignada exitosamente al profesor';
                 } else {
-                    $_SESSION['status'] = '⚠️ Error: Esta asignación ya existe';
+                    $_SESSION['status'] = 'Error: Esta asignación ya existe';
                     $_SESSION['show_modal'] = true;
                 }
             }
@@ -51,10 +51,13 @@ switch ($action) {
 
     case 'eliminar':
         if (isset($_GET['id'])) {
+
+            $id_asignacion = isset($_POST['id_asignacion']) ? $_POST['id_asignacion'] : $_GET['id'];
+
             if ($modelo->eliminarAsignacion($_GET['id'])) {
-                $_SESSION['status'] = '✅ Asignación eliminada exitosamente';
+                $_SESSION['status'] = 'Asignación eliminada exitosamente';
             } else {
-                $_SESSION['status'] = '❌ Error al eliminar la asignación';
+                $_SESSION['status'] = 'Error al eliminar la asignación';
             }
             // Mantener parámetros de paginación en la redirección
             $por_pagina = isset($_GET['por_pagina']) ? $_GET['por_pagina'] : 10;
@@ -101,9 +104,9 @@ switch ($action) {
                 $_SESSION['status'] = 'Error: Debe completar todos los campos';
             } else {
                 if ($modelo->actualizarAsignacion($id_asignacion, $id_profesor, $id_materia)) {
-                    $_SESSION['status'] = '✅ Asignación actualizada exitosamente';
+                    $_SESSION['status'] = 'Asignación actualizada exitosamente';
                 } else {
-                    $_SESSION['status'] = '⚠️ Error: No se pudo actualizar la asignación';
+                    $_SESSION['status'] = 'Error: No se pudo actualizar la asignación';
                 }
             }
             // Mantener parámetros de paginación en la redirección

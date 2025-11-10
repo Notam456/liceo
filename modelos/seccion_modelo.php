@@ -207,124 +207,140 @@ class SeccionModelo
     return $matricula;
 }
 
-    public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = null)
-    {
-        // Obtener el año académico activo (siempre requerido)
-        $anio_modelo = new AnioAcademicoModelo($this->conn);
-        $anio_activo_result = $anio_modelo->obtenerAnioActivo();
+public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = null)
+{
+    // Obtener el año académico activo
+    $anio_modelo = new AnioAcademicoModelo($this->conn);
+    $anio_activo_result = $anio_modelo->obtenerAnioActivo();
 
-        // VALIDACIÓN ESTRICTA: Debe existir un año académico activo
-        if (!$anio_activo_result || mysqli_num_rows($anio_activo_result) == 0) {
-            throw new Exception("No hay un año académico activo configurado en el sistema.");
-        }
-
-        $anio_activo = mysqli_fetch_assoc($anio_activo_result);
-        $desde_anio = $anio_activo['desde'];
-        $hasta_anio = $anio_activo['hasta'];
-        $hoy = date('Y-m-d');
-
-        // VALIDACIÓN: Si se proporcionan fechas personalizadas, deben estar dentro del año académico
-        if ($desde && $hasta) {
-            if ($desde < $desde_anio || $desde > $hasta_anio) {
-                throw new Exception("La fecha 'Desde' ({$desde}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
-            }
-            if ($hasta < $desde_anio || $hasta > $hasta_anio) {
-                throw new Exception("La fecha 'Hasta' ({$hasta}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
-            }
-            if ($desde > $hasta) {
-                throw new Exception("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
-            }
-
-            // Usar las fechas validadas
-            $desde_usar = $desde;
-            $hasta_usar = $hasta;
-        } else {
-            // Usar el año académico completo por defecto
-            $desde_usar = $desde_anio;
-            $hasta_usar = $hasta_anio;
-
-            // Si HOY está dentro del año académico, usarlo como límite superior
-            if ($hoy >= $desde_anio && $hoy <= $hasta_anio) {
-                $hasta_usar = $hoy;
-            }
-            // Si HOY está antes del año académico, usar solo el primer día
-            elseif ($hoy < $desde_anio) {
-                $hasta_usar = $desde_anio;
-            }
-            // Si HOY está después, ya usamos el hasta_anio (año académico completo)
-        }
-
-        // Calcular días hábiles dentro del período validado
-        $dias_habiles_periodo = $this->calcularDiasHabiles($desde_usar, $hasta_usar);
-
-        // Validar que hay días hábiles para evitar división por cero
-        if ($dias_habiles_periodo <= 0) {
-            throw new Exception("No hay días hábiles en el período seleccionado ({$desde_usar} - {$hasta_usar})");
-        }
-
-        $where_condicion = "AND a.fecha BETWEEN '{$desde_usar}' AND '{$hasta_usar}'";
-
-        $query = "SELECT 
-                s.id_seccion,
-                g.numero_anio AS grado,
-                s.letra AS seccion,
-                COUNT(DISTINCT e.id_estudiante) AS total_estudiantes,
-                COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total_inasistencias,
-                (SELECT CONCAT(e2.nombre, ' ', e2.apellido) 
-                 FROM estudiante e2
-                 JOIN asigna_seccion asig2 ON e2.id_estudiante = asig2.id_estudiante
-                 JOIN anio_academico anio2 ON asig2.id_anio = anio2.id_anio AND anio2.estado = 1
-                 LEFT JOIN asistencia a2 ON e2.id_estudiante = a2.id_estudiante {$where_condicion}
-                 WHERE asig2.id_seccion = s.id_seccion
-                 GROUP BY e2.id_estudiante 
-                 ORDER BY SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END) DESC 
-                 LIMIT 1) AS estudiante_mas_inasistencias
-             FROM seccion s
-             JOIN grado g ON s.id_grado = g.id_grado
-             LEFT JOIN asigna_seccion asig ON s.id_seccion = asig.id_seccion
-             LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
-             LEFT JOIN estudiante e ON asig.id_estudiante = e.id_estudiante
-             LEFT JOIN asistencia a ON e.id_estudiante = a.id_estudiante {$where_condicion}
-             WHERE e.id_estudiante  IS NOT NULL AND anio.estado = 1
-             GROUP BY s.id_seccion, g.numero_anio, s.letra
-             ORDER BY g.numero_anio ASC, s.letra ASC";
-
-        $result = $this->conn->query($query);
-
-        if (!$result) {
-            throw new Exception("Error en la consulta: " . $this->conn->error);
-        }
-
-        $reporte = [];
-        while ($row = $result->fetch_assoc()) {
-            // NUEVA FÓRMULA: (Total inasistencias sección / Total asistencia posible) × 100
-            if ($row['total_estudiantes'] > 0 && $dias_habiles_periodo > 0) {
-                $total_asistencia_posible = $row['total_estudiantes'] * $dias_habiles_periodo;
-                $porcentaje_inasistencia = ($row['total_inasistencias'] / $total_asistencia_posible) * 100;
-                $porcentaje_inasistencia = min(100, max(0, $porcentaje_inasistencia));
-            } else {
-                $porcentaje_inasistencia = 0;
-                $total_asistencia_posible = 0;
-            }
-
-            $reporte[] = [
-                'id_seccion' => $row['id_seccion'],
-                'grado' => $row['grado'],
-                'seccion' => $row['seccion'],
-                'grado_seccion' => $row['grado'] . '° ' . $row['seccion'],
-                'total_estudiantes' => $row['total_estudiantes'],
-                'total_inasistencias' => $row['total_inasistencias'],
-                'porcentaje_inasistencia' => round($porcentaje_inasistencia, 2),
-                'estudiante_mas_inasistencias' => $row['estudiante_mas_inasistencias'] ?: 'Sin inasistencias',
-                'dias_habiles_periodo' => $dias_habiles_periodo,
-                'total_asistencia_posible' => $total_asistencia_posible,
-                'periodo_desde' => $desde_usar,
-                'periodo_hasta' => $hasta_usar
-            ];
-        }
-
-        return $reporte;
+    if (!$anio_activo_result || mysqli_num_rows($anio_activo_result) == 0) {
+        throw new Exception("No hay un año académico activo configurado en el sistema.");
     }
+
+    $anio_activo = mysqli_fetch_assoc($anio_activo_result);
+    $desde_anio = $anio_activo['desde'];
+    $hasta_anio = $anio_activo['hasta'];
+    $hoy = date('Y-m-d');
+
+    // Validar fechas personalizadas
+    if ($desde && $hasta) {
+        if ($desde < $desde_anio || $desde > $hasta_anio) {
+            throw new Exception("La fecha 'Desde' ({$desde}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
+        }
+        if ($hasta < $desde_anio || $hasta > $hasta_anio) {
+            throw new Exception("La fecha 'Hasta' ({$hasta}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
+        }
+        if ($desde > $hasta) {
+            throw new Exception("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+        }
+
+        $desde_usar = $desde;
+        $hasta_usar = $hasta;
+    } else {
+        $desde_usar = $desde_anio;
+        $hasta_usar = $hasta_anio;
+
+        if ($hoy >= $desde_anio && $hoy <= $hasta_anio) {
+            $hasta_usar = $hoy;
+        } elseif ($hoy < $desde_anio) {
+            $hasta_usar = $desde_anio;
+        }
+    }
+
+    // Calcular días hábiles
+    $dias_habiles_periodo = $this->calcularDiasHabiles($desde_usar, $hasta_usar);
+
+    if ($dias_habiles_periodo <= 0) {
+        throw new Exception("No hay días hábiles en el período seleccionado ({$desde_usar} - {$hasta_usar})");
+    }
+
+    // CONSULTA SIMPLIFICADA Y CORREGIDA
+    $query = "SELECT 
+            s.id_seccion,
+            g.numero_anio AS grado,
+            s.letra AS seccion,
+            COUNT(DISTINCT e.id_estudiante) AS total_estudiantes,
+            COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total_inasistencias
+        FROM seccion s
+        JOIN grado g ON s.id_grado = g.id_grado
+        LEFT JOIN asigna_seccion asig ON s.id_seccion = asig.id_seccion
+        LEFT JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+        LEFT JOIN estudiante e ON asig.id_estudiante = e.id_estudiante
+        LEFT JOIN asistencia a ON e.id_estudiante = a.id_estudiante 
+            AND a.fecha BETWEEN '{$desde_usar}' AND '{$hasta_usar}'
+        WHERE anio.estado = 1
+        GROUP BY s.id_seccion, g.numero_anio, s.letra
+        ORDER BY g.numero_anio ASC, s.letra ASC";
+
+    $result = $this->conn->query($query);
+
+    if (!$result) {
+        throw new Exception("Error en la consulta: " . $this->conn->error);
+    }
+
+    $reporte = [];
+    while ($row = $result->fetch_assoc()) {
+        // Obtener estudiante con más inasistencias para esta sección
+        $estudiante_mas_inasistencias = $this->obtenerEstudianteMasInasistencias(
+            $row['id_seccion'], 
+            $desde_usar, 
+            $hasta_usar
+        );
+
+        if ($row['total_estudiantes'] > 0 && $dias_habiles_periodo > 0) {
+            $total_asistencia_posible = $row['total_estudiantes'] * $dias_habiles_periodo;
+            $porcentaje_inasistencia = ($row['total_inasistencias'] / $total_asistencia_posible) * 100;
+            $porcentaje_inasistencia = min(100, max(0, $porcentaje_inasistencia));
+        } else {
+            $porcentaje_inasistencia = 0;
+            $total_asistencia_posible = 0;
+        }
+
+        $reporte[] = [
+            'id_seccion' => $row['id_seccion'],
+            'grado' => $row['grado'],
+            'seccion' => $row['seccion'],
+            'grado_seccion' => $row['grado'] . '° ' . $row['seccion'],
+            'total_estudiantes' => $row['total_estudiantes'],
+            'total_inasistencias' => $row['total_inasistencias'],
+            'porcentaje_inasistencia' => round($porcentaje_inasistencia, 2),
+            'estudiante_mas_inasistencias' => $estudiante_mas_inasistencias ?: 'Sin inasistencias',
+            'dias_habiles_periodo' => $dias_habiles_periodo,
+            'total_asistencia_posible' => $total_asistencia_posible,
+            'periodo_desde' => $desde_usar,
+            'periodo_hasta' => $hasta_usar
+        ];
+    }
+
+    return $reporte;
+}
+
+// MÉTODO AUXILIAR PARA OBTENER ESTUDIANTE CON MÁS INASISTENCIAS
+private function obtenerEstudianteMasInasistencias($id_seccion, $desde, $hasta)
+{
+    $query = "SELECT 
+            CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
+            COUNT(a.id_asistencia) AS total_inasistencias
+        FROM estudiante e
+        JOIN asigna_seccion asig ON e.id_estudiante = asig.id_estudiante
+        JOIN anio_academico anio ON asig.id_anio = anio.id_anio AND anio.estado = 1
+        LEFT JOIN asistencia a ON e.id_estudiante = a.id_estudiante 
+            AND (a.inasistencia = 1 OR a.justificado = 1)
+            AND a.fecha BETWEEN '{$desde}' AND '{$hasta}'
+        WHERE asig.id_seccion = {$id_seccion}
+        GROUP BY e.id_estudiante, e.nombre, e.apellido
+        ORDER BY total_inasistencias DESC
+        LIMIT 1";
+
+    $result = $this->conn->query($query);
+    
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['nombre_completo'];
+    }
+    
+    return null;
+}
 
     private function calcularDiasHabiles($desde, $hasta)
     {

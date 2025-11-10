@@ -56,7 +56,7 @@
                                             <td> 
                                                 <strong><?php echo htmlspecialchars($asignacion['nombre_materia']) ?></strong>
                                             </td>
-                                            <td> <?php echo date('d/m/Y H:i', strtotime($asignacion['fecha_asignacion'])) ?> </td>
+                                            <td> <?php echo date('d/m/Y', strtotime($asignacion['fecha_asignacion'])) ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
@@ -87,6 +87,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Modificar Asignación de Materia</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/asigna_materia_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -116,7 +117,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -130,12 +130,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Datos de la Asignación</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="view_asignacion_data"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -147,6 +145,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Nueva Asignación de Materia</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/asigna_materia_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -175,7 +174,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -298,31 +296,23 @@
 
                 var id = data[0];
                 Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: '¡Esta acción eliminará la asignación permanentemente!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/liceo/controladores/asigna_materia_controlador.php",
-                            data: {
-                                'action': 'eliminar',
-                                'id_asignacion': id
-                            },
-                            success: function(response) {
-                                Swal.fire('¡Eliminado!', response, 'success').then(() => location.reload());
-                            }
-                        });
-                    }
-                });
-            });
-
+        title: '¿Estás seguro?',
+        text: '¡Esta acción eliminará la asignación permanentemente!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        backdrop: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirección simple y directa
+            window.location.href = "/liceo/controladores/asigna_materia_controlador.php?action=eliminar&id=" + id;
+        }
+    });
+});
             // Cerrar modales con botones
             $('[data-dismiss="modal"]').on('click', function() {
                 var modal = $(this).closest('.modal');

@@ -79,6 +79,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Modificar Sector</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/sector_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -103,7 +104,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
@@ -116,13 +116,11 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Datos</h4>
+                    <h4 class="modal-title">Datos del Sector</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="view_user_data"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -134,6 +132,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Agregar un nuevo sector</h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/sector_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
@@ -157,7 +156,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>

@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php');?>
     <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Registro de Asistencia</title>
     <style>
@@ -19,8 +19,13 @@
     <?php
     $today = date('Y-m-d');
     $min_date = '';
+    $anio_hasta = ''; // Variable para la fecha máxima
+    $anio_desde = '';
+    
     if (isset($anio_activo) && $anio_activo) {
         $min_date = date('Y-m-d', strtotime($anio_activo['desde']));
+        $anio_hasta = $anio_activo['hasta']; // Obtener la fecha de fin del año académico
+        $anio_desde = $anio_activo['desde'];
     }
     ?>
     <nav>
@@ -181,7 +186,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="guardar_asistencia" class="btn btn-success">Guardar Asistencia</button>
                     </div>
                 </form>
@@ -293,6 +297,9 @@
 
     <script>
         $(document).ready(function() {
+            // Variables para los datepickers
+            var pickerFecha, pickerAsistencia, pickerEdit;
+
             // Verificar que Pikaday esté cargado
             if (typeof Pikaday !== 'undefined') {
                 console.log('Pikaday cargado correctamente');
@@ -314,40 +321,57 @@
                         weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
                     },
                     yearRange: [1950, new Date().getFullYear()],
-                    minDate: new Date(), // Fecha mínima 
-                    maxDate: new Date(Date.now() + 366 * 24 * 60 * 60 * 1000), // FECHA MAXIMA 366+
                     showDaysInNextAndPreviousMonths: true
                 };
 
-                // Inicializar Pikaday para el filtro de fecha
-                var pickerFiltro = new Pikaday({
-                    ...pikadayConfig,
-                    field: document.getElementById('filtroFecha')
-                });
+                // Obtener fecha actual en JavaScript (considera la zona horaria del cliente)
+                var hoy = new Date();
+                var anioHasta = new Date('<?= $anio_hasta ?>');
 
-                // Inicializar Pikaday para el modal de registrar asistencia
-                var pickerRegistrar = new Pikaday({
-                    ...pikadayConfig,
-                    field: document.getElementById('fechaAsistencia')
-                });
+                    // Determinar la fecha máxima
+                var maxDate = hoy > anioHasta ? anioHasta : hoy;
 
-                // Inicializar Pikaday para el modal de editar asistencia
-                var pickerEditar = new Pikaday({
-                    ...pikadayConfig,
-                    field: document.getElementById('fecha_edit')
-                });
+                // Configurar datepicker para filtro de fecha
+                var pickerCrear = new Pikaday(
+                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                    Object.assign({}, pikadayConfig, {
+                        field: document.getElementById('filtroFecha'),
+                        minDate: new Date('<?= $anio_desde ?>'),
+                        maxDate: new Date('<?= $anio_hasta ?>')
+                    })
+                );
+
+                // Configurar datepicker para fecha de asistencia
+                var pickerCrear = new Pikaday(
+                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                    Object.assign({}, pikadayConfig, {
+                        field: document.getElementById('fechaAsistencia'),
+                        minDate: new Date('<?= $anio_desde ?>'),
+                        maxDate: maxDate
+                    })
+                );
+
+                // Configurar datepicker para fecha de edición
+                var pickerCrear = new Pikaday(
+                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                    Object.assign({}, pikadayConfig, {
+                        field: document.getElementById('fecha_edit'),
+                        minDate: new Date('<?= $anio_desde ?>'),
+                        maxDate: new Date()
+                    })
+                );
 
                 // Mostrar datepicker cuando se abra el modal de registrar
                 $('#registrarAsistencia').on('shown.bs.modal', function() {
-                    if (pickerRegistrar) {
-                        pickerRegistrar.show();
+                    if (pickerAsistencia) {
+                        pickerAsistencia.show();
                     }
                 });
 
                 // Mostrar datepicker cuando se abra el modal de editar
                 $('#editarAsistenciaModal').on('shown.bs.modal', function() {
-                    if (pickerEditar) {
-                        pickerEditar.show();
+                    if (pickerEdit) {
+                        pickerEdit.show();
                     }
                 });
 
@@ -595,79 +619,28 @@
             });
         });
 
-        // Función para consultar detalle (definida fuera del document.ready)
+        // Función para consultar detalle
         function consultarDetalle(fecha, idSeccion, nombreSeccion, profesor) {
-                $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
-                $('#consultarDetalleModal').modal('show');
-                
-                $.ajax({
-                    url: '/liceo/controladores/asistencia_controlador.php',
-                    type: 'POST',
-                    data: {
-                        'action': 'consultar_detalle',
-                        'fecha': fecha,
-                        'id_seccion': idSeccion
-                    },
-                    success: function(response) {
-                        $('#detalleContainer').html(response);
-                    }
-                });
-            }
+            $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
+            $('#consultarDetalleModal').modal('show');
+            
+            $.ajax({
+                url: '/liceo/controladores/asistencia_controlador.php',
+                type: 'POST',
+                data: {
+                    'action': 'consultar_detalle',
+                    'fecha': fecha,
+                    'id_seccion': idSeccion
+                },
+                success: function(response) {
+                    $('#detalleContainer').html(response);
+                }
+            });
+        }
 
-            // Función para modificar asistencia
-            function modificarAsistencia(fecha, idSeccion, nombreSeccion, profesor) {
-                $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion + ' - <strong>Cargada por:</strong> ' + profesor);
-                $('#modificarAsistenciaModal').modal('show');
-                
-                // Cargar estudiantes para modificar (versión editable)
-                $.ajax({
-                    url: '/liceo/controladores/asistencia_controlador.php',
-                    type: 'POST',
-                    data: {
-                        'action': 'consultar_detalle_editable',
-                        'fecha': fecha,
-                        'id_seccion': idSeccion
-                    },
-                    success: function(response) {
-                        $('#modificarContainer').html(response);
-                    }
-                });
-            }
-
-            // Función para eliminar asistencia por fecha
-            function eliminarAsistenciaFecha(fecha, idSeccion) {
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: '¡Esta acción eliminará todos los registros de asistencia de esta fecha y sección!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/liceo/controladores/asistencia_controlador.php',
-                            type: 'POST',
-                            data: {
-                                'action': 'eliminar_por_fecha',
-                                'fecha': fecha,
-                                'id_seccion': idSeccion
-                            },
-                            success: function(response) {
-                                Swal.fire('¡Eliminado!', response, 'success').then(() => {
-                                    location.reload();
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-
-        // Función para modificar asistencia (definida fuera del document.ready)
+        // Función para modificar asistencia
         function modificarAsistencia(fecha, idSeccion, nombreSeccion, profesor) {
-            $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
+            $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion + ' - <strong>Cargada por:</strong> ' + profesor);
             $('#modificarAsistenciaModal').modal('show');
             
             // Cargar estudiantes para modificar (versión editable)
@@ -685,7 +658,7 @@
             });
         }
 
-        // Función para eliminar asistencia por fecha (definida fuera del document.ready)
+        // Función para eliminar asistencia por fecha
         function eliminarAsistenciaFecha(fecha, idSeccion) {
             Swal.fire({
                 title: '¿Estás seguro?',

@@ -13,11 +13,10 @@
                 <div class="modal-body">
                     <div class="form-group mb-3">
                         <label for="fecha_visita">Fecha de la Visita</label>
-                        <input type="date" class="form-control" id="fecha_visita" name="fecha_visita" required min="<?= $today ?>" <?php if ($min_date): ?> max="<?= $min_date ?>" <?php endif; ?>>
+                        <input type="date" class="form-control" id="fecha_visita" name="fecha_visita" placeholder="AAAA-MM-DD" required readonly>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Agendar</button>
                 </div>
             </form>
