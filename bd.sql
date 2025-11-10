@@ -1,39 +1,38 @@
-
-CREATE DATABASE liceoo;
+CREATE DATABASE liceoo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE liceoo;
 
 
 CREATE TABLE municipio (
     id_municipio INT AUTO_INCREMENT PRIMARY KEY,
-    municipio VARCHAR(20) NOT NULL,
+    municipio VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE parroquia (
     id_parroquia INT AUTO_INCREMENT PRIMARY KEY,
-    parroquia VARCHAR(20) NOT NULL,
+    parroquia VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     id_municipio INT NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE sector (
     id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
-    sector VARCHAR(50) NOT NULL,
+    sector VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     id_parroquia INT(11) NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE profesor (
     id_profesor INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
-    nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    apellido VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE anio_academico (
@@ -42,7 +41,7 @@ CREATE TABLE anio_academico (
     hasta DATE NOT NULL,
     estado TINYINT NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE grado (
@@ -52,7 +51,7 @@ CREATE TABLE grado (
     visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE seccion (
@@ -65,26 +64,26 @@ CREATE TABLE seccion (
           ON UPDATE CASCADE,
     FOREIGN KEY (id_tutor) REFERENCES profesor(id_profesor)
         ON DELETE SET NULL ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE estudiante (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
     cedula VARCHAR(15) UNIQUE NOT NULL,
-    nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    apellido VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     fecha_nacimiento DATE,
-    contacto VARCHAR(100),
+    contacto VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     id_grado int,
     id_sector INT,
-    direccion_exacta TEXT,
-    punto_referencia TEXT,
+    direccion_exacta TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    punto_referencia TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_sector) REFERENCES sector(id_sector)
           ON UPDATE CASCADE,
     FOREIGN KEY (id_grado) REFERENCES grado(id_grado)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE asigna_seccion (
@@ -97,23 +96,23 @@ CREATE TABLE asigna_seccion (
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion) ON UPDATE CASCADE,
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio) ON UPDATE CASCADE,
     UNIQUE KEY `asignacion_unica_anio` (`id_estudiante`,`id_anio`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE materia (
     id_materia INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) UNIQUE NOT NULL,
-    descripcion TEXT,
+    nombre VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci UNIQUE NOT NULL,
+    descripcion TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     visibilidad BOOLEAN DEFAULT TRUE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE cargo (
     id_cargo INT AUTO_INCREMENT PRIMARY KEY,
     tipo ENUM('inferior', 'superior', 'directivo'),
-    nombre VARCHAR(50) NOT NULL,
+    nombre VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE asigna_cargo (
     id_asignacion int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -125,7 +124,7 @@ CREATE TABLE asigna_cargo (
           ON UPDATE CASCADE,
     FOREIGN KEY (id_cargo) REFERENCES cargo(id_cargo)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE asistencia (
     id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
@@ -133,7 +132,7 @@ CREATE TABLE asistencia (
     id_estudiante INT NOT NULL,
     id_seccion INT NOT NULL,
     fecha DATE NOT NULL,
-    observacion TEXT,
+    observacion TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     inasistencia BOOLEAN DEFAULT false,
     justificado BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_coordinador) REFERENCES profesor(id_profesor)
@@ -142,21 +141,21 @@ CREATE TABLE asistencia (
           ON UPDATE CASCADE,
     FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE visita (
     id_visita INT AUTO_INCREMENT PRIMARY KEY,
     id_asistencia INT NOT NULL,
     encargado_id INT NULL,
     fecha_visita DATE NOT NULL,
-    estado VARCHAR(50) DEFAULT 'agendada',
-    observaciones TEXT,
+    estado VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'agendada',
+    observaciones TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     fecha_realizada DATE,
     FOREIGN KEY (id_asistencia) REFERENCES asistencia(id_asistencia)
           ON UPDATE CASCADE,
     FOREIGN KEY (encargado_id) REFERENCES profesor(id_profesor)
         ON DELETE SET NULL ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE asigna_materia (
     id_asignacion int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -169,7 +168,7 @@ CREATE TABLE asigna_materia (
     FOREIGN KEY (id_materia) REFERENCES materia(id_materia)
           ON UPDATE CASCADE
   
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE horario (
     id_horario INT AUTO_INCREMENT PRIMARY KEY,
@@ -180,7 +179,7 @@ CREATE TABLE horario (
           ON UPDATE CASCADE,
     FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE asistencia_detalle (
     id_detalle INT AUTO_INCREMENT PRIMARY KEY,
@@ -190,19 +189,19 @@ CREATE TABLE asistencia_detalle (
           ON UPDATE CASCADE,
     FOREIGN KEY (id_asignacion) REFERENCES asigna_materia(id_asignacion)
           ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(255) UNIQUE NOT NULL,
-    contrasena VARCHAR(255) NOT NULL,
-    rol VARCHAR(255) NOT NULL, -- Posibles roles: admin, coordinador, user
+    usuario VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci UNIQUE NOT NULL,
+    contrasena VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    rol VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL, -- Posibles roles: admin, coordinador, user
     id_profesor int(11) NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor)
           ON UPDATE CASCADE
 
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE logs_anio (
@@ -213,7 +212,7 @@ CREATE TABLE logs_anio (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 INSERT INTO usuario (usuario, contrasena, rol, id_profesor)
