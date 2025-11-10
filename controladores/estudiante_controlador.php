@@ -26,6 +26,11 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
+
+          $fecha_nacimiento = $_POST['fecha_nacimiento'];
+          $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha_nacimiento)));
+
+
             $resultado = $estudianteModelo->crearEstudiante(
                 $_POST['nombre_estudiante'],
                 $_POST['apellido_estudiante'],
@@ -33,7 +38,7 @@ switch ($action) {
                 $_POST['contacto_estudiante'],
                 $_POST['sector'],
                 $_POST['grado'],
-                $_POST['fecha_nacimiento'],
+                $fecha_mysql,
                 $_POST['direccion_exacta'],
                 $_POST['punto_referencia']
             );
@@ -80,6 +85,11 @@ switch ($action) {
 
     case 'actualizar':
         if (isset($_POST['update-data'])) {
+
+          $fecha_nacimiento = $_POST['fecha_nacimiento'];
+          $fecha_mysql = date('Y-m-d', strtotime(str_replace('-', '/', $fecha_nacimiento)));
+
+
             $resultado = $estudianteModelo->actualizarEstudiante(
                 $_POST['id_estudiante'],
                 $_POST['nombre_estudiante'],
@@ -88,7 +98,7 @@ switch ($action) {
                 $_POST['contacto_estudiante'],
                 $_POST['sector'],
                 $_POST['grado'],
-                $_POST['fecha_nacimiento'],
+                $fecha_mysql,
                 $_POST['direccion_exacta'],
                 $_POST['punto_referencia']
             );
