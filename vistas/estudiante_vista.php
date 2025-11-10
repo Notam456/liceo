@@ -34,7 +34,7 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <table  class="table table-striped" id="myTable">
+                        <table class="table table-striped" id="myTable">
                             <thead>
                                 <tr class="table-secondary">
                                     <th scope="col">#</th>
@@ -105,43 +105,43 @@
                             <input type="text" id="cedula_estudiante_edit" class="form-control" name="cedula_estudiante" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos">
                         </div>
                         <div class="row mb-3"> <!-- jose yajure, AGREGAR UNA NUEVA ROW SI SE AGRANDA EL FORM, COPIAR Y PEGAR ESTE DIV-->
-                        <div class="col-md-6"> <!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
-                            <label>Nombres</label>
-                            <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
-                        </div>
-                        <div class="col-md-6"><!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
-                            <label>Apellidos</label>
-                            <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
-                        </div>
+                            <div class="col-md-6"> <!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
+                                <label>Nombres</label>
+                                <input type="text" id="nombre_estudiante_edit" class="form-control" name="nombre_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
+                            </div>
+                            <div class="col-md-6"><!-- CAMBIE LAS CLASES DE FORM-GROUP A COL PARA QUE LO TOME COMO COLUMNA Y SE PUEDA SEPARAR-->
+                                <label>Apellidos</label>
+                                <input type="text" id="apellido_estudiante_edit" class="form-control" name="apellido_estudiante" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios">
+                            </div>
                         </div> <!-- jose yajure, AGREGAR UNA NUEVA ROW SI SE AGRANDA EL FORM, COPIAR Y PEGAR ESTE DIV-->
                         <div class="row mb-3"> <!-- FILA2 -->
-                        <div class="col-md-6">
-                            <label>Contacto</label>
-                            <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Fecha de Nacimiento</label>
-                            <input type="text" class="form-control" id="fecha_nacimiento_edit_picker" name="fecha_nacimiento" placeholder="YYYY-MM-DD" required readonly>
-                        </div>
+                            <div class="col-md-6">
+                                <label>Contacto</label>
+                                <input type="text" id="contacto_estudiante_edit" class="form-control" name="contacto_estudiante" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Fecha de Nacimiento</label>
+                                <input type="text" class="form-control" id="fecha_nacimiento_edit_picker" name="fecha_nacimiento" placeholder="YYYY-MM-DD" required readonly>
+                            </div>
                         </div> <!-- FILA2 -->
                         <div class="row mb-3"> <!-- FILA3 -->
-                        <div class="col-md-6">
-                            <label>Municipio</label>
-                            <select id="municipio_edit" name="municipio" class="form-control" required>
-                                <?php
-                                $municipios = $municipioModelo->obtenerTodosLosMunicipios();
-                                while ($row = mysqli_fetch_array($municipios)) {
-                                    echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6" id="parroquia_edit_container" style="display: none;">
-                            <label>Parroquia</label>
-                            <select id='parroquia_edit' name="parroquia" class="form-control" required>
-                                <!-- Las parroquias se cargarán dinámicamente -->
-                            </select>
-                        </div>
+                            <div class="col-md-6">
+                                <label>Municipio</label>
+                                <select id="municipio_edit" name="municipio" class="form-control" required>
+                                    <?php
+                                    $municipios = $municipioModelo->obtenerTodosLosMunicipios();
+                                    while ($row = mysqli_fetch_array($municipios)) {
+                                        echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6" id="parroquia_edit_container" style="display: none;">
+                                <label>Parroquia</label>
+                                <select id='parroquia_edit' name="parroquia" class="form-control" required>
+                                    <!-- Las parroquias se cargarán dinámicamente -->
+                                </select>
+                            </div>
                         </div> <!-- FILA3 -->
                         <div class="row mb-3"> <!-- FILA4 -->
                             <div class="col-md-6" id="sector_edit_container" style="display: none;">
@@ -210,154 +210,158 @@
                     <div class="modal-body">
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos"></div>
                         <div class="row mb-3"> <!-- FILA1 -->
-                        <div class="col-md-6"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
-                        <div class="col-md-6"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                            <div class="col-md-6"><label>Nombres</label><input type="text" name="nombre_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
+                            <div class="col-md-6"><label>Apellidos</label><input type="text" name="apellido_estudiante" class="form-control" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios"></div>
                         </div><!-- FILA1 -->
                         <div class="row mb-3"> <!-- FILA2 -->
-                        <div class="col-md-6"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
-                        <div class="col-md-6"><label>Fecha de Nacimiento</label>
-                        <input type="text" class="form-control" id="fecha_nacimiento_picker" name="fecha_nacimiento" placeholder="AAAA-MM-DD" required readonly>
-                        </div> <!-- FILA2 -->
-                        <div class="row mb-3"> <!-- FILA3 -->
-                        <div class="col-md-6">
-                            <label>Municipio</label>
-                            <select id="municipio_create" name="municipio" class="form-control" required>
-                                <option value="">Seleccione un municipio</option>
-                                <?php
-                                $municipios = $municipioModelo->obtenerTodosLosMunicipios();
-                                while ($row = mysqli_fetch_array($municipios)) {
-                                    echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6" id="parroquia_create_container" style="display: none;">
-                            <label>Parroquia</label>
-                            <select id="parroquia_create" name="parroquia" class="form-control" required>
-                                <!-- Las parroquias se cargarán dinámicamente -->
-                            </select>
-                        </div>
-                        </div> <!-- FILA3 -->
-                        <div class="row mb-3"> <!-- FILA4 -->
-                            <div class="col-md-6" id="sector_create_container" style="display: none;">
-                                <label>Sector</label>
-                                <select id="sector_create" name="sector" class="form-control" required>
-                                    <!-- Los sectores se cargarán dinámicamente -->
+                            <div class="col-md-6"><label>Contacto</label><input type="text" name="contacto_estudiante" class="form-control" required pattern="\d{11}" title="El número de contacto debe contener 11 dígitos numéricos (ej: 04141234567)"></div>
+                            <div class="col-md-6"><label>Fecha de Nacimiento</label>
+                                <input type="text" class="form-control" id="fecha_nacimiento_picker" name="fecha_nacimiento" placeholder="AAAA-MM-DD" required readonly>
+                            </div> <!-- FILA2 -->
+                            <div class="row mb-3"> <!-- FILA3 -->
+                                <div class="col-md-6">
+                                    <label>Municipio</label>
+                                    <select id="municipio_create" name="municipio" class="form-control" required>
+                                        <option value="">Seleccione un municipio</option>
+                                        <?php
+                                        $municipios = $municipioModelo->obtenerTodosLosMunicipios();
+                                        while ($row = mysqli_fetch_array($municipios)) {
+                                            echo '<option value="' . $row["id_municipio"] . '"> ' . $row["municipio"];
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-6" id="parroquia_create_container" style="display: none;">
+                                    <label>Parroquia</label>
+                                    <select id="parroquia_create" name="parroquia" class="form-control" required>
+                                        <!-- Las parroquias se cargarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div> <!-- FILA3 -->
+                            <div class="row mb-3"> <!-- FILA4 -->
+                                <div class="col-md-6" id="sector_create_container" style="display: none;">
+                                    <label>Sector</label>
+                                    <select id="sector_create" name="sector" class="form-control" required>
+                                        <!-- Los sectores se cargarán dinámicamente -->
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Dirección Exacta</label>
+                                    <input type="text" name="direccion_exacta" class="form-control" required>
+                                </div>
+                            </div> <!-- FILA4 -->
+
+                            <div class="row mb-3"> <!-- FILA5 -->
+                                <div class="col-md-6" id="punto_referencia_create_container" style="display: none;">
+                                    <label>Punto de Referencia</label>
+                                    <input type="text" name="punto_referencia" class="form-control">
+                                </div>
+                            </div> <!-- FILA5 -->
+
+                            <div class="form-group mb-3"><label>Grado a cursar</label>
+                                <select name="grado" class="form-control" required>
+                                    <?php $grados = $gradoModelo->obtenerTodosLosGrados();
+                                    while ($row = mysqli_fetch_array($grados)) {
+                                        echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
+                                    }
+                                    ?>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label>Dirección Exacta</label>
-                                <input type="text" name="direccion_exacta" class="form-control" required>
-                            </div>
-                        </div> <!-- FILA4 -->
-
-                        <div class="row mb-3"> <!-- FILA5 -->
-                            <div class="col-md-6" id="punto_referencia_create_container" style="display: none;">
-                                <label>Punto de Referencia</label>
-                                <input type="text" name="punto_referencia" class="form-control">
-                            </div>
-                        </div> <!-- FILA5 -->
-
-                        <div class="form-group mb-3"><label>Grado a cursar</label>
-                            <select name="grado" class="form-control" required>
-                                <?php $grados = $gradoModelo->obtenerTodosLosGrados();
-                                while ($row = mysqli_fetch_array($grados)) {
-                                    echo '<option value="' . $row["id_grado"] . '"> ' . $row["numero_anio"] . '° año';
-                                }
-                                ?>
-                            </select>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
+                        </div>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-$(document).ready(function() {
-    // Verificar que Pikaday esté cargado
-    if (typeof Pikaday !== 'undefined') {
-        console.log('Pikaday cargado correctamente');
-        
-        // Configuración común para ambos datepickers
-        var pikadayConfig = {
-            format: 'YYYY-MM-DD',
-            i18n: {
-                previousMonth: 'Mes anterior',
-                nextMonth: 'Siguiente mes',
-                months: [
-                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-                ],
-                weekdays: [
-                    'Domingo', 'Lunes', 'Martes', 'Miércoles',
-                    'Jueves', 'Viernes', 'Sábado'
-                ],
-                weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-            },
-            yearRange: [1950, new Date().getFullYear()],
-            maxDate: new Date(), // No permite fechas futuras
-            showDaysInNextAndPreviousMonths: true
-        };
+        $(document).ready(function() {
+            // Verificar que Pikaday esté cargado
+            if (typeof Pikaday !== 'undefined') {
+                console.log('Pikaday cargado correctamente');
 
-        // Inicializar Pikaday para el modal de CREAR
-        var pickerCrear = new Pikaday({
-            ...pikadayConfig,
-            field: document.getElementById('fecha_nacimiento_picker')
-        });
+                // Configuración común para ambos datepickers
+                var pikadayConfig = {
+                    format: 'YYYY-MM-DD',
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    maxDate: new Date(), // No permite fechas futuras
+                    showDaysInNextAndPreviousMonths: true
+                };
 
-        // Inicializar Pikaday para el modal de EDITAR
-        var pickerEditar = new Pikaday({
-            ...pikadayConfig,
-            field: document.getElementById('fecha_nacimiento_edit_picker')
-        });
+                // Inicializar Pikaday para el modal de CREAR
+                var pickerCrear = new Pikaday(
+                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                    Object.assign({}, pikadayConfig, {
+                        field: document.getElementById('fecha_nacimiento_picker')
+                    })
+                );
 
-        // Mostrar datepicker cuando se abra el modal de CREAR
-        $('#insertdata').on('shown.bs.modal', function() {
-            if (pickerCrear) {
-                pickerCrear.show();
-            }
-        });
+                // Inicializar Pikaday para el modal de EDITAR
+                var pickerEditar = new Pikaday(
+                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                    Object.assign({}, pikadayConfig, {
+                        field: document.getElementById('fecha_nacimiento_edit_picker')
+                    })
+                );
 
-        // Mostrar datepicker cuando se abra el modal de EDITAR
-        $('#editmodal').on('shown.bs.modal', function() {
-            if (pickerEditar) {
-                pickerEditar.show();
-            }
-        });
-
-        // Cuando se cargan datos en el modal de editar, establecer la fecha en Pikaday
-        $(document).on('ajaxComplete', function(event, xhr, settings) {
-            if (settings.url === '/liceo/controladores/estudiante_controlador.php' && 
-                settings.data.includes("action=editar")) {
-                
-                // Esperar un momento para que los datos se carguen en los campos
-                setTimeout(function() {
-                    var fechaInput = document.getElementById('fecha_nacimiento_edit');
-                    var fechaPicker = document.getElementById('fecha_nacimiento_edit_picker');
-                    
-                    if (fechaInput && fechaInput.value && pickerEditar) {
-                        // Convertir fecha de YYYY-MM-DD a DD-MM-YYYY para Pikaday
-                        var fechaParts = fechaInput.value.split('-');
-                        if (fechaParts.length === 3) {
-                            var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
-                            fechaPicker.value = fechaFormateada;
-                            pickerEditar.setDate(new Date(fechaInput.value));
-                        }
+                // Mostrar datepicker cuando se abra el modal de CREAR
+                $('#insertdata').on('shown.bs.modal', function() {
+                    if (pickerCrear) {
+                        pickerCrear.show();
                     }
-                }, 100);
+                });
+
+                // Mostrar datepicker cuando se abra el modal de EDITAR
+                $('#editmodal').on('shown.bs.modal', function() {
+                    if (pickerEditar) {
+                        pickerEditar.show();
+                    }
+                });
+
+                // Cuando se cargan datos en el modal de editar, establecer la fecha en Pikaday
+                $(document).on('ajaxComplete', function(event, xhr, settings) {
+                    if (settings.url === '/liceo/controladores/estudiante_controlador.php' &&
+                        settings.data.includes("action=editar")) {
+
+                        // Esperar un momento para que los datos se carguen en los campos
+                        setTimeout(function() {
+                            var fechaInput = document.getElementById('fecha_nacimiento_edit');
+                            var fechaPicker = document.getElementById('fecha_nacimiento_edit_picker');
+
+                            if (fechaInput && fechaInput.value && pickerEditar) {
+                                // Convertir fecha de YYYY-MM-DD a DD-MM-YYYY para Pikaday
+                                var fechaParts = fechaInput.value.split('-');
+                                if (fechaParts.length === 3) {
+                                    var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+                                    fechaPicker.value = fechaFormateada;
+                                    pickerEditar.setDate(new Date(fechaInput.value));
+                                }
+                            }
+                        }, 100);
+                    }
+                });
+
+            } else {
+                console.error('Pikaday no está cargado');
             }
         });
-
-    } else {
-        console.error('Pikaday no está cargado');
-    }
-});
-</script>
+    </script>
 
     <script>
         new DataTable('#myTable', {
@@ -386,17 +390,17 @@ $(document).ready(function() {
             $('.modal').removeClass('in').hide();
             $('body').removeClass('modal-open');
             $('.modal-backdrop').remove();
-            
+
             // Abrir el modal solicitado
             $('#' + modalId).addClass('in').show();
             $('body').addClass('modal-open');
-            
+
             // Forzar backdrop manualmente si es necesario
             if (!$('.modal-backdrop').length) {
                 $('body').append('<div class="modal-backdrop in"></div>');
             }
         }
-        
+
         // Cerrar modales
         function cerrarModal(modalId) {
             $('#' + modalId).removeClass('in').hide();
@@ -512,8 +516,8 @@ $(document).ready(function() {
                 }
             });
 
-             // Cargar sectores en modal de EDITAR
-             $('#parroquia_edit').on('change', function() {
+            // Cargar sectores en modal de EDITAR
+            $('#parroquia_edit').on('change', function() {
                 var parroquia_id = $(this).val();
                 if (parroquia_id) {
                     $.ajax({
@@ -620,7 +624,7 @@ $(document).ready(function() {
             });
 
             // Limpiar eventos ajaxComplete al cerrar el modal para evitar ejecuciones no deseadas
-            $('#editmodal').on('hidden.bs.modal', function () {
+            $('#editmodal').on('hidden.bs.modal', function() {
                 $(document).off('ajaxComplete.parroquia');
                 $(document).off('ajaxComplete.sector');
             });
