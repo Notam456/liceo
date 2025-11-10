@@ -10,6 +10,8 @@
             display: none;
             margin-top: 5px;
         }
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css') ?>
+
     </style>
 </head>
 
@@ -24,7 +26,6 @@
     <nav>
         <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/navbar.php') ?>
     </nav>
-
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/sidebar.php') ?>
 
     <div class="container" style="margin-top: 30px;">
@@ -33,7 +34,7 @@
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') : ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <?php unset($_SESSION['status']); ?>
                 <?php endif; ?>
@@ -146,11 +147,12 @@
     </div>
 
     <!-- Modal Registrar Asistencia -->
-    <div class="modal fade" id="registrarAsistencia" tabindex="-1" aria-labelledby="registrarAsistenciaLabel" aria-hidden="true">
+    <div class="modal" id="registrarAsistencia" tabindex="-1" aria-labelledby="registrarAsistenciaLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="registrarAsistenciaLabel">Registrar Asistencia</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/asistencia_controlador.php" method="POST" id="formAsistencia">
                     <input type="hidden" name="action" value="registrar">
@@ -188,12 +190,12 @@
     </div>
 
     <!-- Modal Editar Asistencia -->
-    <div class="modal fade" id="editarAsistenciaModal" tabindex="-1" aria-labelledby="editarAsistenciaModalLabel" aria-hidden="true">
+    <div class="modal" id="editarAsistenciaModal" tabindex="-1" aria-labelledby="editarAsistenciaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editarAsistenciaModalLabel">Editar Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formEditarAsistencia" action="/liceo/controladores/asistencia_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -239,12 +241,12 @@
     </div>
 
     <!-- Modal Consultar Detalle -->
-    <div class="modal fade" id="consultarDetalleModal" tabindex="-1" aria-labelledby="consultarDetalleModalLabel" aria-hidden="true">
+    <div class="modal" id="consultarDetalleModal" tabindex="-1" aria-labelledby="consultarDetalleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="consultarDetalleModalLabel">Detalle de Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="detalleInfo" class="alert alert-info mb-3"></div>
@@ -266,7 +268,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modificarAsistenciaModalLabel">Modificar Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modificarInfo" class="alert alert-info mb-3"></div>

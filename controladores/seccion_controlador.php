@@ -271,8 +271,8 @@ switch ($action) {
         }
 
         // Obtener información del período usado
-        $periodo_desde = $reporte_inasistencias[0]['periodo_desde'] ?? null;
-        $periodo_hasta = $reporte_inasistencias[0]['periodo_hasta'] ?? null;
+        $periodo_desde = isset($reporte_inasistencias[0]['periodo_desde']) ? $reporte_inasistencias[0]['periodo_desde'] : null;
+        $periodo_hasta = isset($reporte_inasistencias[0]['periodo_hasta']) ? $reporte_inasistencias[0]['periodo_hasta'] : null;
 
         // Generar PDF
         require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/TCPDF/tcpdf.php');

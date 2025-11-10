@@ -11,11 +11,13 @@ if ($action == 'guardar') {
     if (isset($_POST['seccion']) && isset($_POST['dia']) && isset($_POST['id_asignacion'])) {
         $id_seccion = $_POST['seccion'];
         $dia = $_POST['dia'];
+
+
         $id_asignacion = $_POST['id_asignacion'];
 
         $resultado = $horarioModelo->guardarBloqueHorario($id_seccion, $dia, $id_asignacion);
         if ($resultado) {
-            echo json_encode(['success' => true, 'id_horario' => $resultado]);
+            echo json_encode(['success' => true, 'id_horario' => $resultado, 'dia' => $dia ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al guardar el horario.']);
         }

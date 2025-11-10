@@ -17,6 +17,8 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <title>Reporte de Ausencias</title>
+
+
     <style>
         .card-alumno {
             margin-bottom: 10px;
@@ -137,6 +139,8 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                 flex: 1 1 100%;
             }
         }
+<?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css'); ?>
+
     </style>
 </head>
 
@@ -151,9 +155,9 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') : ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div class="alert alert-warning alert-dismissible n show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <?php unset($_SESSION['status']); ?>
                 <?php endif; ?>
@@ -162,7 +166,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h4 class="mb-0">Inasistencia<i class="bi bi-clipboard2-pulse"></i></h4>
                         <div>
-                            <button class="btn btn-warning btn-sm me-2" id="verAlertasAusencias" data-bs-toggle="modal" data-bs-target="#alertasModal">
+                            <button class="btn btn-warning btn-sm me-2" id="verAlertasAusencias" data-toggle="modal" data-target="#alertasModal">
                                 <i class="bi bi-exclamation-triangle-fill"></i> Alertas
                                 <?php if ($totalAlertas > 0): ?>
                                     <span class="contador-alertas"><?= $totalAlertas ?></span>
@@ -176,8 +180,8 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                     <div class="card-body">
                         <?php
                         $totalEstudiantes = count($reporte);
-                        $totalAusencias = array_sum(array_map(fn($i) => $i['ausencias'], $reporte));
-                        $totalJustificados = array_sum(array_map(fn($i) => $i['justificadas'], $reporte));
+                        $totalAusencias = array_sum(array_map(function($i){ return $i['ausencias'];}, $reporte));
+                        $totalJustificados = array_sum(array_map(function($i){ return  $i['justificadas'];}, $reporte));
                         ?>
                         <div class="resumen">
                             <div class="stat">
@@ -264,7 +268,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                     <?php if ($item['tiene_visita_agendada']): ?>
                                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
                                                     <?php else: ?>
-                                                        <button type="button" class="btn btn-primary btn-sm schedule-visit" data-bs-toggle="modal" data-bs-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
+                                                        <button type="button" class="btn btn-primary btn-sm schedule-visit" data-toggle="modal" data-target="#visitaModal" data-id-estudiante="<?= $item['id_estudiante'] ?>">Agendar Visita</button>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </td>
@@ -290,7 +294,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/visita_modal_view.php'); ?>
 
     <!-- Modal para Alertas de Ausencias -->
-    <div class="modal fade <?= $abrirModalAutomaticamente ? 'modal-alerta-automatica' : '' ?>" id="alertasModal" tabindex="-1" aria-labelledby="alertasModalLabel" aria-hidden="true" data-bs-backdrop="<?= $abrirModalAutomaticamente ? 'static' : 'true' ?>" data-bs-keyboard="<?= $abrirModalAutomaticamente ? 'false' : 'true' ?>">
+    <div class="modal <?= $abrirModalAutomaticamente ? 'modal-alerta-automatica' : '' ?>" id="alertasModal" tabindex="-1" aria-labelledby="alertasModalLabel" aria-hidden="true" data-bs-backdrop="<?= $abrirModalAutomaticamente ? 'static' : 'true' ?>" data-bs-keyboard="<?= $abrirModalAutomaticamente ? 'false' : 'true' ?>">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
@@ -298,9 +302,9 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                         <i class="bi bi-exclamation-triangle-fill"></i> 
                         <?= $abrirModalAutomaticamente ? 'ALERTA: ' : '' ?>Estudiantes con 3 o más Ausencias
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     <?php if (!$abrirModalAutomaticamente): ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     <?php endif; ?>
                 </div>
                 <div class="modal-body">
@@ -359,10 +363,10 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                         <div class="estudiante-acciones">
                                                             <button type="button" 
                                                                     class="btn btn-primary btn-sm schedule-visit-modal" 
-                                                                    data-bs-toggle="modal" 
-                                                                    data-bs-target="#visitaModal" 
+                                                                    data-toggle="modal" 
+                                                                    data-target="#visitaModal" 
                                                                     data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
-                                                                    data-bs-dismiss="modal">
+                                                                    data-dismiss="modal">
                                                                 Agendar Visita
                                                             </button>
                                                             <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $estudiante['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
@@ -422,8 +426,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
             console.log("asas");
             // Pequeño delay para asegurar que todo esté cargado
             setTimeout(function() {
-                var alertasModal = new bootstrap.Modal(document.getElementById('alertasModal'));
-                alertasModal.show();
+                $('#alertasModal').modal('show');
                 
                 // Agregar clase para la animación especial
                 $('#alertasModal').addClass('modal-alerta-automatica');
