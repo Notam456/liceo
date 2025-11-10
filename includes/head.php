@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="/liceo/css/owl.carousel.min.css">
 <link rel="stylesheet" href="/liceo/css/owl.theme.default.min.css">
 <link rel="stylesheet" href="/liceo/css/sweetalert2.css">
+<link rel="stylesheet" href="/liceo/css/pikaday.min.css">
 
 <!-- ESTILOS PERSONALIZADOS -->
  <link rel="stylesheet" href="/liceo/css/Estilos.css">
@@ -27,6 +28,7 @@
 <script src="/liceo/js/datatables.js"></script>
 <script src="/liceo/js/owl.carousel.min.js"></script>
 <script src="/liceo/js/sweetalert2@10.js"></script>
+<script src="/liceo/js/pikaday.min.js"></script>
 
 <!-- JS PERSONALIZADO -->
 <script src="/liceo/js/app.js"></script>

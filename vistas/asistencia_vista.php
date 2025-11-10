@@ -3,6 +3,7 @@
 
 <head>
     <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
+    <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Registro de Asistencia</title>
     <style>
         .justificado-note {
@@ -60,7 +61,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <label for="filtroFecha" class="form-label">Fecha:</label>
-                                        <input type="date" class="form-control" id="filtroFecha">
+                                        <input type="text" class="form-control" id="filtroFecha" placeholder="AAAA-MM-DD" required readonly>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="filtroGrado" class="form-label">Grado:</label>
@@ -159,7 +160,7 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="fechaAsistencia" class="form-label">Fecha:</label>
-                                <input type="date" class="form-control" id="fechaAsistencia" name="fecha" required max="<?= $today ?>" <?php if ($min_date): ?> min="<?= $min_date ?>" <?php endif; ?>>
+                                <input type="text" class="form-control" id="fechaAsistencia" name="fecha" placeholder="AAAA-MM-DD" required readonly>
                             </div>
                             <div class="col-md-4">
                                 <label for="gradoAsistencia" class="form-label">Grado:</label>
@@ -180,6 +181,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="submit" name="guardar_asistencia" class="btn btn-success">Guardar Asistencia</button>
                     </div>
                 </form>
@@ -202,7 +204,7 @@
 
                         <div class="form-group mb-3">
                             <label for="fecha_edit">Fecha</label>
-                            <input type="date" class="form-control" id="fecha_edit" name="fecha" required>
+                            <input type="text" class="form-control" id="fecha_edit" name="fecha" placeholder="AAAA-MM-DD" required readonly>
                         </div>
 
                         <div class="form-group mb-3">
@@ -291,6 +293,68 @@
 
     <script>
         $(document).ready(function() {
+            // Verificar que Pikaday esté cargado
+            if (typeof Pikaday !== 'undefined') {
+                console.log('Pikaday cargado correctamente');
+                
+                // Configuración común para todos los datepickers
+                var pikadayConfig = {
+                    format: 'YYYY-MM-DD',
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    minDate: new Date(), // Fecha mínima 
+                    maxDate: new Date(Date.now() + 366 * 24 * 60 * 60 * 1000), // FECHA MAXIMA 366+
+                    showDaysInNextAndPreviousMonths: true
+                };
+
+                // Inicializar Pikaday para el filtro de fecha
+                var pickerFiltro = new Pikaday({
+                    ...pikadayConfig,
+                    field: document.getElementById('filtroFecha')
+                });
+
+                // Inicializar Pikaday para el modal de registrar asistencia
+                var pickerRegistrar = new Pikaday({
+                    ...pikadayConfig,
+                    field: document.getElementById('fechaAsistencia')
+                });
+
+                // Inicializar Pikaday para el modal de editar asistencia
+                var pickerEditar = new Pikaday({
+                    ...pikadayConfig,
+                    field: document.getElementById('fecha_edit')
+                });
+
+                // Mostrar datepicker cuando se abra el modal de registrar
+                $('#registrarAsistencia').on('shown.bs.modal', function() {
+                    if (pickerRegistrar) {
+                        pickerRegistrar.show();
+                    }
+                });
+
+                // Mostrar datepicker cuando se abra el modal de editar
+                $('#editarAsistenciaModal').on('shown.bs.modal', function() {
+                    if (pickerEditar) {
+                        pickerEditar.show();
+                    }
+                });
+
+            } else {
+                console.error('Pikaday no está cargado');
+            }
+
             // Configuración de DataTables
             $('#tablaAsistencia').DataTable({
                 columnDefs: [

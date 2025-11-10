@@ -258,12 +258,12 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label for="inicio">Fecha de inicio del año académico</label>
-                            <input type="date" class="form-control" name="inicio" min="<?= $today->format('Y-m-d');?>" max="<?= $yearLater->format('Y-m-d') ?>"  required>
+                            <input type="text" class="form-control" id="inicio_picker" name="inicio" placeholder="AAAA-MM-DD" required readonly>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="fin">Fecha de fin del año académico</label>
-                            <input type="date" class="form-control" name="fin" min="<?= $today->format('Y-m-d');?>" max="<?= $yearLater->format('Y-m-d') ?>" required>
+                            <input type="text" class="form-control" id="fin_picker" name="fin" placeholder="AAAA-MM-DD" required readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -274,6 +274,89 @@
             </div>
         </div>
     </div>
+
+    <script>
+$(document).ready(function() {
+    // Verificar que Pikaday esté cargado
+    if (typeof Pikaday !== 'undefined') {
+        console.log('Pikaday cargado correctamente');
+        
+        // Configuración común para ambos datepickers
+        var pikadayConfig = {
+            format: 'YYYY-MM-DD',
+            i18n: {
+                previousMonth: 'Mes anterior',
+                nextMonth: 'Siguiente mes',
+                months: [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ],
+                weekdays: [
+                    'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                    'Jueves', 'Viernes', 'Sábado'
+                ],
+                weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+            },
+            yearRange: [1950, new Date().getFullYear()],
+            minDate: new Date(), // Fecha mínima 
+            maxDate: new Date(Date.now() + 366 * 24 * 60 * 60 * 1000), // FECHA MAXIMA 366+
+            showDaysInNextAndPreviousMonths: true
+        };
+
+        // Inicializar Pikaday para el modal de CREAR
+        var pickerCrear = new Pikaday({
+            ...pikadayConfig,
+            field: document.getElementById('inicio_picker')
+        });
+
+        // Inicializar Pikaday para el modal de EDITAR
+        var pickerEditar = new Pikaday({
+            ...pikadayConfig,
+            field: document.getElementById('fin_picker')
+        });
+
+        // Mostrar datepicker cuando se abra el modal de CREAR
+        $('#insertdata').on('shown.bs.modal', function() {
+            if (pickerCrear) {
+                pickerCrear.show();
+            }
+        });
+
+        // Mostrar datepicker cuando se abra el modal de EDITAR
+        $('#editmodal').on('shown.bs.modal', function() {
+            if (pickerEditar) {
+                pickerEditar.show();
+            }
+        });
+
+        // Cuando se cargan datos en el modal de editar, establecer la fecha en Pikaday
+        $(document).on('ajaxComplete', function(event, xhr, settings) {
+            if (settings.url === '/liceo/controladores/estudiante_controlador.php' && 
+                settings.data.includes("action=editar")) {
+                
+                // Esperar un momento para que los datos se carguen en los campos
+                setTimeout(function() {
+                    var fechaInput = document.getElementById('fecha_nacimiento_edit');
+                    var fechaPicker = document.getElementById('fecha_nacimiento_edit_picker');
+                    
+                    if (fechaInput && fechaInput.value && pickerEditar) {
+                        // Convertir fecha de YYYY-MM-DD a DD-MM-YYYY para Pikaday
+                        var fechaParts = fechaInput.value.split('-');
+                        if (fechaParts.length === 3) {
+                            var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+                            fechaPicker.value = fechaFormateada;
+                            pickerEditar.setDate(new Date(fechaInput.value));
+                        }
+                    }
+                }, 100);
+            }
+        });
+
+    } else {
+        console.error('Pikaday no está cargado');
+    }
+});
+</script>
 
     <script>
         new DataTable('#myTable', {
