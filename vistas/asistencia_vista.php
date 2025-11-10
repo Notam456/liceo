@@ -33,7 +33,7 @@
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') : ?>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <?php unset($_SESSION['status']); ?>
                 <?php endif; ?>
@@ -151,7 +151,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="registrarAsistenciaLabel">Registrar Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/asistencia_controlador.php" method="POST" id="formAsistencia">
                     <input type="hidden" name="action" value="registrar">
@@ -193,7 +193,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editarAsistenciaModalLabel">Editar Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formEditarAsistencia" action="/liceo/controladores/asistencia_controlador.php" method="POST">
                     <input type="hidden" name="action" value="actualizar">
@@ -244,7 +244,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="consultarDetalleModalLabel">Detalle de Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="detalleInfo" class="alert alert-info mb-3"></div>
@@ -266,7 +266,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modificarAsistenciaModalLabel">Modificar Asistencia</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modificarInfo" class="alert alert-info mb-3"></div>
