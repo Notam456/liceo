@@ -204,7 +204,7 @@ CREATE TABLE usuario (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE logs_anio (
+CREATE TABLE historial_anio (
     id_log INT AUTO_INCREMENT PRIMARY KEY,
     id_anio INT NOT NULL,
     id_usuario INT NOT NULL,

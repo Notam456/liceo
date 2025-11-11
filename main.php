@@ -31,14 +31,17 @@ define('ROOT_PATH', __DIR__ . '/');
             include(ROOT_PATH . 'includes/permissions.php');
 
             // Función para renderizar un módulo individual
-            function render_modulo($nombre_modulo, $imagen_url, $nombre_legible) {
+            function render_modulo($nombre_modulo, $imagen_url, $nombre_legible)
+            {
                 $ruta = 'controladores/' . $nombre_modulo . '_controlador.php';
                 $texto = $nombre_legible[$nombre_modulo];
-                
-                echo '<div class="modulo" data-url="' . htmlspecialchars($ruta) . '">';
+                echo '<a href="' . htmlspecialchars($ruta) . '">';
+                echo '<div class="modulo" style="width: 20%;" data-url="' . htmlspecialchars($ruta) . '">';
                 echo '<img src="' . htmlspecialchars($imagen_url) . '" alt="' . htmlspecialchars($texto) . '">';
                 echo '<h2>' . htmlspecialchars($texto) . '</h2>';
+
                 echo '</div>';
+                echo '</a>';
             }
             ?>
 
@@ -47,7 +50,7 @@ define('ROOT_PATH', __DIR__ . '/');
                     <div class="categoria-section">
                         <h2 class="categoria-titulo"><?php echo htmlspecialchars($categoria); ?></h2>
                         <hr class="categoria-linea">
-                        
+
                         <?php
                         $has_sub_categories = false;
                         if (!empty($modulos)) {
