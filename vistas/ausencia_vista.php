@@ -5,8 +5,8 @@ if (!isset($reporte)) {
 }
 
 // Calcular estudiantes en alerta para determinar si abrir el modal automáticamente
-$estudiantesAlerta = array_filter($reporte, function($item) {
-    return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
+$estudiantesAlerta = array_filter($reporte, function ($item) {
+    return $item['total_nuevas'] >= 3 && !$item['tiene_visita_agendada'];
 });
 $totalAlertas = count($estudiantesAlerta);
 $abrirModalAutomaticamente = $totalAlertas > 0;
@@ -111,9 +111,17 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 
         /* Animación para el modal automático */
         @keyframes pulse-alert {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .modal-alerta-automatica .modal-content {
@@ -139,8 +147,8 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                 flex: 1 1 100%;
             }
         }
-<?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css'); ?>
 
+        <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css'); ?>
     </style>
 </head>
 
@@ -180,8 +188,12 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                     <div class="card-body">
                         <?php
                         $totalEstudiantes = count($reporte);
-                        $totalAusencias = array_sum(array_map(function($i){ return $i['ausencias'];}, $reporte));
-                        $totalJustificados = array_sum(array_map(function($i){ return  $i['justificadas'];}, $reporte));
+                        $totalAusencias = array_sum(array_map(function ($i) {
+                            return $i['ausencias'];
+                        }, $reporte));
+                        $totalJustificados = array_sum(array_map(function ($i) {
+                            return  $i['justificadas'];
+                        }, $reporte));
                         ?>
                         <div class="resumen">
                             <div class="stat">
@@ -206,24 +218,24 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                 </div>
                                 <div class="col-md-3">
                                     <label for="filtroDesde" class="form-label">Desde:</label>
-                                   <!-- <input type="text" class="form-control" id="filtroDesde" name="inicio" placeholder="AAAA-MM-DD" required readonly> -->
-                                    <input type="text" class="form-control" id="filtroDesde" placeholder="AAAA-MM-DD"  required readonly min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
+                                    <!-- <input type="text" class="form-control" id="filtroDesde" name="inicio" placeholder="AAAA-MM-DD" required readonly> -->
+                                    <input type="text" class="form-control" id="filtroDesde" placeholder="AAAA-MM-DD" required readonly min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="filtroHasta" class="form-label">Hasta:</label>
-                                    <input type="text" class="form-control" id="filtroHasta" placeholder="AAAA-MM-DD"  required readonly min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
+                                    <input type="text" class="form-control" id="filtroHasta" placeholder="AAAA-MM-DD" required readonly min="<?= $anio_desde ?>" max="<?= $anio_hasta ?>">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="filtroSeccion" class="form-label">Filtrar por Sección:</label>
                                     <select class="form-select" id="filtroSeccion">
                                         <option value="">Todas las Secciones</option>
-                                        <?php 
+                                        <?php
                                         if (isset($secciones) && is_array($secciones)):
                                             foreach ($secciones as $seccion): ?>
-                                            <option value="<?= $seccion['id_seccion'] ?>">
-                                                <?= htmlspecialchars($seccion['grado']) ?>
-                                            </option>
-                                        <?php endforeach; 
+                                                <option value="<?= $seccion['id_seccion'] ?>">
+                                                    <?= htmlspecialchars($seccion['grado']) ?>
+                                                </option>
+                                        <?php endforeach;
                                         endif; ?>
                                     </select>
                                 </div>
@@ -265,7 +277,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php if ($item['total'] >= 3): ?>
+                                                <?php if ($item['total_nuevas'] >= 3): ?>
                                                     <?php if ($item['tiene_visita_agendada']): ?>
                                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
                                                     <?php else: ?>
@@ -300,22 +312,22 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="alertasModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill"></i> 
+                        <i class="bi bi-exclamation-triangle-fill"></i>
                         <?= $abrirModalAutomaticamente ? 'ALERTA: ' : '' ?>Estudiantes con 3 o más Ausencias
                     </h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     <?php if (!$abrirModalAutomaticamente): ?>
-                       <!-- <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> -->
+                        <!-- <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> -->
                     <?php endif; ?>
                 </div>
                 <div class="modal-body">
                     <?php if ($abrirModalAutomaticamente): ?>
                         <div class="alert alert-warning">
-                            <i class="bi bi-bell-fill"></i> 
+                            <i class="bi bi-bell-fill"></i>
                             <strong>Se detectaron <?= $totalAlertas ?> estudiante(s) con 3 o más ausencias que requieren atención inmediata.</strong>
                         </div>
                     <?php endif; ?>
-                    
+
                     <div id="contenedor-alertas">
                         <!-- Aquí se cargarán las alertas agrupadas por sección -->
                         <?php
@@ -328,7 +340,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                             }
                             $agrupadosPorSeccion[$seccion][] = $estudiante;
                         }
-                        
+
                         if (empty($agrupadosPorSeccion)): ?>
                             <div class="text-center py-4">
                                 <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
@@ -349,9 +361,9 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                     <div class="estudiante-alerta-item">
                                                         <div class="estudiante-info">
                                                             <strong><?= htmlspecialchars($estudiante['nombre']) ?></strong>
-                                                            <br>     
+                                                            <br>
                                                             <small class="text-muted">
-                                                                Cédula: <?= htmlspecialchars($estudiante['cedula']) ?> | 
+                                                                Cédula: <?= htmlspecialchars($estudiante['cedula']) ?> |
                                                                 Contacto: <?= htmlspecialchars($estudiante['contacto']) ?>
                                                             </small>
                                                             <br>
@@ -362,16 +374,16 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                             </div>
                                                         </div>
                                                         <div class="estudiante-acciones">
-                                                            <button type="button" 
-                                                                    class="btn btn-primary btn-sm schedule-visit-modal" 
-                                                                    data-toggle="modal" 
-                                                                    data-target="#visitaModal" 
-                                                                    data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
-                                                                    data-dismiss="modal">
+                                                            <button type="button"
+                                                                class="btn btn-primary btn-sm schedule-visit-modal"
+                                                                data-toggle="modal"
+                                                                data-target="#visitaModal"
+                                                                data-id-estudiante="<?= $estudiante['id_estudiante'] ?>"
+                                                                data-dismiss="modal">
                                                                 Agendar Visita
                                                             </button>
                                                             <a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=<?= $estudiante['id_estudiante'] ?>&desde=<?= $anio_desde ?>&hasta=<?= $anio_hasta ?>"
-                                                               class="btn btn-secondary btn-sm mt-1" target="_blank">
+                                                                class="btn btn-secondary btn-sm mt-1" target="_blank">
                                                                 Generar Reporte
                                                             </a>
                                                         </div>
@@ -404,41 +416,75 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 
                 // Configuración común para ambos datepickers
                 var pikadayConfig = {
-                format: 'YYYY-MM-DD',
-                toString: function(date, format) {
-                    // Forzar el formato YYYY-MM-DD
-                    var year = date.getFullYear();
-                    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                    var day = ('0' + date.getDate()).slice(-2);
-                    return year + '-' + month + '-' + day;
-                },
-                parse: function(dateString, format) {
-                    // Parsear desde YYYY-MM-DD
-                    var parts = dateString.split('-');
-                    if (parts.length === 3) {
-                        return new Date(parts[0], parts[1] - 1, parts[2]);
-                    }
-                    return new Date(dateString);
-                },
-                i18n: {
-                    previousMonth: 'Mes anterior',
-                    nextMonth: 'Siguiente mes',
-                    months: [
-                        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-                    ],
-                    weekdays: [
-                        'Domingo', 'Lunes', 'Martes', 'Miércoles',
-                        'Jueves', 'Viernes', 'Sábado'
-                    ],
-                    weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-                },
-                yearRange: [1950, new Date().getFullYear()],
-                minDate: new Date(new Date().setHours(0, 0, 0, 0)),
-                maxDate: new Date('<?= $anio_hasta ?>'),
-                showDaysInNextAndPreviousMonths: true
-            };
-
+                    format: 'YYYY-MM-DD',
+                    toString: function(date, format) {
+                        // Forzar el formato YYYY-MM-DD
+                        var year = date.getFullYear();
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function(dateString, format) {
+                        // Parsear desde YYYY-MM-DD
+                        var parts = dateString.split('-');
+                        if (parts.length === 3) {
+                            return new Date(parts[0], parts[1] - 1, parts[2]);
+                        }
+                        return new Date(dateString);
+                    },
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    minDate: new Date('<?= $anio_desde ?>'),
+                    maxDate: new Date('<?= $anio_hasta ?>'),
+                    showDaysInNextAndPreviousMonths: true
+                };
+                var pikadayConfigVisita = {
+                    format: 'YYYY-MM-DD',
+                    toString: function(date, format) {
+                        // Forzar el formato YYYY-MM-DD
+                        var year = date.getFullYear();
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function(dateString, format) {
+                        // Parsear desde YYYY-MM-DD
+                        var parts = dateString.split('-');
+                        if (parts.length === 3) {
+                            return new Date(parts[0], parts[1] - 1, parts[2]);
+                        }
+                        return new Date(dateString);
+                    },
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    minDate: new Date(new Date().setHours(0, 0, 0, 0)),
+                    maxDate: new Date('<?= $anio_hasta ?>'),
+                    showDaysInNextAndPreviousMonths: true
+                };
                 // Inicializar Pikaday para el modal de CREAR
                 var pickerCrear = new Pikaday(
                     // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
@@ -457,7 +503,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 
                 var pickerEditar = new Pikaday(
                     // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
-                    Object.assign({}, pikadayConfig, {
+                    Object.assign({}, pikadayConfigVisita, {
                         field: document.getElementById('fecha_visita')
                     })
                 );
@@ -506,201 +552,201 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
     </script>
 
     <script>
-    $(document).ready(function() {
-        var table = $('#tablaReportes').DataTable({
-            order: [
-                [7, 'desc']
-            ],
-            language: {
-                search: 'Buscar',
-                info: 'Mostrando pagina _PAGE_ de _PAGES_',
-                infoEmpty: 'No se han encontrado resultados',
-                infoFiltered: '(se han encontrado _MAX_ resultados)',
-                lengthMenu: 'Mostrar _MENU_ por pagina',
-                zeroRecords: '0 resultados encontrados'
-            },
-            columnDefs: [{
-                    width: '120px',
-                    targets: [8, 9]
+        $(document).ready(function() {
+            var table = $('#tablaReportes').DataTable({
+                order: [
+                    [7, 'desc']
+                ],
+                language: {
+                    search: 'Buscar',
+                    info: 'Mostrando pagina _PAGE_ de _PAGES_',
+                    infoEmpty: 'No se han encontrado resultados',
+                    infoFiltered: '(se han encontrado _MAX_ resultados)',
+                    lengthMenu: 'Mostrar _MENU_ por pagina',
+                    zeroRecords: '0 resultados encontrados'
                 },
-                {
-                    visible: false,
-                    target: 0
-                }
-            ]
-        });
-
-        // Abrir modal automáticamente si hay alertas
-        <?php if ($abrirModalAutomaticamente){ ?>
-        $(document).ready( function() {
-            console.log("asas");
-            // Pequeño delay para asegurar que todo esté cargado
-            setTimeout(function() {
-                $('#alertasModal').modal('show');
-                
-                // Agregar clase para la animación especial
-                $('#alertasModal').addClass('modal-alerta-automatica');
-            }, 500);
-        });
-        <?php
-     } ?>
-
-        $('#filtroCedula').keyup(function() {
-            table.column(4).search(this.value).draw();
-        });
-
-        // Función para actualizar el contador de alertas
-        function actualizarContadorAlertas() {
-            var totalAlertas = $('.estudiante-alerta-item').length;
-            var $contador = $('.contador-alertas');
-            
-            if (totalAlertas > 0) {
-                if ($contador.length === 0) {
-                    $('#verAlertasAusencias').append('<span class="contador-alertas">' + totalAlertas + '</span>');
-                } else {
-                    $contador.text(totalAlertas);
-                }
-            } else {
-                $contador.remove();
-            }
-        }
-
-        // Inicializar contador
-        actualizarContadorAlertas();
-
-        $(document).on('click', '.schedule-visit, .schedule-visit-modal', function() {
-            var studentId = $(this).data('id-estudiante');
-            $('#visitaModal #id_estudiante_visita').val(studentId);
-        });
-
-        // Botón especial para el modal automático
-        $('#entenderYContinuar').click(function() {
-            // Aquí podrías agregar lógica adicional si necesitas
-            // como marcar las alertas como vistas, etc.
-            console.log('Usuario confirmó entender las alertas');
-        });
-
-        function cargarReporte() {
-            var desde = $('#filtroDesde').val();
-            var hasta = $('#filtroHasta').val();
-            var id_seccion = $('#filtroSeccion').val();
-
-            var url = `/liceo/controladores/ausencia_controlador.php?desde=${desde}&hasta=${hasta}&id_seccion=${id_seccion}`;
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        var table = $('#tablaReportes').DataTable();
-                        table.clear();
-
-                        var estudiantesAlerta = [];
-                        var totalEstudiantes = 0;
-                        var totalAusencias = 0;
-                        var totalJustificados = 0;
-
-                        response.data.forEach(function(item) {
-                            if (item.total >= 3 && !item.tiene_visita_agendada) {
-                                estudiantesAlerta.push(item);
-                            }
-
-                            // Actualizar estadísticas
-                            totalEstudiantes++;
-                            totalAusencias += item.ausencias;
-                            totalJustificados += item.justificadas;
-
-                            var actionButton = '';
-                            if (item.total >= 3) {
-                                if (item.tiene_visita_agendada) {
-                                    actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
-                                } else {
-                                    actionButton = '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-toggle="modal" data-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
-                                }
-                            }
-
-                            var reportButton = '';
-                            if (item.total > 0) {
-                                reportButton = '<a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=' + item.id_estudiante + '&desde=' + desde + '&hasta=' + hasta + '" class="btn btn-secondary btn-sm" target="_blank">Generar Reporte</a>';
-                            }
-
-                            // AGREGAR LA FILA CORRECTAMENTE CON TODAS LAS COLUMNAS
-                            table.row.add([
-                                item.id_estudiante, // Columna 0 - oculta
-                                item.nombre,        // Columna 1
-                                item.seccion,       // Columna 2
-                                item.contacto,      // Columna 3
-                                item.cedula,        // Columna 4
-                                '<span class="badge bg-danger">' + item.ausencias + '</span>', // Columna 5
-                                '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>', // Columna 6
-                                '<span class="badge ' + (item.total >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>', // Columna 7
-                                actionButton,       // Columna 8
-                                reportButton        // Columna 9
-                            ]);
-                        });
-
-                        table.draw();
-
-                        // ACTUALIZAR ESTADÍSTICAS
-                        $('.resumen .stat:nth-child(1) .badge').text(totalEstudiantes);
-                        $('.resumen .stat:nth-child(2) .badge').text(totalAusencias);
-                        $('.resumen .stat:nth-child(3) .badge').text(totalJustificados);
-                        $('.resumen .stat:nth-child(4) .badge').text(estudiantesAlerta.length);
-
-                        // ACTUALIZAR CONTADOR DE ALERTAS
-                        actualizarContadorAlertas();
-
-                    } else {
-                        console.error('Error fetching report data:', response.error);
-                        alert('Error al cargar los datos: ' + response.error);
+                columnDefs: [{
+                        width: '120px',
+                        targets: [8, 9]
+                    },
+                    {
+                        visible: false,
+                        target: 0
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    alert('Error al cargar los datos. Por favor, intente nuevamente.');
-                }
+                ]
             });
-        }
 
-        // ASIGNAR EVENTOS PARA LOS FILTROS
-        $('#filtroDesde, #filtroHasta, #filtroSeccion').on('change', function() {
-            cargarReporte();
-        });
+            // Abrir modal automáticamente si hay alertas
+            <?php if ($abrirModalAutomaticamente) { ?>
+                $(document).ready(function() {
+                    console.log("asas");
+                    // Pequeño delay para asegurar que todo esté cargado
+                    setTimeout(function() {
+                        $('#alertasModal').modal('show');
 
-        $('#limpiarFiltros').click(function() {
-            $('#filtroDesde').val('<?= $anio_desde ?>');
-            $('#filtroHasta').val('<?= $anio_hasta ?>');
-            $('#filtroSeccion').val('');
-            $('#filtroCedula').val('');
-            table.column(4).search('').draw();
-            cargarReporte();
-        });
-
-        // CARGAR REPORTE INICIAL SI HAY FILTROS APLICADOS
-        if ($('#filtroSeccion').val() || $('#filtroDesde').val() !== '<?= $anio_desde ?>' || $('#filtroHasta').val() !== '<?= $anio_hasta ?>') {
-            cargarReporte();
-        }
-
-        // NUEVO: Generar reporte general por sección
-        $('#generarReporteGeneral').click(function() {
-            var id_seccion = $('#filtroSeccion').val();
-            var desde = $('#filtroDesde').val();
-            var hasta = $('#filtroHasta').val();
-            
-            if (!id_seccion) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Seleccione una sección',
-                    text: 'Por favor, seleccione una sección para generar el reporte general.'
+                        // Agregar clase para la animación especial
+                        $('#alertasModal').addClass('modal-alerta-automatica');
+                    }, 500);
                 });
-                return;
+            <?php
+            } ?>
+
+            $('#filtroCedula').keyup(function() {
+                table.column(4).search(this.value).draw();
+            });
+
+            // Función para actualizar el contador de alertas
+            function actualizarContadorAlertas() {
+                var totalAlertas = $('.estudiante-alerta-item').length;
+                var $contador = $('.contador-alertas');
+
+                if (totalAlertas > 0) {
+                    if ($contador.length === 0) {
+                        $('#verAlertasAusencias').append('<span class="contador-alertas">' + totalAlertas + '</span>');
+                    } else {
+                        $contador.text(totalAlertas);
+                    }
+                } else {
+                    $contador.remove();
+                }
             }
-            
-            var url = `/liceo/controladores/ausencia_controlador.php?action=generar_reporte_general_seccion&id_seccion=${id_seccion}&desde=${desde}&hasta=${hasta}`;
-            window.open(url, '_blank');
+
+            // Inicializar contador
+            actualizarContadorAlertas();
+
+            $(document).on('click', '.schedule-visit, .schedule-visit-modal', function() {
+                var studentId = $(this).data('id-estudiante');
+                $('#visitaModal #id_estudiante_visita').val(studentId);
+            });
+
+            // Botón especial para el modal automático
+            $('#entenderYContinuar').click(function() {
+                // Aquí podrías agregar lógica adicional si necesitas
+                // como marcar las alertas como vistas, etc.
+                console.log('Usuario confirmó entender las alertas');
+            });
+
+            function cargarReporte() {
+                var desde = $('#filtroDesde').val();
+                var hasta = $('#filtroHasta').val();
+                var id_seccion = $('#filtroSeccion').val();
+
+                var url = `/liceo/controladores/ausencia_controlador.php?desde=${desde}&hasta=${hasta}&id_seccion=${id_seccion}`;
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            var table = $('#tablaReportes').DataTable();
+                            table.clear();
+
+                            var estudiantesAlerta = [];
+                            var totalEstudiantes = 0;
+                            var totalAusencias = 0;
+                            var totalJustificados = 0;
+
+                            response.data.forEach(function(item) {
+                                if (item.total_nuevas >= 3 && !item.tiene_visita_agendada) {
+                                    estudiantesAlerta.push(item);
+                                }
+
+                                // Actualizar estadísticas
+                                totalEstudiantes++;
+                                totalAusencias += item.ausencias;
+                                totalJustificados += item.justificadas;
+
+                                var actionButton = '';
+                                if (item.total_nuevas >= 3) {
+                                    if (item.tiene_visita_agendada) {
+                                        actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
+                                    } else {
+                                        actionButton = '<button type="button" class="btn btn-primary btn-sm schedule-visit" data-toggle="modal" data-target="#visitaModal" data-id-estudiante="' + item.id_estudiante + '">Agendar Visita</button>';
+                                    }
+                                }
+
+                                var reportButton = '';
+                                if (item.total > 0) {
+                                    reportButton = '<a href="/liceo/controladores/ausencia_controlador.php?action=generar_reporte_ausencias&id_estudiante=' + item.id_estudiante + '&desde=' + desde + '&hasta=' + hasta + '" class="btn btn-secondary btn-sm" target="_blank">Generar Reporte</a>';
+                                }
+
+                                // AGREGAR LA FILA CORRECTAMENTE CON TODAS LAS COLUMNAS
+                                table.row.add([
+                                    item.id_estudiante, // Columna 0 - oculta
+                                    item.nombre, // Columna 1
+                                    item.seccion, // Columna 2
+                                    item.contacto, // Columna 3
+                                    item.cedula, // Columna 4
+                                    '<span class="badge bg-danger">' + item.ausencias + '</span>', // Columna 5
+                                    '<span class="badge bg-warning text-dark">' + item.justificadas + '</span>', // Columna 6
+                                    '<span class="badge ' + (item.total >= 3 ? 'bg-danger' : 'bg-secondary') + '">' + item.total + '</span>', // Columna 7
+                                    actionButton, // Columna 8
+                                    reportButton // Columna 9
+                                ]);
+                            });
+
+                            table.draw();
+
+                            // ACTUALIZAR ESTADÍSTICAS
+                            $('.resumen .stat:nth-child(1) .badge').text(totalEstudiantes);
+                            $('.resumen .stat:nth-child(2) .badge').text(totalAusencias);
+                            $('.resumen .stat:nth-child(3) .badge').text(totalJustificados);
+                            $('.resumen .stat:nth-child(4) .badge').text(estudiantesAlerta.length);
+
+                            // ACTUALIZAR CONTADOR DE ALERTAS
+                            actualizarContadorAlertas();
+
+                        } else {
+                            console.error('Error fetching report data:', response.error);
+                            alert('Error al cargar los datos: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', status, error);
+                        alert('Error al cargar los datos. Por favor, intente nuevamente.');
+                    }
+                });
+            }
+
+            // ASIGNAR EVENTOS PARA LOS FILTROS
+            $('#filtroDesde, #filtroHasta, #filtroSeccion').on('change', function() {
+                cargarReporte();
+            });
+
+            $('#limpiarFiltros').click(function() {
+                $('#filtroDesde').val('<?= $anio_desde ?>');
+                $('#filtroHasta').val('<?= $anio_hasta ?>');
+                $('#filtroSeccion').val('');
+                $('#filtroCedula').val('');
+                table.column(4).search('').draw();
+                cargarReporte();
+            });
+
+            // CARGAR REPORTE INICIAL SI HAY FILTROS APLICADOS
+            if ($('#filtroSeccion').val() || $('#filtroDesde').val() !== '<?= $anio_desde ?>' || $('#filtroHasta').val() !== '<?= $anio_hasta ?>') {
+                cargarReporte();
+            }
+
+            // NUEVO: Generar reporte general por sección
+            $('#generarReporteGeneral').click(function() {
+                var id_seccion = $('#filtroSeccion').val();
+                var desde = $('#filtroDesde').val();
+                var hasta = $('#filtroHasta').val();
+
+                if (!id_seccion) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Seleccione una sección',
+                        text: 'Por favor, seleccione una sección para generar el reporte general.'
+                    });
+                    return;
+                }
+
+                var url = `/liceo/controladores/ausencia_controlador.php?action=generar_reporte_general_seccion&id_seccion=${id_seccion}&desde=${desde}&hasta=${hasta}`;
+                window.open(url, '_blank');
+            });
         });
-    });
     </script>
 </body>
 
