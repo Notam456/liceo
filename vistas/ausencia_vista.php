@@ -5,8 +5,13 @@ if (!isset($reporte)) {
 }
 
 // Calcular estudiantes en alerta para determinar si abrir el modal automáticamente
+<<<<<<< Updated upstream
 $estudiantesAlerta = array_filter($reporte, function($item) {
     return $item['total_nuevas'] >= 3 && !$item['tiene_visita_agendada'];
+=======
+$estudiantesAlerta = array_filter($reporte, function ($item) {
+    return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
+>>>>>>> Stashed changes
 });
 $totalAlertas = count($estudiantesAlerta);
 $abrirModalAutomaticamente = $totalAlertas > 0;
