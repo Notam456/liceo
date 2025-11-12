@@ -332,8 +332,7 @@
                 var maxDate = hoy > anioHasta ? anioHasta : hoy;
 
                 // Configurar datepicker para filtro de fecha
-                var pickerCrear = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerFiltro = new Pikaday(
                     Object.assign({}, pikadayConfig, {
                         field: document.getElementById('filtroFecha'),
                         minDate: new Date('<?= $anio_desde ?>'),
@@ -342,24 +341,56 @@
                 );
 
                 // Configurar datepicker para fecha de asistencia
-                var pickerCrear = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerAsistencia = new Pikaday(
                     Object.assign({}, pikadayConfig, {
                         field: document.getElementById('fechaAsistencia'),
                         minDate: new Date('<?= $anio_desde ?>'),
-                        maxDate: maxDate
+                        maxDate: maxDate,
+                        onSelect: function() {
+                            document.getElementById('fechaAsistencia').setCustomValidity('');
+                        }
                     })
                 );
 
                 // Configurar datepicker para fecha de edición
-                var pickerCrear = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerEdit = new Pikaday(
                     Object.assign({}, pikadayConfig, {
                         field: document.getElementById('fecha_edit'),
                         minDate: new Date('<?= $anio_desde ?>'),
-                        maxDate: new Date()
+                        maxDate: new Date(),
+                        onSelect: function() {
+                            document.getElementById('fecha_edit').setCustomValidity('');
+                        }
                     })
                 );
+
+                // Validación de formulario de registro
+                document.getElementById('formAsistencia').addEventListener('submit', function(event) {
+                    var fechaAsistencia = document.getElementById('fechaAsistencia');
+                    if (fechaAsistencia.value.trim() === '') {
+                        event.preventDefault();
+                        fechaAsistencia.setCustomValidity('Este campo es obligatorio');
+                        fechaAsistencia.readOnly = false;
+                        fechaAsistencia.reportValidity();
+                        fechaAsistencia.readOnly = true;
+                    } else {
+                        fechaAsistencia.setCustomValidity('');
+                    }
+                });
+
+                // Validación de formulario de edición
+                document.getElementById('formEditarAsistencia').addEventListener('submit', function(event) {
+                    var fechaEdit = document.getElementById('fecha_edit');
+                    if (fechaEdit.value.trim() === '') {
+                        event.preventDefault();
+                        fechaEdit.setCustomValidity('Este campo es obligatorio');
+                        fechaEdit.readOnly = false;
+                        fechaEdit.reportValidity();
+                        fechaEdit.readOnly = true;
+                    } else {
+                        fechaEdit.setCustomValidity('');
+                    }
+                });
 
                 // Mostrar datepicker cuando se abra el modal de registrar
                 $('#registrarAsistencia').on('shown.bs.modal', function() {

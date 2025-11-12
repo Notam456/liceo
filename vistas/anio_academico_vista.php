@@ -302,24 +302,67 @@ $(document).ready(function() {
             showDaysInNextAndPreviousMonths: true
         };
 
-        var pickerCrear = new Pikaday(
-         // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+        var pickerInicio = new Pikaday(
             Object.assign({}, pikadayConfig, {
-            field: document.getElementById('inicio_picker')
-             })
+                field: document.getElementById('inicio_picker'),
+                onSelect: function() {
+                    // Limpiar la validación personalizada cuando se selecciona una fecha
+                    document.getElementById('inicio_picker').setCustomValidity('');
+                }
+            })
         );
 
-        var pickerCrear = new Pikaday(
-         // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+        var pickerFin = new Pikaday(
             Object.assign({}, pikadayConfig, {
-            field: document.getElementById('fin_picker')
-             })
+                field: document.getElementById('fin_picker'),
+                onSelect: function() {
+                    // Limpiar la validación personalizada cuando se selecciona una fecha
+                    document.getElementById('fin_picker').setCustomValidity('');
+                }
+            })
         );
+
+        // Validación de formulario
+        document.getElementById('formAnio').addEventListener('submit', function(event) {
+            var inicioPicker = document.getElementById('inicio_picker');
+            var finPicker = document.getElementById('fin_picker');
+            var formIsValid = true;
+
+            // Validar campo de fecha de inicio
+            if (inicioPicker.value.trim() === '') {
+                inicioPicker.setCustomValidity('Este campo es obligatorio');
+                inicioPicker.readOnly = false;
+                inicioPicker.reportValidity();
+                inicioPicker.readOnly = true;
+                formIsValid = false;
+            } else {
+                inicioPicker.setCustomValidity('');
+            }
+
+            // Validar campo de fecha de fin
+            if (finPicker.value.trim() === '') {
+                finPicker.setCustomValidity('Este campo es obligatorio');
+                // Solo reportar si el campo de inicio era válido, para no mostrar dos popups
+                if (formIsValid) {
+                    finPicker.readOnly = false;
+                    finPicker.reportValidity();
+                    finPicker.readOnly = true;
+                }
+                formIsValid = false;
+            } else {
+                finPicker.setCustomValidity('');
+            }
+
+            // Si el formulario no es válido, prevenir el envío
+            if (!formIsValid) {
+                event.preventDefault();
+            }
+        });
 
         // Mostrar datepicker cuando se abra el modal de CREAR
         $('#insertdata').on('shown.bs.modal', function() {
-            if (pickerCrear) {
-                pickerCrear.show();
+            if (pickerInicio) {
+                pickerInicio.show();
             }
         });
 

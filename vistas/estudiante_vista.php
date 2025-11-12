@@ -206,7 +206,7 @@
                     <h4 class="modal-title">Agregar Nuevo Estudiante</h4>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/liceo/controladores/estudiante_controlador.php" method="POST">
+                <form id="form-crear" action="/liceo/controladores/estudiante_controlador.php" method="POST">
                     <input type="hidden" name="action" value="crear">
                     <div class="modal-body">
                         <div class="form-group mb-3"><label>Cédula</label><input type="text" name="cedula_estudiante" class="form-control" required pattern="\d{7,8}" title="La cédula debe contener entre 7 y 8 dígitos numéricos"></div>
@@ -306,19 +306,51 @@
 
                 // Inicializar Pikaday para el modal de CREAR
                 var pickerCrear = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
                     Object.assign({}, pikadayConfig, {
-                        field: document.getElementById('fecha_nacimiento_picker')
+                        field: document.getElementById('fecha_nacimiento_picker'),
+                        onSelect: function() {
+                            document.getElementById('fecha_nacimiento_picker').setCustomValidity('');
+                        }
                     })
                 );
 
                 // Inicializar Pikaday para el modal de EDITAR
                 var pickerEditar = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
                     Object.assign({}, pikadayConfig, {
-                        field: document.getElementById('fecha_nacimiento_edit_picker')
+                        field: document.getElementById('fecha_nacimiento_edit_picker'),
+                        onSelect: function() {
+                            document.getElementById('fecha_nacimiento_edit_picker').setCustomValidity('');
+                        }
                     })
                 );
+
+                // Validación de formulario de creación
+                document.getElementById('form-crear').addEventListener('submit', function(event) {
+                    var fechaNacimiento = document.getElementById('fecha_nacimiento_picker');
+                    if (fechaNacimiento.value.trim() === '') {
+                        event.preventDefault();
+                        fechaNacimiento.setCustomValidity('Este campo es obligatorio');
+                        fechaNacimiento.readOnly = false;
+                        fechaNacimiento.reportValidity();
+                        fechaNacimiento.readOnly = true;
+                    } else {
+                        fechaNacimiento.setCustomValidity('');
+                    }
+                });
+
+                // Validación de formulario de edición
+                document.getElementById('edit-form').addEventListener('submit', function(event) {
+                    var fechaNacimientoEdit = document.getElementById('fecha_nacimiento_edit_picker');
+                    if (fechaNacimientoEdit.value.trim() === '') {
+                        event.preventDefault();
+                        fechaNacimientoEdit.setCustomValidity('Este campo es obligatorio');
+                        fechaNacimientoEdit.readOnly = false;
+                        fechaNacimientoEdit.reportValidity();
+                        fechaNacimientoEdit.readOnly = true;
+                    } else {
+                        fechaNacimientoEdit.setCustomValidity('');
+                    }
+                });
 
                 // Mostrar datepicker cuando se abra el modal de CREAR
                 $('#insertdata').on('shown.bs.modal', function() {

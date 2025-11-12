@@ -24,6 +24,24 @@ if (!isset($row)) {
 </form>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('updateVisitaForm');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                var fechaRealizada = document.getElementById('fecha_realizada');
+                if (fechaRealizada && fechaRealizada.value.trim() === '') {
+                    event.preventDefault();
+                    fechaRealizada.setCustomValidity('Este campo es obligatorio');
+                    fechaRealizada.readOnly = false;
+                    fechaRealizada.reportValidity();
+                    fechaRealizada.readOnly = true;
+                } else if (fechaRealizada) {
+                    fechaRealizada.setCustomValidity('');
+                }
+            });
+        }
+    });
+
         $(document).ready(function() {
             // Verificar que Pikaday esté cargado
             if (typeof Pikaday !== 'undefined') {
@@ -70,7 +88,10 @@ if (!isset($row)) {
                 var pickerCrear = new Pikaday(
                     // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
                     Object.assign({}, pikadayConfig, {
-                        field: document.getElementById('fecha_realizada')
+                        field: document.getElementById('fecha_realizada'),
+                        onSelect: function() {
+                            document.getElementById('fecha_realizada').setCustomValidity('');
+                        }
                     })
                 );
 
