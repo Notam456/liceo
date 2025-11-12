@@ -6,7 +6,7 @@ if (!isset($reporte)) {
 
 // Calcular estudiantes en alerta para determinar si abrir el modal automáticamente
 $estudiantesAlerta = array_filter($reporte, function($item) {
-    return $item['total'] >= 3 && !$item['tiene_visita_agendada'];
+    return $item['total_nuevas'] >= 3 && !$item['tiene_visita_agendada'];
 });
 $totalAlertas = count($estudiantesAlerta);
 $abrirModalAutomaticamente = $totalAlertas > 0;
@@ -265,7 +265,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php if ($item['total'] >= 3): ?>
+                                                <?php if ($item['total_nuevas'] >= 3): ?>
                                                     <?php if ($item['tiene_visita_agendada']): ?>
                                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>
                                                     <?php else: ?>
@@ -602,7 +602,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                         var totalJustificados = 0;
 
                         response.data.forEach(function(item) {
-                            if (item.total >= 3 && !item.tiene_visita_agendada) {
+                            if (item.total_nuevas >= 3 && !item.tiene_visita_agendada) {
                                 estudiantesAlerta.push(item);
                             }
 
@@ -612,7 +612,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                             totalJustificados += item.justificadas;
 
                             var actionButton = '';
-                            if (item.total >= 3) {
+                            if (item.total_nuevas >= 3) {
                                 if (item.tiene_visita_agendada) {
                                     actionButton = '<button type="button" class="btn btn-secondary btn-sm" disabled>Visita Agendada</button>';
                                 } else {

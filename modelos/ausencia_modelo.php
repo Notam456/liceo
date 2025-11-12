@@ -45,9 +45,10 @@ $query = "
         ) AS seccion,
         e.contacto AS contacto,
         e.cedula AS cedula,
-        COALESCE(SUM(CASE WHEN a.inasistencia = 1 AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS ausencias,
-        COALESCE(SUM(CASE WHEN a.justificado = 1 AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS justificadas,
-        COALESCE(SUM(CASE WHEN (a.inasistencia = 1 OR a.justificado = 1) AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS total,
+        COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
+        COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
+        COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total,
+        COALESCE(SUM(CASE WHEN (a.inasistencia = 1 OR a.justificado = 1) AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS total_nuevas,
         (
             SELECT COALESCE(SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END), 0)
             FROM asistencia a2
@@ -96,6 +97,7 @@ $result = $this->db->query($query);
                 'ausencias' => (int)$row['ausencias'],
                 'justificadas' => (int)$row['justificadas'],
                 'total' => (int)$row['total'],
+                'total_nuevas' => (int)$row['total_nuevas'],
                 'total_ultima_semana' => (int)$row['total_ultima_semana'],
                 'tiene_visita_agendada' => $tiene_visita
             ];
