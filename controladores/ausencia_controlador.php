@@ -281,7 +281,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'generar_reporte_ausencias') {
         // Título
         $pdf->Ln(30); // jose yajure, ESPACIO DEL MEMBRETE Y EL CONTENDIOO
         $html = '
-        <h1 style="text-align: center; margin-bottom: 20px;">REPORTE DE AUSENCIAS</h1>
+        <h1 style="text-align: center; margin-bottom: 20px;">REPORTE DE INASISTENCIAS</h1>
         
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr>
