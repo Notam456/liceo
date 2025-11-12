@@ -91,8 +91,19 @@ class SeccionModelo
     {
         $id = (int)$id;
         $letra = mysqli_real_escape_string($this->conn, $letra);
-        $id_grado = mysqli_real_escape_string($this->conn, $id_grado);
+        $id_grado = (int)$id_grado;
 
+        // Verificar si ya existe una sección con la misma letra e id_grado (excluyendo la actual)
+        $check_query = "SELECT COUNT(*) AS total FROM seccion 
+                    WHERE letra = '$letra' AND id_grado = $id_grado AND id_seccion != $id";
+        $check_result = mysqli_query($this->conn, $check_query);
+
+        if ($check_result && mysqli_fetch_assoc($check_result)['total'] > 0) {
+            // Ya existe una sección con esos datos
+            return "existe";
+        }
+
+        // Si no existe, proceder con la actualización
         $query = "UPDATE seccion SET letra = '$letra', id_grado = $id_grado WHERE id_seccion = $id";
 
         try {
@@ -101,7 +112,6 @@ class SeccionModelo
             return false;
         }
     }
-
     public function eliminarSeccion($id)
     {
         $id = (int)$id;
