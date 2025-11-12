@@ -30,9 +30,11 @@
             form.addEventListener('submit', function(event) {
                 var fechaVisita = document.getElementById('fecha_visita');
                 if (fechaVisita.value.trim() === '') {
-                    fechaVisita.setCustomValidity('Este campo es obligatorio');
-                    fechaVisita.reportValidity();
                     event.preventDefault();
+                    fechaVisita.setCustomValidity('Este campo es obligatorio');
+                    fechaVisita.readOnly = false;
+                    fechaVisita.reportValidity();
+                    fechaVisita.readOnly = true;
                 } else {
                     fechaVisita.setCustomValidity('');
                 }

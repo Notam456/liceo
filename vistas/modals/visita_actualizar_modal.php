@@ -30,9 +30,11 @@ if (!isset($row)) {
             form.addEventListener('submit', function(event) {
                 var fechaRealizada = document.getElementById('fecha_realizada');
                 if (fechaRealizada && fechaRealizada.value.trim() === '') {
-                    fechaRealizada.setCustomValidity('Este campo es obligatorio');
-                    fechaRealizada.reportValidity();
                     event.preventDefault();
+                    fechaRealizada.setCustomValidity('Este campo es obligatorio');
+                    fechaRealizada.readOnly = false;
+                    fechaRealizada.reportValidity();
+                    fechaRealizada.readOnly = true;
                 } else if (fechaRealizada) {
                     fechaRealizada.setCustomValidity('');
                 }

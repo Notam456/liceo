@@ -331,7 +331,9 @@ $(document).ready(function() {
             // Validar campo de fecha de inicio
             if (inicioPicker.value.trim() === '') {
                 inicioPicker.setCustomValidity('Este campo es obligatorio');
-                inicioPicker.reportValidity(); // Mostrar el mensaje de error inmediatamente
+                inicioPicker.readOnly = false;
+                inicioPicker.reportValidity();
+                inicioPicker.readOnly = true;
                 formIsValid = false;
             } else {
                 inicioPicker.setCustomValidity('');
@@ -342,7 +344,9 @@ $(document).ready(function() {
                 finPicker.setCustomValidity('Este campo es obligatorio');
                 // Solo reportar si el campo de inicio era válido, para no mostrar dos popups
                 if (formIsValid) {
+                    finPicker.readOnly = false;
                     finPicker.reportValidity();
+                    finPicker.readOnly = true;
                 }
                 formIsValid = false;
             } else {

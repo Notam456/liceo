@@ -368,9 +368,11 @@
                 document.getElementById('formAsistencia').addEventListener('submit', function(event) {
                     var fechaAsistencia = document.getElementById('fechaAsistencia');
                     if (fechaAsistencia.value.trim() === '') {
-                        fechaAsistencia.setCustomValidity('Este campo es obligatorio');
-                        fechaAsistencia.reportValidity();
                         event.preventDefault();
+                        fechaAsistencia.setCustomValidity('Este campo es obligatorio');
+                        fechaAsistencia.readOnly = false;
+                        fechaAsistencia.reportValidity();
+                        fechaAsistencia.readOnly = true;
                     } else {
                         fechaAsistencia.setCustomValidity('');
                     }
@@ -380,9 +382,11 @@
                 document.getElementById('formEditarAsistencia').addEventListener('submit', function(event) {
                     var fechaEdit = document.getElementById('fecha_edit');
                     if (fechaEdit.value.trim() === '') {
-                        fechaEdit.setCustomValidity('Este campo es obligatorio');
-                        fechaEdit.reportValidity();
                         event.preventDefault();
+                        fechaEdit.setCustomValidity('Este campo es obligatorio');
+                        fechaEdit.readOnly = false;
+                        fechaEdit.reportValidity();
+                        fechaEdit.readOnly = true;
                     } else {
                         fechaEdit.setCustomValidity('');
                     }
