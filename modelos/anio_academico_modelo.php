@@ -24,7 +24,7 @@ class AnioAcademicoModelo {
         } else {
             return false;
         }
-        $insert_query = "INSERT INTO anio_academico(desde, hasta) VALUES ('$desde', '$hasta')";
+        $insert_query = "INSERT INTO anio_academico(desde, hasta, estado, visibilidad) VALUES ('$desde', '$hasta', 0, 1)";
         return mysqli_query($this->conn, $insert_query);
     }
 
