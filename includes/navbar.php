@@ -1,5 +1,5 @@
 <?php
-session_start(); // Asegúrate de que siempre se inicia la sesión
+ // Asegúrate de que siempre se inicia la sesión
 
 // Tiempo máximo de inactividad (en segundos)
 $tiempo_inactividad = 1800; // 30 minutos
@@ -85,4 +85,27 @@ if (isset($_SESSION['usuario'])) {
             </ul>
         </div>
     </div>
+
+    <script>
+(function() {
+    let tiempoInactividad = 30 * 60 * 1000; // 30 minutos en milisegundos
+    let temporizador;
+
+    // Reinicia el contador de inactividad
+    function reiniciarTemporizador() {
+        clearTimeout(temporizador);
+        temporizador = setTimeout(() => {
+            window.location.href = "/liceo/logout.php?motivo=inactividad";
+        }, tiempoInactividad);
+    }
+
+    // Escucha eventos de actividad del usuario
+    ['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evento => {
+        document.addEventListener(evento, reiniciarTemporizador);
+    });
+
+    // Iniciar el temporizador al cargar la página
+    reiniciarTemporizador();
+})();
+</script>
 </nav>
