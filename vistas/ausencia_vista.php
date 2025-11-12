@@ -481,7 +481,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                         weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
                     },
                     yearRange: [1950, new Date().getFullYear()],
-                    minDate: new Date(new Date().setHours(0, 0, 0, 0)),
+                    minDate: new Date('<?= $anio_desde ?>'),
                     maxDate: new Date('<?= $anio_hasta ?>'),
                     showDaysInNextAndPreviousMonths: true
                 };
