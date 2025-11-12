@@ -450,7 +450,41 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
                     maxDate: new Date('<?= $anio_hasta ?>'),
                     showDaysInNextAndPreviousMonths: true
                 };
-
+                var pikadayConfigVisita = {
+                    format: 'YYYY-MM-DD',
+                    toString: function(date, format) {
+                        // Forzar el formato YYYY-MM-DD
+                        var year = date.getFullYear();
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function(dateString, format) {
+                        // Parsear desde YYYY-MM-DD
+                        var parts = dateString.split('-');
+                        if (parts.length === 3) {
+                            return new Date(parts[0], parts[1] - 1, parts[2]);
+                        }
+                        return new Date(dateString);
+                    },
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    minDate: new Date(new Date().setHours(0, 0, 0, 0)),
+                    maxDate: new Date('<?= $anio_hasta ?>'),
+                    showDaysInNextAndPreviousMonths: true
+                };
                 // Inicializar Pikaday para el modal de CREAR
                 var pickerCrear = new Pikaday(
                     // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
@@ -469,7 +503,7 @@ $abrirModalAutomaticamente = $totalAlertas > 0;
 
                 var pickerEditar = new Pikaday(
                     // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
-                    Object.assign({}, pikadayConfig, {
+                    Object.assign({}, pikadayConfigVisita, {
                         field: document.getElementById('fecha_visita')
                     })
                 );
