@@ -497,25 +497,25 @@ $totalAlertas = 0;
                     showDaysInNextAndPreviousMonths: true
                 };
                 // Inicializar Pikaday para el modal de CREAR
-                var pickerCrear = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerDesde = new Pikaday(
                     Object.assign({}, pikadayConfig, {
                         field: document.getElementById('filtroDesde')
                     })
                 );
 
                 // Inicializar Pikaday para el modal de EDITAR
-                var pickerEditar = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerHasta = new Pikaday(
                     Object.assign({}, pikadayConfig, {
                         field: document.getElementById('filtroHasta')
                     })
                 );
 
-                var pickerEditar = new Pikaday(
-                    // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+                var pickerVisita = new Pikaday(
                     Object.assign({}, pikadayConfigVisita, {
-                        field: document.getElementById('fecha_visita')
+                        field: document.getElementById('fecha_visita'),
+                        onSelect: function() {
+                            document.getElementById('fecha_visita').setCustomValidity('');
+                        }
                     })
                 );
 

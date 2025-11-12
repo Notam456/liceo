@@ -302,24 +302,59 @@ $(document).ready(function() {
             showDaysInNextAndPreviousMonths: true
         };
 
-        var pickerCrear = new Pikaday(
-         // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+        var pickerInicio = new Pikaday(
             Object.assign({}, pikadayConfig, {
-            field: document.getElementById('inicio_picker')
-             })
+                field: document.getElementById('inicio_picker'),
+                onSelect: function() {
+                    // Limpiar la validación personalizada cuando se selecciona una fecha
+                    document.getElementById('inicio_picker').setCustomValidity('');
+                }
+            })
         );
 
-        var pickerCrear = new Pikaday(
-         // Fusiona un objeto vacío, pikadayConfig, y el objeto con la propiedad 'field'
+        var pickerFin = new Pikaday(
             Object.assign({}, pikadayConfig, {
-            field: document.getElementById('fin_picker')
-             })
+                field: document.getElementById('fin_picker'),
+                onSelect: function() {
+                    // Limpiar la validación personalizada cuando se selecciona una fecha
+                    document.getElementById('fin_picker').setCustomValidity('');
+                }
+            })
         );
+
+        // Validación de formulario
+        document.getElementById('formAnio').addEventListener('submit', function(event) {
+            var inicioPicker = document.getElementById('inicio_picker');
+            var finPicker = document.getElementById('fin_picker');
+
+            // Validar campo de fecha de inicio
+            if (inicioPicker.value.trim() === '') {
+                inicioPicker.setCustomValidity('Este campo es obligatorio');
+            } else {
+                inicioPicker.setCustomValidity('');
+            }
+
+            // Validar campo de fecha de fin
+            if (finPicker.value.trim() === '') {
+                finPicker.setCustomValidity('Este campo es obligatorio');
+            } else {
+                finPicker.setCustomValidity('');
+            }
+
+            // Si el formulario no es válido, prevenir el envío y mostrar los mensajes
+            if (!this.checkValidity()) {
+                event.preventDefault();
+                var firstInvalidField = this.querySelector(':invalid');
+                if (firstInvalidField) {
+                    firstInvalidField.reportValidity();
+                }
+            }
+        });
 
         // Mostrar datepicker cuando se abra el modal de CREAR
         $('#insertdata').on('shown.bs.modal', function() {
-            if (pickerCrear) {
-                pickerCrear.show();
+            if (pickerInicio) {
+                pickerInicio.show();
             }
         });
 
