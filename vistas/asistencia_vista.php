@@ -369,15 +369,10 @@
                     var fechaAsistencia = document.getElementById('fechaAsistencia');
                     if (fechaAsistencia.value.trim() === '') {
                         fechaAsistencia.setCustomValidity('Este campo es obligatorio');
+                        fechaAsistencia.reportValidity();
+                        event.preventDefault();
                     } else {
                         fechaAsistencia.setCustomValidity('');
-                    }
-                    if (!this.checkValidity()) {
-                        event.preventDefault();
-                        var firstInvalidField = this.querySelector(':invalid');
-                        if (firstInvalidField) {
-                            firstInvalidField.reportValidity();
-                        }
                     }
                 });
 
@@ -386,15 +381,10 @@
                     var fechaEdit = document.getElementById('fecha_edit');
                     if (fechaEdit.value.trim() === '') {
                         fechaEdit.setCustomValidity('Este campo es obligatorio');
+                        fechaEdit.reportValidity();
+                        event.preventDefault();
                     } else {
                         fechaEdit.setCustomValidity('');
-                    }
-                    if (!this.checkValidity()) {
-                        event.preventDefault();
-                        var firstInvalidField = this.querySelector(':invalid');
-                        if (firstInvalidField) {
-                            firstInvalidField.reportValidity();
-                        }
                     }
                 });
 

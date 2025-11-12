@@ -326,10 +326,13 @@ $(document).ready(function() {
         document.getElementById('formAnio').addEventListener('submit', function(event) {
             var inicioPicker = document.getElementById('inicio_picker');
             var finPicker = document.getElementById('fin_picker');
+            var formIsValid = true;
 
             // Validar campo de fecha de inicio
             if (inicioPicker.value.trim() === '') {
                 inicioPicker.setCustomValidity('Este campo es obligatorio');
+                inicioPicker.reportValidity(); // Mostrar el mensaje de error inmediatamente
+                formIsValid = false;
             } else {
                 inicioPicker.setCustomValidity('');
             }
@@ -337,17 +340,18 @@ $(document).ready(function() {
             // Validar campo de fecha de fin
             if (finPicker.value.trim() === '') {
                 finPicker.setCustomValidity('Este campo es obligatorio');
+                // Solo reportar si el campo de inicio era válido, para no mostrar dos popups
+                if (formIsValid) {
+                    finPicker.reportValidity();
+                }
+                formIsValid = false;
             } else {
                 finPicker.setCustomValidity('');
             }
 
-            // Si el formulario no es válido, prevenir el envío y mostrar los mensajes
-            if (!this.checkValidity()) {
+            // Si el formulario no es válido, prevenir el envío
+            if (!formIsValid) {
                 event.preventDefault();
-                var firstInvalidField = this.querySelector(':invalid');
-                if (firstInvalidField) {
-                    firstInvalidField.reportValidity();
-                }
             }
         });
 

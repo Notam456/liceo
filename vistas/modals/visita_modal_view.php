@@ -31,20 +31,12 @@
                 var fechaVisita = document.getElementById('fecha_visita');
                 if (fechaVisita.value.trim() === '') {
                     fechaVisita.setCustomValidity('Este campo es obligatorio');
+                    fechaVisita.reportValidity();
+                    event.preventDefault();
                 } else {
                     fechaVisita.setCustomValidity('');
-                }
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    var firstInvalidField = form.querySelector(':invalid');
-                    if (firstInvalidField) {
-                        firstInvalidField.reportValidity();
-                    }
                 }
             });
         }
     });
 </script>
-        </div>
-    </div>
-</div>

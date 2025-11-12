@@ -329,15 +329,10 @@
                     var fechaNacimiento = document.getElementById('fecha_nacimiento_picker');
                     if (fechaNacimiento.value.trim() === '') {
                         fechaNacimiento.setCustomValidity('Este campo es obligatorio');
+                        fechaNacimiento.reportValidity();
+                        event.preventDefault();
                     } else {
                         fechaNacimiento.setCustomValidity('');
-                    }
-                    if (!this.checkValidity()) {
-                        event.preventDefault();
-                        var firstInvalidField = this.querySelector(':invalid');
-                        if (firstInvalidField) {
-                            firstInvalidField.reportValidity();
-                        }
                     }
                 });
 
@@ -346,15 +341,10 @@
                     var fechaNacimientoEdit = document.getElementById('fecha_nacimiento_edit_picker');
                     if (fechaNacimientoEdit.value.trim() === '') {
                         fechaNacimientoEdit.setCustomValidity('Este campo es obligatorio');
+                        fechaNacimientoEdit.reportValidity();
+                        event.preventDefault();
                     } else {
                         fechaNacimientoEdit.setCustomValidity('');
-                    }
-                    if (!this.checkValidity()) {
-                        event.preventDefault();
-                        var firstInvalidField = this.querySelector(':invalid');
-                        if (firstInvalidField) {
-                            firstInvalidField.reportValidity();
-                        }
                     }
                 });
 
