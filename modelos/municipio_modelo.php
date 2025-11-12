@@ -7,6 +7,10 @@ class MunicipioModelo {
         $this->conn = $db;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     public function crearMunicipio($municipio, $id_estado = null) {
         $municipio = mysqli_real_escape_string($this->conn, $municipio);
         if ($id_estado !== null && $id_estado !== '') {
@@ -15,7 +19,16 @@ class MunicipioModelo {
         } else {
             $query = "INSERT INTO municipio(municipio) VALUES ('$municipio')";
         }
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
 
     public function obtenerMunicipioPorId($id) {
@@ -41,8 +54,18 @@ class MunicipioModelo {
         } else {
             $query = "UPDATE municipio SET municipio = '$municipio' WHERE id_municipio = $id";
         }
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
+
 
     public function eliminarMunicipio($id) {
         $id = (int)$id;

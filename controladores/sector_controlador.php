@@ -12,8 +12,21 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
-            $resultado = $sectorModelo->crearSector($_POST['sector'], isset($_POST['id_parroquia']) ? $_POST['id_parroquia'] : null);
-            $_SESSION['status'] = $resultado ? "Sector creado correctamente" : "Error al crear el Sector";
+            try {
+                $resultado = $sectorModelo->crearSector($_POST['sector'], isset($_POST['id_parroquia']) ? $_POST['id_parroquia'] : null);
+                if ($resultado) {
+                    $_SESSION['status'] = "Sector creado correctamente";
+                } else {
+                    $_SESSION['error'] = "Error al crear el sector";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe un sector con ese nombre en la parroquia seleccionada";
+                } else {
+                    $_SESSION['error'] = "Error al crear el sector: " . $e->getMessage();
+                }
+                $_SESSION['form_data'] = $_POST;
+            }
             header('Location: /liceo/controladores/sector_controlador.php');
             exit();
         }
@@ -48,11 +61,23 @@ switch ($action) {
 
     case 'actualizar':
         if (isset($_POST['update-data'])) {
-            $id = $_POST['idEdit'];
-            $sector = $_POST['sector_edit'];
-            $id_parroquia = isset($_POST['id_parroquia_edit']) ? $_POST['id_parroquia_edit'] : null;
-            $resultado = $sectorModelo->actualizarSector($id, $sector, $id_parroquia);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            try {
+                $id = $_POST['idEdit'];
+                $sector = $_POST['sector_edit'];
+                $id_parroquia = isset($_POST['id_parroquia_edit']) ? $_POST['id_parroquia_edit'] : null;
+                $resultado = $sectorModelo->actualizarSector($id, $sector, $id_parroquia);
+                if ($resultado) {
+                    $_SESSION['status'] = "Sector actualizado correctamente";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el sector";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe un sector con ese nombre en la parroquia seleccionada";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el sector: " . $e->getMessage();
+                }
+            }
             header('Location: /liceo/controladores/sector_controlador.php');
             exit();
         }

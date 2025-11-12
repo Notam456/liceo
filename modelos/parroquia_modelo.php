@@ -7,12 +7,25 @@ class ParroquiaModelo {
         $this->conn = $db;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     public function crearParroquia($parroquia, $municipio) {
         $parroquia = mysqli_real_escape_string($this->conn, $parroquia);
         $municipio = mysqli_real_escape_string($this->conn, $municipio);
 
         $query = "INSERT INTO parroquia(parroquia, id_municipio) VALUES ('$parroquia', '$municipio')";
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
 
     public function obtenerParroquiaPorId($id) {
@@ -38,7 +51,16 @@ class ParroquiaModelo {
         $municipio = mysqli_real_escape_string($this->conn, $municipio);
 
         $query = "UPDATE parroquia SET parroquia = '$parroquia', id_municipio = '$municipio' WHERE id_parroquia = $id";
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
 
     public function eliminarParroquia($id) {

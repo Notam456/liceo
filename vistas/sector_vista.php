@@ -16,11 +16,21 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <?php if (isset($_SESSION['status']) && $_SESSION['status'] != '') { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php unset($_SESSION['status']);
+                <?php 
+                    unset($_SESSION['status']);
+                } 
+                
+                if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> <?php echo $_SESSION['error']; ?>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php 
+                    unset($_SESSION['error']);
                 } ?>
                 <div class="card">
                     <div class="card-header">
@@ -50,7 +60,7 @@
                                         <tr>
                                             <td class="id" style="display: none;"> <?php echo $row['id_sector'] ?> </td>
                                             <td> <?php echo $row['sector'] ?> </td>
-                                            <td> <?php echo $row['id_parroquia'] ?> </td>
+                                            <td> <?php echo $row['nombre_parroquia'] ?> </td>
                                             <td><a href="#" class="btn btn-warning btn-sm view-data">Consultar</a></td>
                                             <td><a href="#" class="btn btn-primary btn-sm edit-data">Modificar</a></td>
                                             <td><a href="#" class="btn btn-danger btn-sm delete-data">Eliminar</a></td>
@@ -74,11 +84,11 @@
     </div>
 
     <!-- Modulo editar -->
-    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
+    <div class="modal " id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Modificar Sector</h4>
+                    <h1 class="modal-title fs-5" id="editmodalLabel">Modificar Sector</h1>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="edit-form" action="/liceo/controladores/sector_controlador.php" method="POST">
@@ -92,7 +102,7 @@
 
                         <div class="form-group mb-3">
                             <label>Parroquia</label>
-                            <select id="id_parroquia_edit" class="form-control" name="id_parroquia_edit" required>
+                            <select id="id_parroquia_edit" class="form-select" name="id_parroquia_edit" required>
                                 <option value="">Seleccione una Parroquia</option>
                                 <?php if (isset($parroquias)) {
                                     mysqli_data_seek($parroquias, 0);
@@ -112,11 +122,11 @@
     </div>
 
     <!-- Modulo mostrar -->
-    <div class="modal" id="viewmodal" tabindex="-1" role="dialog">
+    <div class="modal " id="viewmodal" tabindex="-1" aria-labelledby="viewmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Datos del Sector</h4>
+                    <h1 class="modal-title fs-5" id="viewmodalLabel">Datos</h1>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -127,11 +137,11 @@
     </div>
 
     <!-- modulo crear -->
-    <div class="modal" id="insertdata" tabindex="-1" role="dialog">
+    <div class="modal " id="insertdata" tabindex="-1" aria-labelledby="insertdataLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Agregar un nuevo sector</h4>
+                    <h1 class="modal-title fs-5" id="insertdataLabel">Agregar un nuevo sector</h1>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="/liceo/controladores/sector_controlador.php" method="POST">
@@ -144,7 +154,7 @@
 
                         <div class="form-group mb-3">
                             <label>Parroquia</label>
-                            <select name="id_parroquia" class="form-control" required>
+                            <select name="id_parroquia" class="form-select" required>
                                 <option value="">Seleccione una Parroquia</option>
                                 <?php if (isset($parroquias)) {
                                     mysqli_data_seek($parroquias, 0);
@@ -184,30 +194,6 @@
             ]
         });
 
-        // Función universal para abrir modales
-        function abrirModal(modalId) {
-            // Cerrar cualquier modal abierto
-            $('.modal').removeClass('in').hide();
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-            
-            // Abrir el modal solicitado
-            $('#' + modalId).addClass('in').show();
-            $('body').addClass('modal-open');
-            
-            // Forzar backdrop manualmente si es necesario
-            if (!$('.modal-backdrop').length) {
-                $('body').append('<div class="modal-backdrop in"></div>');
-            }
-        }
-        
-        // Cerrar modales
-        function cerrarModal(modalId) {
-            $('#' + modalId).removeClass('in').hide();
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        }
-
         $(document).ready(function() {
             // Mostrar
             $('#myTable').on('click', '.view-data', function(e) {
@@ -220,6 +206,7 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
+
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -230,7 +217,7 @@
                     },
                     success: function(response) {
                         $('.view_user_data').html(response);
-                        abrirModal('viewmodal');
+                        $('#viewmodal').modal('show');
                     }
                 });
             });
@@ -246,6 +233,7 @@
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
 
+
                 var id = data[0];
                 $.ajax({
                     type: "POST",
@@ -260,7 +248,7 @@
                         $('#idEdit').val(data.id_sector);
                         $('#sector_edit').val(data.sector);
                         $('#id_parroquia_edit').val(data.id_parroquia);
-                        abrirModal('editmodal');
+                        $('#editmodal').modal('show');
                     }
                 });
             });
@@ -275,6 +263,7 @@
 
                 // traemos los datos de esa fila (array con todas las columnas)
                 var data = fila.data();
+
 
                 var id = data[0];
                 Swal.fire({
@@ -301,12 +290,6 @@
                         });
                     }
                 });
-            });
-
-            // Cerrar modales con botones
-            $('[data-dismiss="modal"]').on('click', function() {
-                var modal = $(this).closest('.modal');
-                cerrarModal(modal.attr('id'));
             });
         });
     </script>

@@ -7,6 +7,10 @@ class SectorModelo {
         $this->conn = $db;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     public function crearSector($sector, $id_parroquia = null) {
         $sector = mysqli_real_escape_string($this->conn, $sector);
         if ($id_parroquia !== null && $id_parroquia !== '') {
@@ -15,7 +19,16 @@ class SectorModelo {
         } else {
             $query = "INSERT INTO sector(sector) VALUES ('$sector')";
         }
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
 
     public function obtenerSectorPorId($id) {
@@ -30,7 +43,10 @@ class SectorModelo {
     }
 
     public function obtenerTodosLosSectores() {
-        $query = "SELECT * FROM sector WHERE visibilidad = TRUE";
+        $query = "SELECT s.*, p.parroquia as nombre_parroquia 
+                 FROM sector s 
+                 LEFT JOIN parroquia p ON s.id_parroquia = p.id_parroquia 
+                 WHERE s.visibilidad = TRUE";
         return mysqli_query($this->conn, $query);
     }
 
@@ -49,7 +65,16 @@ class SectorModelo {
         } else {
             $query = "UPDATE sector SET sector = '$sector' WHERE id_sector = $id";
         }
-        return mysqli_query($this->conn, $query);
+        
+        // Activar el reporte de errores de MySQL
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            // Relanzar la excepción para manejarla en el controlador
+            throw $e;
+        }
     }
 
     public function eliminarSector($id) {

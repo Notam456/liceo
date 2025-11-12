@@ -4,24 +4,30 @@ USE liceoo;
 
 CREATE TABLE municipio (
     id_municipio INT AUTO_INCREMENT PRIMARY KEY,
-    municipio VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    municipio VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
     visibilidad BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE TABLE parroquia (
     id_parroquia INT AUTO_INCREMENT PRIMARY KEY,
     parroquia VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     id_municipio INT NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
+    UNIQUE KEY uq_parroquia_municipio (parroquia, id_municipio),
+    KEY id_municipio (id_municipio),
     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
           ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 CREATE TABLE sector (
-    id_sector INT(11) AUTO_INCREMENT PRIMARY KEY,
+    id_sector INT AUTO_INCREMENT PRIMARY KEY,
     sector VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    id_parroquia INT(11) NOT NULL,
+    id_parroquia INT NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
+    UNIQUE KEY uq_sector_parroquia (sector, id_parroquia),
+    KEY id_parroquia (id_parroquia),
     FOREIGN KEY (id_parroquia) REFERENCES parroquia(id_parroquia)
           ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

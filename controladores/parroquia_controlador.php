@@ -11,8 +11,21 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
-            $resultado = $parroquiaModelo->crearParroquia($_POST['parroquia'], $_POST['id_municipio']);
-            $_SESSION['status'] = $resultado ? "Parroquia creada correctamente" : "Error al crear la parroquia";
+            try {
+                $resultado = $parroquiaModelo->crearParroquia($_POST['parroquia'], $_POST['id_municipio']);
+                if ($resultado) {
+                    $_SESSION['status'] = "Parroquia creada correctamente";
+                } else {
+                    $_SESSION['error'] = "Error al crear la parroquia";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe una parroquia con ese nombre en el municipio seleccionado";
+                } else {
+                    $_SESSION['error'] = "Error al crear la parroquia: " . $e->getMessage();
+                }
+                $_SESSION['form_data'] = $_POST;
+            }
             header('Location: /liceo/controladores/parroquia_controlador.php');
             exit();
         }
@@ -49,11 +62,21 @@ switch ($action) {
 
     case 'actualizar':
         if (isset($_POST['update-data'])) {
-            $id = $_POST['idEdit'];
-            $parroquia = $_POST['parroquia_edit'];
-            $municipio = $_POST['id_municipio_edit'];
-            $resultado = $parroquiaModelo->actualizarParroquia($id, $parroquia, $municipio);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            try {
+                $id = $_POST['idEdit'];
+                $resultado = $parroquiaModelo->actualizarParroquia($id, $_POST['parroquia_edit'], $_POST['id_municipio_edit']);
+                if ($resultado) {
+                    $_SESSION['status'] = "Parroquia actualizada correctamente";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar la parroquia";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe una parroquia con ese nombre en el municipio seleccionado";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar la parroquia: " . $e->getMessage();
+                }
+            }
             header('Location: /liceo/controladores/parroquia_controlador.php');
             exit();
         }

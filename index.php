@@ -60,7 +60,7 @@
                 <?php
                     if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
                 ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div class="alert alert-warning alert-dismissible show" role="alert">
                         <strong>Hey!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>

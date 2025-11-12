@@ -10,8 +10,20 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
-            $resultado = $municipioModelo->crearMunicipio($_POST['municipio'], isset($_POST['id_estado']) ? $_POST['id_estado'] : null);
-            $_SESSION['status'] = $resultado ? "Municipio creado correctamente" : "Error al crear el municipio";
+            $nombreMunicipio = trim($_POST['municipio']);
+            $id_estado = isset($_POST['id_estado']) ? $_POST['id_estado'] : null;
+            
+            try {
+                $resultado = $municipioModelo->crearMunicipio($nombreMunicipio, $id_estado);
+                $_SESSION['status'] = "Municipio creado correctamente";
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Este municipio ya está registrado";
+                } else {
+                    $_SESSION['error'] = "Error al crear el municipio: " . $e->getMessage();
+                }
+                $_SESSION['form_data'] = $_POST;
+            }
             header('Location: /liceo/controladores/municipio_controlador.php');
             exit();
         }
@@ -47,10 +59,19 @@ switch ($action) {
     case 'actualizar':
         if (isset($_POST['update-data'])) {
             $id = $_POST['idEdit'];
-            $municipio = $_POST['municipio_edit'];
-            $id_estado = isset($_POST['id_estado_edit']) ? $_POST['id_estado_edit'] : null;
-            $resultado = $municipioModelo->actualizarMunicipio($id, $municipio, $id_estado);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            $nombreMunicipio = trim($_POST['municipio_edit']);
+            $id_estado = !empty($_POST['id_estado_edit']) ? $_POST['id_estado_edit'] : null;
+            
+            try {
+                $resultado = $municipioModelo->actualizarMunicipio($id, $nombreMunicipio, $id_estado);
+                $_SESSION['status'] = "Municipio actualizado correctamente";
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe un municipio con ese nombre";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el municipio: " . $e->getMessage();
+                }
+            }
             header('Location: /liceo/controladores/municipio_controlador.php');
             exit();
         }
