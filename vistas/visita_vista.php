@@ -97,7 +97,7 @@
                                     <?php }
                                 } else { ?>
                                     <tr>
-                                        <td></td>
+                                        
                                         <td></td>
                                         <td>No hay visitas agendadas.</td>
                                         <td></td>
