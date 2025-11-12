@@ -217,7 +217,7 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Cantidad de secciones a crear</label>
-                            <input type="number" class="form-control" name="cantidad" pattern="" min="1" max="27" required>
+                            <input type="number" class="form-control" name="cantidad" pattern="" min="1" max="7" required>
                         </div>
                         <div class="form-group mb-3">
                             <label>Grado</label>

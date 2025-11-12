@@ -110,24 +110,26 @@ class SeccionModelo
     }
 
     public function generarSecciones($cantidad, $id_grado)
-{
-    // Consultar cuántas secciones existen actualmente para ese grado
-    $query = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $id_grado);
-    $stmt->execute();
-    $resultado = $stmt->get_result()->fetch_assoc();
+    {
 
-    $cantidad_existente = (int)$resultado['total'];
+        $query = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_grado);
+        $stmt->execute();
+        $resultado = $stmt->get_result()->fetch_assoc();
 
-    // Crear las nuevas secciones empezando desde la cantidad existente
-    for ($i = 0; $i < $cantidad; $i++) {
-        $this->crearSeccion(self::$letras[$i + $cantidad_existente], $id_grado);
+        $cantidad_existente = (int)$resultado['total'];
+
+        if ($cantidad_existente >= 7 || $cantidad_existente + $cantidad > 7) {
+            return "muchos";
+        }
+        for ($i = 0; $i < $cantidad; $i++) {
+            $this->crearSeccion(self::$letras[$i + $cantidad_existente], $id_grado);
+        }
+
+        $stmt->close();
+        return "success";
     }
-
-    $stmt->close();
-    return "success";
-}
     public function actualizarTutor($id_seccion, $id_tutor)
     {
         $id_seccion = (int)$id_seccion;
@@ -143,11 +145,11 @@ class SeccionModelo
         return mysqli_query($this->conn, $query);
     }
 
-   public function obtenerMatriculaCompletaPorSeccion($id_seccion)
-{
-    $id_seccion = (int)$id_seccion;
+    public function obtenerMatriculaCompletaPorSeccion($id_seccion)
+    {
+        $id_seccion = (int)$id_seccion;
 
-    $query = "SELECT 
+        $query = "SELECT 
                 e.nombre,
                 e.apellido,
                 e.cedula,
@@ -174,88 +176,88 @@ class SeccionModelo
              WHERE asig.id_seccion = $id_seccion AND e.visibilidad = 1
              ORDER BY e.apellido, e.nombre";
 
-    $result = $this->conn->query($query);
+        $result = $this->conn->query($query);
 
-    if (!$result) {
-        throw new Exception("Error en la consulta: " . $this->conn->error);
-    }
-
-    $matricula = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $direccion_completa = $row['direccion_exacta'];
-        if (!empty($row['punto_referencia'])) {
-            $direccion_completa .= " (Ref: " . $row['punto_referencia'] . ")";
-        }
-        $direccion_completa .= ", " . $row['sector'] . ", " . $row['parroquia'] . ", " . $row['municipio'];
-
-        $fecha_nacimiento = $row['fecha_nacimiento'] ? date('d/m/Y', strtotime($row['fecha_nacimiento'])) : 'No registrada';
-
-        $matricula[] = [
-            'nombre' => $row['nombre'],
-            'apellido' => $row['apellido'],
-            'cedula' => $row['cedula'],
-            'fecha_nacimiento' => $fecha_nacimiento,
-            'direccion_completa' => $direccion_completa,
-            'grado_seccion' => $row['numero_anio'] . '° ' . $row['letra'],
-            'nombre_tutor' => $row['nombre_tutor'],
-            'apellido_tutor' => $row['apellido_tutor'],
-            'cedula_tutor' => $row['cedula_tutor']
-        ];
-    }
-
-    return $matricula;
-}
-
-public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = null)
-{
-    // Obtener el año académico activo
-    $anio_modelo = new AnioAcademicoModelo($this->conn);
-    $anio_activo_result = $anio_modelo->obtenerAnioActivo();
-
-    if (!$anio_activo_result || mysqli_num_rows($anio_activo_result) == 0) {
-        throw new Exception("No hay un año académico activo configurado en el sistema.");
-    }
-
-    $anio_activo = mysqli_fetch_assoc($anio_activo_result);
-    $desde_anio = $anio_activo['desde'];
-    $hasta_anio = $anio_activo['hasta'];
-    $hoy = date('Y-m-d');
-
-    // Validar fechas personalizadas
-    if ($desde && $hasta) {
-        if ($desde < $desde_anio || $desde > $hasta_anio) {
-            throw new Exception("La fecha 'Desde' ({$desde}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
-        }
-        if ($hasta < $desde_anio || $hasta > $hasta_anio) {
-            throw new Exception("La fecha 'Hasta' ({$hasta}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
-        }
-        if ($desde > $hasta) {
-            throw new Exception("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+        if (!$result) {
+            throw new Exception("Error en la consulta: " . $this->conn->error);
         }
 
-        $desde_usar = $desde;
-        $hasta_usar = $hasta;
-    } else {
-        $desde_usar = $desde_anio;
-        $hasta_usar = $hasta_anio;
+        $matricula = [];
 
-        if ($hoy >= $desde_anio && $hoy <= $hasta_anio) {
-            $hasta_usar = $hoy;
-        } elseif ($hoy < $desde_anio) {
-            $hasta_usar = $desde_anio;
+        while ($row = $result->fetch_assoc()) {
+            $direccion_completa = $row['direccion_exacta'];
+            if (!empty($row['punto_referencia'])) {
+                $direccion_completa .= " (Ref: " . $row['punto_referencia'] . ")";
+            }
+            $direccion_completa .= ", " . $row['sector'] . ", " . $row['parroquia'] . ", " . $row['municipio'];
+
+            $fecha_nacimiento = $row['fecha_nacimiento'] ? date('d/m/Y', strtotime($row['fecha_nacimiento'])) : 'No registrada';
+
+            $matricula[] = [
+                'nombre' => $row['nombre'],
+                'apellido' => $row['apellido'],
+                'cedula' => $row['cedula'],
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'direccion_completa' => $direccion_completa,
+                'grado_seccion' => $row['numero_anio'] . '° ' . $row['letra'],
+                'nombre_tutor' => $row['nombre_tutor'],
+                'apellido_tutor' => $row['apellido_tutor'],
+                'cedula_tutor' => $row['cedula_tutor']
+            ];
         }
+
+        return $matricula;
     }
 
-    // Calcular días hábiles
-    $dias_habiles_periodo = $this->calcularDiasHabiles($desde_usar, $hasta_usar);
+    public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = null)
+    {
+        // Obtener el año académico activo
+        $anio_modelo = new AnioAcademicoModelo($this->conn);
+        $anio_activo_result = $anio_modelo->obtenerAnioActivo();
 
-    if ($dias_habiles_periodo <= 0) {
-        throw new Exception("No hay días hábiles en el período seleccionado ({$desde_usar} - {$hasta_usar})");
-    }
+        if (!$anio_activo_result || mysqli_num_rows($anio_activo_result) == 0) {
+            throw new Exception("No hay un año académico activo configurado en el sistema.");
+        }
 
-    // CONSULTA SIMPLIFICADA Y CORREGIDA
-    $query = "SELECT 
+        $anio_activo = mysqli_fetch_assoc($anio_activo_result);
+        $desde_anio = $anio_activo['desde'];
+        $hasta_anio = $anio_activo['hasta'];
+        $hoy = date('Y-m-d');
+
+        // Validar fechas personalizadas
+        if ($desde && $hasta) {
+            if ($desde < $desde_anio || $desde > $hasta_anio) {
+                throw new Exception("La fecha 'Desde' ({$desde}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
+            }
+            if ($hasta < $desde_anio || $hasta > $hasta_anio) {
+                throw new Exception("La fecha 'Hasta' ({$hasta}) está fuera del año académico activo ({$desde_anio} - {$hasta_anio})");
+            }
+            if ($desde > $hasta) {
+                throw new Exception("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+            }
+
+            $desde_usar = $desde;
+            $hasta_usar = $hasta;
+        } else {
+            $desde_usar = $desde_anio;
+            $hasta_usar = $hasta_anio;
+
+            if ($hoy >= $desde_anio && $hoy <= $hasta_anio) {
+                $hasta_usar = $hoy;
+            } elseif ($hoy < $desde_anio) {
+                $hasta_usar = $desde_anio;
+            }
+        }
+
+        // Calcular días hábiles
+        $dias_habiles_periodo = $this->calcularDiasHabiles($desde_usar, $hasta_usar);
+
+        if ($dias_habiles_periodo <= 0) {
+            throw new Exception("No hay días hábiles en el período seleccionado ({$desde_usar} - {$hasta_usar})");
+        }
+
+        // CONSULTA SIMPLIFICADA Y CORREGIDA
+        $query = "SELECT 
             s.id_seccion,
             g.numero_anio AS grado,
             s.letra AS seccion,
@@ -272,53 +274,53 @@ public function obtenerReporteInasistenciasPorSeccion($desde = null, $hasta = nu
         GROUP BY s.id_seccion, g.numero_anio, s.letra
         ORDER BY g.numero_anio ASC, s.letra ASC";
 
-    $result = $this->conn->query($query);
+        $result = $this->conn->query($query);
 
-    if (!$result) {
-        throw new Exception("Error en la consulta: " . $this->conn->error);
-    }
-
-    $reporte = [];
-    while ($row = $result->fetch_assoc()) {
-        // Obtener estudiante con más inasistencias para esta sección
-        $estudiante_mas_inasistencias = $this->obtenerEstudianteMasInasistencias(
-            $row['id_seccion'], 
-            $desde_usar, 
-            $hasta_usar
-        );
-
-        if ($row['total_estudiantes'] > 0 && $dias_habiles_periodo > 0) {
-            $total_asistencia_posible = $row['total_estudiantes'] * $dias_habiles_periodo;
-            $porcentaje_inasistencia = ($row['total_inasistencias'] / $total_asistencia_posible) * 100;
-            $porcentaje_inasistencia = min(100, max(0, $porcentaje_inasistencia));
-        } else {
-            $porcentaje_inasistencia = 0;
-            $total_asistencia_posible = 0;
+        if (!$result) {
+            throw new Exception("Error en la consulta: " . $this->conn->error);
         }
 
-        $reporte[] = [
-            'id_seccion' => $row['id_seccion'],
-            'grado' => $row['grado'],
-            'seccion' => $row['seccion'],
-            'grado_seccion' => $row['grado'] . '° ' . $row['seccion'],
-            'total_estudiantes' => $row['total_estudiantes'],
-            'total_inasistencias' => $row['total_inasistencias'],
-            'porcentaje_inasistencia' => round($porcentaje_inasistencia, 2),
-            'estudiante_mas_inasistencias' => $estudiante_mas_inasistencias ?: 'Sin inasistencias',
-            'dias_habiles_periodo' => $dias_habiles_periodo,
-            'total_asistencia_posible' => $total_asistencia_posible,
-            'periodo_desde' => $desde_usar,
-            'periodo_hasta' => $hasta_usar
-        ];
+        $reporte = [];
+        while ($row = $result->fetch_assoc()) {
+            // Obtener estudiante con más inasistencias para esta sección
+            $estudiante_mas_inasistencias = $this->obtenerEstudianteMasInasistencias(
+                $row['id_seccion'],
+                $desde_usar,
+                $hasta_usar
+            );
+
+            if ($row['total_estudiantes'] > 0 && $dias_habiles_periodo > 0) {
+                $total_asistencia_posible = $row['total_estudiantes'] * $dias_habiles_periodo;
+                $porcentaje_inasistencia = ($row['total_inasistencias'] / $total_asistencia_posible) * 100;
+                $porcentaje_inasistencia = min(100, max(0, $porcentaje_inasistencia));
+            } else {
+                $porcentaje_inasistencia = 0;
+                $total_asistencia_posible = 0;
+            }
+
+            $reporte[] = [
+                'id_seccion' => $row['id_seccion'],
+                'grado' => $row['grado'],
+                'seccion' => $row['seccion'],
+                'grado_seccion' => $row['grado'] . '° ' . $row['seccion'],
+                'total_estudiantes' => $row['total_estudiantes'],
+                'total_inasistencias' => $row['total_inasistencias'],
+                'porcentaje_inasistencia' => round($porcentaje_inasistencia, 2),
+                'estudiante_mas_inasistencias' => $estudiante_mas_inasistencias ?: 'Sin inasistencias',
+                'dias_habiles_periodo' => $dias_habiles_periodo,
+                'total_asistencia_posible' => $total_asistencia_posible,
+                'periodo_desde' => $desde_usar,
+                'periodo_hasta' => $hasta_usar
+            ];
+        }
+
+        return $reporte;
     }
 
-    return $reporte;
-}
-
-// MÉTODO AUXILIAR PARA OBTENER ESTUDIANTE CON MÁS INASISTENCIAS
-private function obtenerEstudianteMasInasistencias($id_seccion, $desde, $hasta)
-{
-    $query = "SELECT 
+    // MÉTODO AUXILIAR PARA OBTENER ESTUDIANTE CON MÁS INASISTENCIAS
+    private function obtenerEstudianteMasInasistencias($id_seccion, $desde, $hasta)
+    {
+        $query = "SELECT 
             CONCAT(e.nombre, ' ', e.apellido) AS nombre_completo,
             COUNT(a.id_asistencia) AS total_inasistencias
         FROM estudiante e
@@ -332,15 +334,15 @@ private function obtenerEstudianteMasInasistencias($id_seccion, $desde, $hasta)
         ORDER BY total_inasistencias DESC
         LIMIT 1";
 
-    $result = $this->conn->query($query);
-    
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['nombre_completo'];
+        $result = $this->conn->query($query);
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['nombre_completo'];
+        }
+
+        return null;
     }
-    
-    return null;
-}
 
     private function calcularDiasHabiles($desde, $hasta)
     {

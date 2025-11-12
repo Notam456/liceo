@@ -18,10 +18,10 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $resultado = $seccionModelo->generarSecciones($_POST['cantidad'], $_POST['grado']);
-            if ($resultado) {
-                $_SESSION['status'] = "Sección creada correctamente";
-            } else {
-                $_SESSION['status'] = "Esta sección ya existe, vuelva a intentarlo";
+            if ($resultado == "success") {
+                $_SESSION['status'] = "Secciones creadas correctamente";
+            } else  if ($resultado == "muchos"){
+                $_SESSION['status'] = "Error al generar secciones: La cantidad total de secciones para este grado es mayor a 7";
             }
             header('Location: /liceo/controladores/seccion_controlador.php');
             exit();
