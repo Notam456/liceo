@@ -173,17 +173,16 @@ switch ($action) {
                     echo '<td>' . date('d/m/Y', strtotime($row['fecha'])) . '</td>';
                     echo '<td>' . $row['numero_anio'] . '° ' . $row['letra'] . '</td>';
                     echo '<td>' . $row['numero_anio'] . '° año</td>';
-                    echo '<td><span class="badge bg-info">' . $row['total_estudiantes'] . '</span></td>';
-                    echo '<td><span class="badge bg-success">' . $presentes . '</span></td>';
-                    echo '<td><span class="badge bg-danger">' . $row['ausentes'] . '</span></td>';
-                    echo '<td><span class="badge bg-warning">' . $row['justificados'] . '</span></td>';
+                    echo '<td class="dt-type-numeric"><span class="badge bg-info">' . $row['total_estudiantes'] . '</span></td>';
+                    echo '<td class="dt-type-numeric"><span class="badge bg-success">' . $presentes . '</span></td>';
+                    echo '<td class="dt-type-numeric"><span class="badge bg-danger">' . $row['ausentes'] . '</span></td>';
+                    echo '<td class="dt-type-numeric"><span class="badge bg-warning">' . $row['justificados'] . '</span></td>';
                     echo '<td>';
                     echo '<button class="btn btn-warning btn-sm" onclick="consultarDetalle(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')" title="Ver detalle">';
                     echo '<i class="bi bi-eye"></i> Consultar</button> ';
                     echo '<button class="btn btn-primary btn-sm" onclick="modificarAsistencia(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . ', \'' . $row['numero_anio'] . '° ' . $row['letra'] . '\')" title="Modificar">';
                     echo '<i class="bi bi-pencil"></i> Modificar</button> ';
-                    echo '<button class="btn btn-danger btn-sm" onclick="eliminarAsistenciaFecha(\'' . $row['fecha'] . '\', ' . $row['id_seccion'] . '\')" title="Eliminar">';
-                    echo '<i class="bi bi-trash"></i> Eliminar</button>';
+            
                     echo '</td>';
                     echo '</tr>';
                 }
