@@ -2,16 +2,26 @@
 <html lang="es">
 
 <head>
-    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php');?>
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/head.php'); ?>
     <link rel="stylesheet" href="../includes/backdrop.css">
     <title>Registro de Asistencia</title>
     <style>
         .justificado-note {
             display: none;
             margin-top: 5px;
-        }
-    <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css') ?>
 
+
+        }
+
+        .swal2-container {
+            z-index: 99999 !important;
+        }
+
+        .swal2-backdrop-show {
+            z-index: 99998 !important;
+        }
+
+        <?php include($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/backdrop.css') ?>
     </style>
 </head>
 
@@ -21,7 +31,7 @@
     $min_date = '';
     $anio_hasta = ''; // Variable para la fecha máxima
     $anio_desde = '';
-    
+
     if (isset($anio_activo) && $anio_activo) {
         $min_date = date('Y-m-d', strtotime($anio_activo['desde']));
         $anio_hasta = $anio_activo['hasta']; // Obtener la fecha de fin del año académico
@@ -117,10 +127,10 @@
                                             <td><span class="badge bg-danger"><?= $row['ausentes'] ?></span></td>
                                             <td><span class="badge bg-warning"><?= $row['justificados'] ?></span></td>
                                             <td>
-                                                <button class="btn btn-warning btn-sm" onclick="consultarDetalle('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof']. ' '. $row['apellido_prof'] ?>')" title="Ver detalle">
+                                                <button class="btn btn-warning btn-sm" onclick="consultarDetalle('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof'] . ' ' . $row['apellido_prof'] ?>')" title="Ver detalle">
                                                     <i class="bi bi-eye"></i> Consultar
                                                 </button>
-                                                <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof'].' '. $row['apellido_prof'] ?>')" title="Modificar">
+                                                <button class="btn btn-primary btn-sm" onclick="modificarAsistencia('<?= $row['fecha'] ?>', <?= $row['id_seccion'] ?>, '<?= $row['numero_anio'] ?>° <?= $row['letra'] ?>', '<?= $row['nombre_prof'] . ' ' . $row['apellido_prof'] ?>')" title="Modificar">
                                                     <i class="bi bi-pencil"></i> Modificar
                                                 </button>
 
@@ -303,7 +313,7 @@
             // Verificar que Pikaday esté cargado
             if (typeof Pikaday !== 'undefined') {
                 console.log('Pikaday cargado correctamente');
-                
+
                 // Configuración común para todos los datepickers
                 var pikadayConfig = {
                     format: 'YYYY-MM-DD',
@@ -328,7 +338,7 @@
                 var hoy = new Date();
                 var anioHasta = new Date('<?= $anio_hasta ?>');
 
-                    // Determinar la fecha máxima
+                // Determinar la fecha máxima
                 var maxDate = hoy > anioHasta ? anioHasta : hoy;
 
                 // Configurar datepicker para filtro de fecha
@@ -412,12 +422,10 @@
 
             // Configuración de DataTables
             $('#tablaAsistencia').DataTable({
-                columnDefs: [
-                    {
-                        targets: -1,
-                        orderable: false
-                    }
-                ]
+                columnDefs: [{
+                    targets: -1,
+                    orderable: false
+                }]
             });
 
             // Mostrar/ocultar nota de justificación
@@ -438,7 +446,9 @@
                 $.ajax({
                     url: '/liceo/controladores/asistencia_controlador.php',
                     type: 'POST',
-                    data: { 'action': 'obtener_grados' },
+                    data: {
+                        'action': 'obtener_grados'
+                    },
                     success: function(response) {
                         $('#gradoAsistencia').html(response);
                     }
@@ -533,7 +543,9 @@
             $.ajax({
                 url: '/liceo/controladores/asistencia_controlador.php',
                 type: 'POST',
-                data: { 'action': 'obtener_grados' },
+                data: {
+                    'action': 'obtener_grados'
+                },
                 success: function(response) {
                     $('#filtroGrado').html('<option value="">Todos los grados</option>' + response.replace('<option value="">Seleccione un grado</option>', ''));
                 }
@@ -652,9 +664,9 @@
 
         // Función para consultar detalle
         function consultarDetalle(fecha, idSeccion, nombreSeccion, profesor) {
-            $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion  + ' - <strong>Cargada por:</strong> ' + profesor);
+            $('#detalleInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion + ' - <strong>Cargada por:</strong> ' + profesor);
             $('#consultarDetalleModal').modal('show');
-            
+
             $.ajax({
                 url: '/liceo/controladores/asistencia_controlador.php',
                 type: 'POST',
@@ -673,7 +685,7 @@
         function modificarAsistencia(fecha, idSeccion, nombreSeccion, profesor) {
             $('#modificarInfo').html('<strong>Fecha:</strong> ' + fecha + ' - <strong>Sección:</strong> ' + nombreSeccion + ' - <strong>Cargada por:</strong> ' + profesor);
             $('#modificarAsistenciaModal').modal('show');
-            
+
             // Cargar estudiantes para modificar (versión editable)
             $.ajax({
                 url: '/liceo/controladores/asistencia_controlador.php',
@@ -725,7 +737,7 @@
             $('#filtroFecha').val('');
             $('#filtroGrado').val('');
             $('#filtroSeccion').html('<option value="">Todas las secciones</option>').prop('disabled', true);
-            
+
             // Recargar tabla completa
             location.reload();
         }
