@@ -30,7 +30,11 @@
         } else {
             ?>
             <tr>
-                <td colspan="5" class="text-center">No se encontraron registros en el historial.</td>
+                <td></td>
+                <td>No se encontraron registros en el historial.</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php
         }

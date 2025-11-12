@@ -25,7 +25,7 @@
                 $yearLater->add(new DateInterval('P366D'));
                 if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
                 ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div class="alert alert-warning alert-dismissible show" role="alert">
                         <strong>¡Atención!</strong> <?php echo $_SESSION['status']; ?>
                         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -66,7 +66,7 @@
                         <!-- Contenido de las pestañas -->
                         <div class="tab-content" id="anioTabsContent">
                             <!-- Pestaña Lista de Años Académicos -->
-                            <div class="tab-pane fade <?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'show active' : ''; ?>" 
+                            <div class="tab-pane  <?php echo (!isset($_REQUEST['action']) || $_REQUEST['action'] == 'listar') ? 'show active' : ''; ?>" 
                                  id="lista-pane" role="tabpanel" aria-labelledby="lista-tab">
                                 <table class="table table-striped" id="myTable">
                                     <thead>
@@ -117,8 +117,7 @@
                                         <td>No se encontraron registros de Años academicos.</td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-
+                                        
                                     </tr>
                                 <?php
                                 }
@@ -128,7 +127,7 @@
                             </div>
                             
                             <!-- Pestaña Historial de Cambios -->
-                            <div class="tab-pane fade <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'show active' : ''; ?>" 
+                            <div class="tab-pane <?php echo (isset($_REQUEST['action']) && $_REQUEST['action'] == 'historialLogs') ? 'show active' : ''; ?>" 
                                  id="historial-pane" role="tabpanel" aria-labelledby="historial-tab">
                                 
                                 <!-- Filtros -->
