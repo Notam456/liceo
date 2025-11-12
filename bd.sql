@@ -227,6 +227,8 @@ VALUES ('administrador', 'Hola1234!', 'admin', NULL);
 INSERT INTO cargo (tipo, nombre) 
 VALUES ('directivo', 'Director');
 
+INSERT INTO anio_academico (desde, hasta, estado, visibilidad)
+VALUES ('2025-09-15', '2026-07-31', 1, 1)
 
 INSERT INTO municipio (municipio) VALUES
 ('Arístides Bastidas'),
