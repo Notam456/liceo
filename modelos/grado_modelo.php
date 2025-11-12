@@ -2,21 +2,39 @@
 
 class GradoModelo
 {
+    
     private $conn;
-
+    
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
-    public function generarGrados($cantidad, $id)
-    {
-        $cantidad = (int)$cantidad;
-        for ($i = 1; $i <= $cantidad; $i++) {
-            $this->crearGrado($i, $id);
-        }
-        return "success";
+   public function generarGrados($cantidad, $id)
+{
+
+    $sql = "SELECT COUNT(*) AS total FROM grado WHERE id_anio = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    $existentes = (int)$result['total'];
+
+    if ($existentes >= 6 || $existentes + $cantidad > 6) {
+        return "muchos";
     }
+
+    
+    $inicio = $existentes + 1;
+    $fin = $existentes + (int)$cantidad;
+
+    for ($i = $inicio; $i <= $fin; $i++) {
+        $this->crearGrado($i, $id);
+    }
+
+    return "success";
+}
     public function crearGrado($numero_anio, $id_anio)
     {
         $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);

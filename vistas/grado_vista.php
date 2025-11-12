@@ -133,7 +133,7 @@
                     <div class="modal-body">
                         <div class="form-group mb-3">
                             <label>Cantidad de grados</label>
-                            <input type="number" name="cantidad" class="form-control" value="5" required>
+                            <input type="number" name="cantidad" class="form-control" value="5" required min="1" max="6">
                         </div>
                     </div>
                     <div class="modal-footer">

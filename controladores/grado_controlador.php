@@ -20,7 +20,20 @@ switch ($action) {
                 exit();
             }
             $resultado = $gradoModelo->generarGrados($_POST['cantidad'], $anioActivo['id_anio']);
-            $_SESSION['status'] = $resultado ? "Grados generados correctamente" : "Error al crear los grados";
+            switch ($resultado) {
+                case 'success':
+                    $_SESSION['status'] =  "Grados generados correctamente";
+                    break;
+                
+                case 'muchos':
+                    $_SESSION['status'] =  "Error al generar grados: La cantidad de grados totales es mayor a 6";
+                    break;
+                default:
+                     $_SESSION['status'] = "Error al crear los grados";
+
+            }
+
+        
             header('Location: /liceo/controladores/grado_controlador.php');
             exit();
         }
