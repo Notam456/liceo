@@ -1,6 +1,4 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/visita_modelo.php');
-
 class ReporteModelo
 {
     private $db;
@@ -59,7 +57,8 @@ class ReporteModelo
                     FROM asistencia a2
                     WHERE a2.id_estudiante = e.id_estudiante
                     AND YEARWEEK(a2.fecha, 1) = YEARWEEK(CURDATE(), 1)
-                ) AS total_ultima_semana
+                ) AS total_ultima_semana,
+                va.id_estudiante IS NOT NULL AS tiene_visita_agendada
             FROM estudiante e
             LEFT JOIN (
                 SELECT a_sub.id_estudiante, MAX(v.fecha_visita) AS fecha_ultima_visita
@@ -68,6 +67,12 @@ class ReporteModelo
                 WHERE v.estado <> 'cancelada'
                 GROUP BY a_sub.id_estudiante
             ) AS uv ON e.id_estudiante = uv.id_estudiante
+            LEFT JOIN (
+                SELECT DISTINCT a_sub.id_estudiante
+                FROM visita v
+                JOIN asistencia a_sub ON v.id_asistencia = a_sub.id_asistencia
+                WHERE v.estado = 'agendada'
+            ) AS va ON e.id_estudiante = va.id_estudiante
             LEFT JOIN asistencia a
                 ON a.id_estudiante = e.id_estudiante
                 $where_condicion
@@ -80,7 +85,7 @@ class ReporteModelo
             LEFT JOIN seccion s ON asig.id_seccion = s.id_seccion
             LEFT JOIN grado g ON s.id_grado = g.id_grado
             WHERE {$condicion} {$seccion_condicion}
-            GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula, uv.fecha_ultima_visita
+            GROUP BY e.id_estudiante, nombre_completo, seccion, contacto, cedula, uv.fecha_ultima_visita, va.id_estudiante
         ";
 
         $stmt = $this->db->prepare($query_str);
@@ -99,46 +104,19 @@ class ReporteModelo
             throw new Exception("Error en la consulta: " . $this->db->error);
         }
 
-        $visitaModelo = new VisitaModelo($this->db);
         $reporte = [];
         while ($row = $result->fetch_assoc()) {
-            $fecha_ultima_visita = $visitaModelo->obtenerFechaUltimaVisitaNoCancelada($row['id_estudiante']);
-
-            $ausencias = (int)$row['ausencias'];
-            $justificadas = (int)$row['justificadas'];
-            $total = (int)$row['total'];
-
-            if ($fecha_ultima_visita) {
-                $query_recalculo = "
-                    SELECT
-                        COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
-                        COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
-                        COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total
-                    FROM asistencia a
-                    WHERE a.id_estudiante = {$row['id_estudiante']}
-                    AND a.fecha > '{$fecha_ultima_visita}'
-                ";
-
-                $result_recalculo = $this->db->query($query_recalculo);
-                if ($row_recalculo = $result_recalculo->fetch_assoc()) {
-                    $ausencias = (int)$row_recalculo['ausencias'];
-                    $justificadas = (int)$row_recalculo['justificadas'];
-                    $total = (int)$row_recalculo['total'];
-                }
-            }
-
-            $tiene_visita = $visitaModelo->tieneVisitaAgendada($row['id_estudiante']);
             $reporte[] = [
                 'id_estudiante' => $row['id_estudiante'],
                 'nombre' => $row['nombre_completo'],
                 'seccion' => $row['seccion'],
                 'contacto' => $row['contacto'],
                 'cedula' => $row['cedula'],
-                'ausencias' => $ausencias,
-                'justificadas' => $justificadas,
-                'total' => $total,
+                'ausencias' => (int)$row['ausencias'],
+                'justificadas' => (int)$row['justificadas'],
+                'total' => (int)$row['total'],
                 'total_ultima_semana' => (int)$row['total_ultima_semana'],
-                'tiene_visita_agendada' => $tiene_visita
+                'tiene_visita_agendada' => (bool)$row['tiene_visita_agendada']
             ];
         }
 
