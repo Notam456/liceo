@@ -36,7 +36,7 @@ define('ROOT_PATH', __DIR__ . '/');
                 $ruta = 'controladores/' . $nombre_modulo . '_controlador.php';
                 $texto = $nombre_legible[$nombre_modulo];
                 echo '<a href="' . htmlspecialchars($ruta) . '">';
-                echo '<div class="modulo" style="width: 20%;" data-url="' . htmlspecialchars($ruta) . '">';
+                echo '<div class="modulo" data-url="' . htmlspecialchars($ruta) . '">';
                 echo '<img src="' . htmlspecialchars($imagen_url) . '" alt="' . htmlspecialchars($texto) . '">';
                 echo '<h2>' . htmlspecialchars($texto) . '</h2>';
 
