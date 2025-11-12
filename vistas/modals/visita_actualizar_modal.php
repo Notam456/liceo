@@ -15,7 +15,7 @@ if (!isset($row)) {
     <?php if ($action == 'realizada'): ?>
     <div class="mb-3">
         <label for="fecha_realizada" class="form-label">Fecha de Realización</label>
-        <input type="text" class="form-control" id="fecha_realizada" name="fecha_realizada" value="<?php echo htmlspecialchars($row['fecha_visita']); ?>" required readonly>
+        <input type="text" class="form-control" id="fecha_realizada" name="fecha_realizada" placeholder="AAAA-MM-DD" value="<?php echo htmlspecialchars($row['fecha_visita']); ?>" required readonly>
     </div>
     <?php else: ?>
         <input type="hidden" name="fecha_realizada" value="<?php echo date('Y-m-d'); ?>">
@@ -50,50 +50,39 @@ if (!isset($row)) {
                 // Configuración común para ambos datepickers
                 var pikadayConfig = {
                 format: 'YYYY-MM-DD',
-                toString: function(date, format) {
-                    // Forzar el formato YYYY-MM-DD
-                    var year = date.getFullYear();
-                    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                    var day = ('0' + date.getDate()).slice(-2);
-                    return year + '-' + month + '-' + day;
-                },
-                parse: function(dateString, format) {
-                    // Parsear desde YYYY-MM-DD
-                    var parts = dateString.split('-');
-                    if (parts.length === 3) {
-                        return new Date(parts[0], parts[1] - 1, parts[2]);
-                    }
-                    return new Date(dateString);
-                },
-                i18n: {
-                    previousMonth: 'Mes anterior',
-                    nextMonth: 'Siguiente mes',
-                    months: [
-                        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-                    ],
-                    weekdays: [
-                        'Domingo', 'Lunes', 'Martes', 'Miércoles',
-                        'Jueves', 'Viernes', 'Sábado'
-                    ],
-                    weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-                },
-                yearRange: [1950, new Date().getFullYear()],
-                minDate: new Date(new Date().setHours(0, 0, 0, 0)),
-                maxDate: new Date('<?= $anio_hasta ?>'),
-                showDaysInNextAndPreviousMonths: true,
-
-                toString: function(date) {
-                    var day = date.getDate();
-                    var month = date.getMonth();
-                    var year = date.getFullYear();
-
-                    // Usar los meses traducidos del i18n
-                    var monthName = this.i18n.months[month];
-
-                    return day + ' de ' + monthName + ' de ' + year;
-                }
-            };
+                    toString: function(date, format) {
+                        // Forzar el formato YYYY-MM-DD
+                        var year = date.getFullYear();
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function(dateString, format) {
+                        // Parsear desde YYYY-MM-DD
+                        var parts = dateString.split('-');
+                        if (parts.length === 3) {
+                            return new Date(parts[0], parts[1] - 1, parts[2]);
+                        }
+                        return new Date(dateString);
+                    },
+                    i18n: {
+                        previousMonth: 'Mes anterior',
+                        nextMonth: 'Siguiente mes',
+                        months: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        weekdays: [
+                            'Domingo', 'Lunes', 'Martes', 'Miércoles',
+                            'Jueves', 'Viernes', 'Sábado'
+                        ],
+                        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+                    },
+                    yearRange: [1950, new Date().getFullYear()],
+                    minDate: new Date('<?= $anio_desde ?>'),
+                    maxDate: new Date('<?= $anio_hasta ?>'),
+                    showDaysInNextAndPreviousMonths: true,
+                };
 
                 // Inicializar Pikaday para el modal de CREAR
                 var pickerCrear = new Pikaday(
