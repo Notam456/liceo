@@ -1,12 +1,35 @@
 <?php
-// Obtener el año académico activo
-$anio_activo = null;
+session_start(); // Asegúrate de que siempre se inicia la sesión
+
+// Tiempo máximo de inactividad (en segundos)
+$tiempo_inactividad = 1800; // 30 minutos
+
+// Verificar si hay una sesión activa
 if (isset($_SESSION['usuario'])) {
+
+    // Si existe registro de la última actividad, calcular el tiempo transcurrido
+    if (isset($_SESSION['ultimo_movimiento'])) {
+        $inactividad = time() - $_SESSION['ultimo_movimiento'];
+
+        // Si supera el límite, destruir la sesión y redirigir
+        if ($inactividad > $tiempo_inactividad) {
+            session_unset();
+            session_destroy();
+            header("Location: /liceo/logout.php?motivo=inactividad");
+            exit();
+        }
+    }
+
+    // Actualizar el timestamp de última actividad
+    $_SESSION['ultimo_movimiento'] = time();
+
+    // Obtener el año académico activo
     include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/includes/conn.php');
     include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.php');
     
     $anioModelo = new AnioAcademicoModelo($conn);
     
+    $anio_activo = null;
     $resultado = $anioModelo->obtenerAnioActivo();
     if ($resultado && mysqli_num_rows($resultado) > 0) {
         $anio = mysqli_fetch_assoc($resultado);
@@ -38,7 +61,7 @@ if (isset($_SESSION['usuario'])) {
                 <li class="nav-item d-flex align-items-center">
                     <?php if (isset($_SESSION['usuario'])) { ?>
                         <div class="text-light me-3">
-                            <p class="mb-0 fw-bold"><?= $_SESSION['nombre_prof']?></p>
+                            <p class="mb-0 fw-bold"><?= $_SESSION['nombre_prof'] ?></p>
                             <?php if ($anio_activo): ?>
                                 <p class="mb-0 small" style="color: #adb5bd;"><?= $anio_activo ?></p>
                             <?php endif; ?>
@@ -48,6 +71,7 @@ if (isset($_SESSION['usuario'])) {
                         </a>
                     <?php } elseif (basename($_SERVER['PHP_SELF']) !== 'index.php') {
                         header("Location: /liceo/index.php");
+                        exit();
                     } else { ?>
                         <button
                             type="button"
