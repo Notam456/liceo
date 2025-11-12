@@ -45,9 +45,9 @@ $query = "
         ) AS seccion,
         e.contacto AS contacto,
         e.cedula AS cedula,
-        COALESCE(SUM(CASE WHEN a.inasistencia = 1 THEN 1 ELSE 0 END), 0) AS ausencias,
-        COALESCE(SUM(CASE WHEN a.justificado = 1 THEN 1 ELSE 0 END), 0) AS justificadas,
-        COALESCE(SUM(CASE WHEN a.inasistencia = 1 OR a.justificado = 1 THEN 1 ELSE 0 END), 0) AS total,
+        COALESCE(SUM(CASE WHEN a.inasistencia = 1 AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS ausencias,
+        COALESCE(SUM(CASE WHEN a.justificado = 1 AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS justificadas,
+        COALESCE(SUM(CASE WHEN (a.inasistencia = 1 OR a.justificado = 1) AND a.fecha > COALESCE(v.ultima_visita, '1900-01-01') THEN 1 ELSE 0 END), 0) AS total,
         (
             SELECT COALESCE(SUM(CASE WHEN a2.inasistencia = 1 OR a2.justificado = 1 THEN 1 ELSE 0 END), 0)
             FROM asistencia a2
@@ -58,6 +58,12 @@ $query = "
     LEFT JOIN asistencia a 
         ON a.id_estudiante = e.id_estudiante 
         $where_condicion
+    LEFT JOIN (
+        SELECT a3.id_estudiante, MAX(v.fecha_visita) as ultima_visita
+        FROM visita v
+        JOIN asistencia a3 ON v.id_asistencia = a3.id_asistencia
+        GROUP BY a3.id_estudiante
+    ) v ON e.id_estudiante = v.id_estudiante
     LEFT JOIN (
         SELECT asg.* 
         FROM asigna_seccion asg
