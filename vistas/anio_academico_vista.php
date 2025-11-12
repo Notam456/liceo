@@ -332,7 +332,7 @@ $(document).ready(function() {
             if (inicioPicker.value.trim() === '') {
                 inicioPicker.setCustomValidity('Este campo es obligatorio');
                 inicioPicker.readOnly = false;
-                inicioPicker.reportValidity();
+                pickerInicio.show();
                 inicioPicker.readOnly = true;
                 formIsValid = false;
             } else {
@@ -345,7 +345,7 @@ $(document).ready(function() {
                 // Solo reportar si el campo de inicio era válido, para no mostrar dos popups
                 if (formIsValid) {
                     finPicker.readOnly = false;
-                    finPicker.reportValidity();
+                    pickerFin.show();
                     finPicker.readOnly = true;
                 }
                 formIsValid = false;

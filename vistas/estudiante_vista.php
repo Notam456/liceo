@@ -331,7 +331,7 @@
                         event.preventDefault();
                         fechaNacimiento.setCustomValidity('Este campo es obligatorio');
                         fechaNacimiento.readOnly = false;
-                        fechaNacimiento.reportValidity();
+                        pickerCrear.show();
                         fechaNacimiento.readOnly = true;
                     } else {
                         fechaNacimiento.setCustomValidity('');
@@ -345,7 +345,7 @@
                         event.preventDefault();
                         fechaNacimientoEdit.setCustomValidity('Este campo es obligatorio');
                         fechaNacimientoEdit.readOnly = false;
-                        fechaNacimientoEdit.reportValidity();
+                        pickerEditar.show();
                         fechaNacimientoEdit.readOnly = true;
                     } else {
                         fechaNacimientoEdit.setCustomValidity('');

@@ -33,7 +33,7 @@
                     event.preventDefault();
                     fechaVisita.setCustomValidity('Este campo es obligatorio');
                     fechaVisita.readOnly = false;
-                    fechaVisita.reportValidity();
+                    pickerVisita.show();
                     fechaVisita.readOnly = true;
                 } else {
                     fechaVisita.setCustomValidity('');

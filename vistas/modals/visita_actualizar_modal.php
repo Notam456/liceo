@@ -33,7 +33,7 @@ if (!isset($row)) {
                     event.preventDefault();
                     fechaRealizada.setCustomValidity('Este campo es obligatorio');
                     fechaRealizada.readOnly = false;
-                    fechaRealizada.reportValidity();
+                    pickerCrear.show();
                     fechaRealizada.readOnly = true;
                 } else if (fechaRealizada) {
                     fechaRealizada.setCustomValidity('');
@@ -102,35 +102,8 @@ if (!isset($row)) {
                     }
                 });
 
-                // Mostrar datepicker cuando se abra el modal de EDITAR
-                $('#editmodal').on('shown.bs.modal', function() {
-                    if (pickerEditar) {
-                        pickerEditar.show();
-                    }
-                });
 
-                // Cuando se cargan datos en el modal de editar, establecer la fecha en Pikaday
-                $(document).on('ajaxComplete', function(event, xhr, settings) {
-                    if (settings.url === '/liceo/controladores/estudiante_controlador.php' &&
-                        settings.data.includes("action=editar")) {
-
-                        // Esperar un momento para que los datos se carguen en los campos
-                        setTimeout(function() {
-                            var fechaInput = document.getElementById('fecha_nacimiento_edit');
-                            var fechaPicker = document.getElementById('fecha_nacimiento_edit_picker');
-
-                            if (fechaInput && fechaInput.value && pickerEditar) {
-                                // Convertir fecha de YYYY-MM-DD a DD-MM-YYYY para Pikaday
-                                var fechaParts = fechaInput.value.split('-');
-                                if (fechaParts.length === 3) {
-                                    var fechaFormateada = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
-                                    fechaPicker.value = fechaFormateada;
-                                    pickerEditar.setDate(new Date(fechaInput.value));
-                                }
-                            }
-                        }, 100);
-                    }
-                });
+                
 
             } else {
                 console.error('Pikaday no está cargado');

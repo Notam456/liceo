@@ -371,7 +371,7 @@
                         event.preventDefault();
                         fechaAsistencia.setCustomValidity('Este campo es obligatorio');
                         fechaAsistencia.readOnly = false;
-                        fechaAsistencia.reportValidity();
+                        pickerAsistencia.show();
                         fechaAsistencia.readOnly = true;
                     } else {
                         fechaAsistencia.setCustomValidity('');
@@ -385,7 +385,7 @@
                         event.preventDefault();
                         fechaEdit.setCustomValidity('Este campo es obligatorio');
                         fechaEdit.readOnly = false;
-                        fechaEdit.reportValidity();
+                        pickerEdit.show();
                         fechaEdit.readOnly = true;
                     } else {
                         fechaEdit.setCustomValidity('');
