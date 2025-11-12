@@ -156,7 +156,7 @@ section {
 }
 
 .modulos {
-  display: grid;
+
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--espaciado);
   width: 100%;
@@ -170,10 +170,12 @@ section {
   padding: var(--espaciado);
   border-radius: var(--borde-radio);
   box-shadow: var(--sombra);
-  width: 100%;
+  width: 20%;
   box-sizing: border-box;
   text-align: center;
   transition: transform 0.2s;
+  display: inline-block;
+  margin: 2%;
 }
 
 .modulo:hover {
