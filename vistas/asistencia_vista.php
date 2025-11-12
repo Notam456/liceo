@@ -186,7 +186,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="guardar_asistencia" class="btn btn-success">Guardar Asistencia</button>
+                        <button id="submitRegistrar" type="submit" name="guardar_asistencia" class="btn btn-success">Guardar Asistencia</button>
                     </div>
                 </form>
             </div>
@@ -237,7 +237,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="actualizar_asistencia" class="btn btn-primary">Actualizar</button>
+                        <button type="submit" id="submitEditar" name="actualizar_asistencia" class="btn btn-primary">Actualizar</button>
                     </div>
                 </form>
             </div>
@@ -365,7 +365,7 @@
                 );
 
                 // Validación de formulario de registro
-                document.getElementById('formAsistencia').addEventListener('submit', function(event) {
+                document.getElementById('submitRegistrar').addEventListener('click', function(event) {
                     var fechaAsistencia = document.getElementById('fechaAsistencia');
                     if (fechaAsistencia.value.trim() === '') {
                         event.preventDefault();
@@ -379,7 +379,7 @@
                 });
 
                 // Validación de formulario de edición
-                document.getElementById('formEditarAsistencia').addEventListener('submit', function(event) {
+                document.getElementById('submitEditar').addEventListener('click', function(event) {
                     var fechaEdit = document.getElementById('fecha_edit');
                     if (fechaEdit.value.trim() === '') {
                         event.preventDefault();

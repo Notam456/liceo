@@ -174,7 +174,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
+                        <button type="submit" id="submitEditar" name="update-data" class="btn btn-primary btn-success">Guardar datos</button>
                     </div>
                 </form>
             </div>
@@ -270,7 +270,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
+                            <button type="submit" id="submitGuardar" name="save_data" class="btn btn-success">Guardar datos</button>
                         </div>
                 </form>
             </div>
@@ -325,7 +325,7 @@
                 );
 
                 // Validación de formulario de creación
-                document.getElementById('form-crear').addEventListener('submit', function(event) {
+                document.getElementById('submitGuardar').addEventListener('click', function(event) {
                     var fechaNacimiento = document.getElementById('fecha_nacimiento_picker');
                     if (fechaNacimiento.value.trim() === '') {
                         event.preventDefault();
@@ -339,7 +339,7 @@
                 });
 
                 // Validación de formulario de edición
-                document.getElementById('edit-form').addEventListener('submit', function(event) {
+                document.getElementById('submitEditar').addEventListener('click', function(event) {
                     var fechaNacimientoEdit = document.getElementById('fecha_nacimiento_edit_picker');
                     if (fechaNacimientoEdit.value.trim() === '') {
                         event.preventDefault();

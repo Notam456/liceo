@@ -267,7 +267,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="save_data" class="btn btn-success">Guardar datos</button>
+                        <button type="submit" id="submitButton" name="save_data" class="btn btn-success">Guardar datos</button>
                     </div>
                 </form>
             </div>
@@ -323,7 +323,7 @@ $(document).ready(function() {
         );
 
         // Validación de formulario
-        document.getElementById('formAnio').addEventListener('submit', function(event) {
+        document.getElementById('submitButton').addEventListener('click', function(event) {
             var inicioPicker = document.getElementById('inicio_picker');
             var finPicker = document.getElementById('fin_picker');
             var formIsValid = true;

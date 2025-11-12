@@ -20,14 +20,14 @@ if (!isset($row)) {
     <?php else: ?>
         <input type="hidden" name="fecha_realizada" value="<?php echo date('Y-m-d'); ?>">
     <?php endif; ?>
-    <button type="submit" class="btn <?php if ($action=='realizada') { ?> btn-success <?php } else {?> btn-danger <?php } ?> float-end">Guardar datos</button>
+    <button type="submit" id="submitButton" class="btn <?php if ($action=='realizada') { ?> btn-success <?php } else {?> btn-danger <?php } ?> float-end">Guardar datos</button>
 </form>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var form = document.getElementById('updateVisitaForm');
-        if (form) {
-            form.addEventListener('submit', function(event) {
+        var btn = document.getElementById('submitButton');
+        if (btn) {
+            btn.addEventListener('click', function(event) {
                 var fechaRealizada = document.getElementById('fecha_realizada');
                 if (fechaRealizada && fechaRealizada.value.trim() === '') {
                     event.preventDefault();

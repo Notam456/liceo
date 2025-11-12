@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Agendar</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary">Agendar</button>
                 </div>
             </form>
         </div>
@@ -25,9 +25,9 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var form = document.getElementById('visita-form');
-        if (form) {
-            form.addEventListener('submit', function(event) {
+        var btn = document.getElementById('submitButton');
+        if (btn) {
+            btn.addEventListener('click', function(event) {
                 var fechaVisita = document.getElementById('fecha_visita');
                 if (fechaVisita.value.trim() === '') {
                     event.preventDefault();
