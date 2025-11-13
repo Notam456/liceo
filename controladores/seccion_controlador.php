@@ -16,17 +16,38 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'listar';
 
 switch ($action) {
     case 'crear':
-        if (isset($_POST['save_data'])) {
-            $resultado = $seccionModelo->generarSecciones($_POST['cantidad'], $_POST['grado']);
-            if ($resultado == "success") {
-                $_SESSION['status'] = "Secciones creadas correctamente";
-            } else  if ($resultado == "muchos") {
-                $_SESSION['status'] = "Error al generar secciones: La cantidad total de secciones para este grado es mayor a 7";
-            }
-            header('Location: /liceo/controladores/seccion_controlador.php');
-            exit();
+    if (isset($_POST['save_data'])) {
+        $resultado = $seccionModelo->generarSecciones($_POST['cantidad'], $_POST['grado']);
+
+        switch (true) {
+            case $resultado === 'success':
+                $_SESSION['status'] = "Secciones generadas correctamente.";
+                break;
+
+            case $resultado === 'maximo alcanzado':
+                $_SESSION['status'] = "Este grado ya tiene el máximo de 7 secciones.";
+                break;
+
+            case $resultado === 'sin cambios':
+                $_SESSION['status'] = "No se realizaron cambios, las secciones ya existen o están activas.";
+                break;
+
+            case preg_match('/^se crearon \d+ de \d+ secciones$/', $resultado):
+                $_SESSION['status'] = ucfirst($resultado) . ".";
+                break;
+
+            case $resultado === '1062':
+                $_SESSION['status'] = "Error: secciones duplicadas.";
+                break;
+
+            default:
+                $_SESSION['status'] = "Error al generar secciones: $resultado";
         }
-        break;
+
+        header('Location: /liceo/controladores/seccion_controlador.php');
+        exit();
+    }
+    break;
 
     case 'ver':
         if (isset($_POST['id_seccion'])) {
