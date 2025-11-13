@@ -4,37 +4,61 @@ include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/modelos/anio_academico_modelo.p
 class SeccionModelo
 {
     private $conn;
+
     static $letras = [
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
-        'F',
-        'G',
-        'H',
-        'I',
-        'J',
-        'K',
-        'L',
-        'M',
-        'N',
-        'O',
-        'P',
-        'Q',
-        'R',
-        'S',
-        'T',
-        'U',
-        'V',
-        'W',
-        'X',
-        'Y',
-        'Z'
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+        'U', 'V', 'W', 'X', 'Y', 'Z'
     ];
+
     public function __construct($db)
     {
         $this->conn = $db;
+    }
+
+    public function buscarPorLetra($letra, $id_grado)
+    {
+        $letra = mysqli_real_escape_string($this->conn, $letra);
+        $id_grado = mysqli_real_escape_string($this->conn, $id_grado);
+
+        $query = "SELECT * FROM seccion WHERE letra = '$letra' AND id_grado = '$id_grado'";
+        $result = mysqli_query($this->conn, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
+    }
+
+    public function generarSecciones($cantidad, $id_grado)
+    {
+        $id_grado = (int)$id_grado;
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+        try {
+            // Contar cuántas secciones visibles existen
+            $sql = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = ? AND visibilidad = 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("i", $id_grado);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            $existentes = (int)$result['total'];
+
+            if ($existentes >= count(self::$letras) || $existentes + $cantidad > count(self::$letras)) {
+                return "muchas";
+            }
+
+            $inicio = $existentes;
+            $fin = $existentes + (int)$cantidad;
+
+            for ($i = $inicio; $i < $fin; $i++) {
+                $this->crearSeccion(self::$letras[$i], $id_grado);
+            }
+
+            return "success";
+        } catch (mysqli_sql_exception $e) {
+            throw $e;
+        }
     }
 
     public function crearSeccion($letra, $id_grado)
@@ -42,15 +66,99 @@ class SeccionModelo
         $letra = mysqli_real_escape_string($this->conn, $letra);
         $id_grado = mysqli_real_escape_string($this->conn, $id_grado);
 
-        $query = "INSERT INTO seccion(letra, id_grado) VALUES ('$letra', $id_grado)";
+        $seccionExistente = $this->buscarPorLetra($letra, $id_grado);
 
+        if ($seccionExistente) {
+            // Si ya existe pero está oculta, reactivarla
+            if ($seccionExistente['visibilidad'] == 0) {
+                $id_seccion = $seccionExistente['id_seccion'];
+                $query = "UPDATE seccion SET letra = '$letra', visibilidad = 1 WHERE id_seccion = $id_seccion";
+                try {
+                    mysqli_query($this->conn, $query);
+                    return true;
+                } catch (mysqli_sql_exception $e) {
+                    throw $e;
+                }
+            }
+            // Si ya está visible, no crear duplicado
+            return false;
+        }
+
+        // Crear una nueva sección
+        $query = "INSERT INTO seccion(letra, id_grado) VALUES ('$letra', $id_grado)";
         try {
             return mysqli_query($this->conn, $query);
-        } catch (Exception $e) {
-            return false;
+        } catch (mysqli_sql_exception $e) {
+            throw $e;
         }
     }
 
+    public function actualizarSeccion($id, $letra, $id_grado)
+{
+    $id = (int)$id;
+    $id_grado = (int)$id_grado;
+    $letra = mysqli_real_escape_string($this->conn, $letra);
+
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+    try {
+        // 1️⃣ Verificar si ya existe una sección visible con esa letra y grado (y diferente ID)
+        $query_conflicto = "SELECT id_seccion 
+                            FROM seccion 
+                            WHERE letra = '$letra' 
+                              AND id_grado = $id_grado 
+                              AND visibilidad = 1 
+                              AND id_seccion != $id 
+                            LIMIT 1";
+        $res_conflicto = mysqli_query($this->conn, $query_conflicto);
+
+        if ($res_conflicto && mysqli_num_rows($res_conflicto) > 0) {
+            // Ya existe una sección visible con esa letra → impedir el cambio
+            return "existe";
+        }
+
+        // 2️⃣ Buscar si existe una sección oculta con esa letra y mismo grado
+        $query_oculta = "SELECT id_seccion, letra 
+                         FROM seccion 
+                         WHERE letra = '$letra' 
+                           AND id_grado = $id_grado 
+                           AND visibilidad = 0 
+                         LIMIT 1";
+        $res_oculta = mysqli_query($this->conn, $query_oculta);
+
+        if ($res_oculta && mysqli_num_rows($res_oculta) > 0) {
+            $seccion_oculta = mysqli_fetch_assoc($res_oculta);
+            $id_oculta = (int)$seccion_oculta['id_seccion'];
+
+            // Obtener la letra actual
+            $query_actual = "SELECT letra FROM seccion WHERE id_seccion = $id LIMIT 1";
+            $res_actual = mysqli_query($this->conn, $query_actual);
+            $seccion_actual = mysqli_fetch_assoc($res_actual);
+            $letra_actual = mysqli_real_escape_string($this->conn, $seccion_actual['letra']);
+
+            // 3️⃣ Intercambio seguro con valor temporal
+            mysqli_begin_transaction($this->conn);
+            $temp = uniqid('tmp_');
+            mysqli_query($this->conn, "UPDATE seccion SET letra = '$temp' WHERE id_seccion = $id_oculta");
+            mysqli_query($this->conn, "UPDATE seccion SET letra = '$letra' WHERE id_seccion = $id");
+            mysqli_query($this->conn, "UPDATE seccion SET letra = '$letra_actual' WHERE id_seccion = $id_oculta");
+            mysqli_commit($this->conn);
+
+            return "intercambiado";
+        }
+
+        // 4️⃣ Si no hay conflicto ni sección oculta, actualizar normalmente
+        $query_update = "UPDATE seccion SET letra = '$letra' WHERE id_seccion = $id";
+        mysqli_query($this->conn, $query_update);
+        return "actualizado";
+
+    } catch (mysqli_sql_exception $e) {
+        mysqli_rollback($this->conn);
+        throw $e;
+    }
+}
+    // --- Otras funciones existentes ---
+    // (mantuve las que ya tenías en tu versión original)
     public function obtenerSeccionPorId($id)
     {
         $id = (int)$id;
@@ -65,7 +173,7 @@ class SeccionModelo
     public function obtenerHorarioPorSeccion($id_seccion)
     {
         $id_seccion = (int)$id_seccion;
-        $query = "SELECT * FROM horario WHERE id_seccion = " . $id_seccion;
+        $query = "SELECT * FROM horario WHERE id_seccion = $id_seccion";
         return mysqli_query($this->conn, $query);
     }
 
@@ -74,44 +182,23 @@ class SeccionModelo
         switch ($_SESSION['tipo_cargo']) {
             case 'Administrador':
             case 'directivo':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND s.visibilidad = TRUE";
-
+                $query = "SELECT s.*, g.numero_anio 
+                          FROM seccion AS s 
+                          JOIN grado AS g ON s.id_grado = g.id_grado 
+                          JOIN anio_academico AS aa ON g.id_anio = aa.id_anio 
+                          WHERE aa.estado = 1 AND s.visibilidad = 1";
                 break;
-            case 'inferior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio < 4 AND s.visibilidad = TRUE";
-                break;
-            case 'superior':
-                $query = "SELECT s.*, g.numero_anio FROM seccion AS s JOIN grado AS g ON s.id_grado = g.id_grado JOIN anio_academico AS aa ON g.id_anio = aa.id_anio WHERE aa.estado = 1 AND g.numero_anio > 3 AND s.visibilidad = TRUE";
+            default:
+                $query = "SELECT s.*, g.numero_anio 
+                          FROM seccion AS s 
+                          JOIN grado AS g ON s.id_grado = g.id_grado 
+                          JOIN anio_academico AS aa ON g.id_anio = aa.id_anio 
+                          WHERE aa.estado = 1 AND s.visibilidad = 1";
                 break;
         }
         return mysqli_query($this->conn, $query);
     }
 
-    public function actualizarSeccion($id, $letra, $id_grado)
-    {
-        $id = (int)$id;
-        $letra = mysqli_real_escape_string($this->conn, $letra);
-        $id_grado = (int)$id_grado;
-
-        // Verificar si ya existe una sección con la misma letra e id_grado (excluyendo la actual)
-        $check_query = "SELECT COUNT(*) AS total FROM seccion 
-                    WHERE letra = '$letra' AND id_grado = $id_grado AND id_seccion != $id";
-        $check_result = mysqli_query($this->conn, $check_query);
-
-        if ($check_result && mysqli_fetch_assoc($check_result)['total'] > 0) {
-            // Ya existe una sección con esos datos
-            return "existe";
-        }
-
-        // Si no existe, proceder con la actualización
-        $query = "UPDATE seccion SET letra = '$letra', id_grado = $id_grado WHERE id_seccion = $id";
-
-        try {
-            return mysqli_query($this->conn, $query);
-        } catch (Exception $e) {
-            return false;
-        }
-    }
     public function eliminarSeccion($id)
     {
         $id = (int)$id;
@@ -119,27 +206,7 @@ class SeccionModelo
         return mysqli_query($this->conn, $query);
     }
 
-    public function generarSecciones($cantidad, $id_grado)
-    {
-
-        $query = "SELECT COUNT(*) AS total FROM seccion WHERE id_grado = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id_grado);
-        $stmt->execute();
-        $resultado = $stmt->get_result()->fetch_assoc();
-
-        $cantidad_existente = (int)$resultado['total'];
-
-        if ($cantidad_existente >= 7 || $cantidad_existente + $cantidad > 7) {
-            return "muchos";
-        }
-        for ($i = 0; $i < $cantidad; $i++) {
-            $this->crearSeccion(self::$letras[$i + $cantidad_existente], $id_grado);
-        }
-
-        $stmt->close();
-        return "success";
-    }
+    
     public function actualizarTutor($id_seccion, $id_tutor)
     {
         $id_seccion = (int)$id_seccion;
