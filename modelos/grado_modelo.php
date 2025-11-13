@@ -22,29 +22,37 @@ class GradoModelo
         return null;
     }
 
-    public function generarGrados($cantidad, $id)
+    public function generarGrados($cantidad, $id_anio)
     {
+        $max_grados = 6; // límite total
+        $id_anio = (int)$id_anio;
 
-        $sql = "SELECT COUNT(*) AS total FROM grado WHERE id_anio = ? AND visibilidad = 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
-        $existentes = (int)$result['total'];
+        // Obtener todos los números existentes (visibles u ocultos)
+        $query = "SELECT numero_anio, visibilidad FROM grado WHERE id_anio = $id_anio";
+        $result = mysqli_query($this->conn, $query);
 
-        if ($existentes >= 6 || $existentes + $cantidad > 6) {
-            return "muchos";
+        $existentes = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $existentes[(int)$row['numero_anio']] = (int)$row['visibilidad'];
         }
 
+        $creados = 0;
 
-        $inicio = $existentes + 1;
-        $fin = $existentes + (int)$cantidad;
-
-        for ($i = $inicio; $i <= $fin; $i++) {
-            $this->crearGrado($i, $id);
+        for ($i = 1; $i <= $max_grados && $creados < $cantidad; $i++) {
+            if (!isset($existentes[$i])) {
+                // No existe → crear nuevo
+                $this->crearGrado($i, $id_anio);
+                $creados++;
+            } elseif ($existentes[$i] == 0) {
+                // Existe pero está oculto → reactivar
+                $gradoExistente = $this->buscarPorNumero($i, $id_anio);
+                $id_grado = $gradoExistente['id_grado'];
+                mysqli_query($this->conn, "UPDATE grado SET visibilidad = 1 WHERE id_grado = $id_grado");
+                $creados++;
+            }
         }
 
-        return "success";
+        return $creados > 0 ? "success" : "muchos";
     }
     public function crearGrado($numero_anio, $id_anio)
     {
