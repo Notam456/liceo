@@ -84,9 +84,9 @@ switch ($action) {
                 $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
             } catch (mysqli_sql_exception $e) {
                 if ($e->getCode() == 1062) {
-                    $_SESSION['error'] = "Ya existe un grado con esos datos";
+                    $_SESSION['status'] = "Ya existe un grado con esos datos";
                 } else {
-                    $_SESSION['error'] = "Error al actualizar el grado: " . $e->getMessage();
+                    $_SESSION['status'] = "Error al actualizar el grado: " . $e->getMessage();
                 }
                 $_SESSION['form_data'] = $_POST;
             }
