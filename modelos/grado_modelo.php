@@ -10,7 +10,8 @@ class GradoModelo
         $this->conn = $db;
     }
 
-    public function buscarPorNumero($numero, $id_anio) {
+    public function buscarPorNumero($numero, $id_anio)
+    {
         $numero = mysqli_real_escape_string($this->conn, $numero);
         $id_anio = mysqli_real_escape_string($this->conn, $id_anio);
         $query = "SELECT * FROM grado WHERE numero_anio = '$numero' AND id_anio = '$id_anio'";
@@ -113,13 +114,56 @@ class GradoModelo
     public function actualizarGrado($id, $numero_anio)
     {
         $id = (int)$id;
-        $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
-
-        $query = "UPDATE grado SET numero_anio = '$numero_anio' WHERE id_grado = $id";
+        $numero_anio = (int)$numero_anio; // número, no texto
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
         try {
-            return mysqli_query($this->conn, $query);
+            // Buscar si existe un grado con el mismo número pero visibilidad 0
+            $query_buscar = "SELECT id_grado, numero_anio 
+                         FROM grado 
+                         WHERE numero_anio = $numero_anio 
+                           AND visibilidad = 0
+                           AND id_anio = (
+                                SELECT id_anio 
+                                FROM anio_academico 
+                                WHERE estado = 1
+                                LIMIT 1
+                             ) 
+                         LIMIT 1";
+            $result = mysqli_query($this->conn, $query_buscar);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                $grado_oculto = mysqli_fetch_assoc($result);
+                $id_oculto = (int)$grado_oculto['id_grado'];
+
+                // Obtener el numero_anio actual del grado visible
+                $query_actual = "SELECT numero_anio FROM grado WHERE id_grado = $id LIMIT 1";
+                $res_actual = mysqli_query($this->conn, $query_actual);
+                $grado_actual = mysqli_fetch_assoc($res_actual);
+                $numero_actual = (int)$grado_actual['numero_anio'];
+
+                // Intercambio seguro con valor temporal
+                mysqli_begin_transaction($this->conn);
+
+                // Paso 1: asignar un valor temporal al grado oculto (que no colisione)
+                $temp = -1; // puede ser cualquier número que no exista en la tabla
+                mysqli_query($this->conn, "UPDATE grado SET numero_anio = $temp WHERE id_grado = $id_oculto");
+
+                // Paso 2: actualizar el visible con el número del oculto
+                mysqli_query($this->conn, "UPDATE grado SET numero_anio = $numero_anio WHERE id_grado = $id");
+
+                // Paso 3: actualizar el oculto con el número original del visible
+                mysqli_query($this->conn, "UPDATE grado SET numero_anio = $numero_actual WHERE id_grado = $id_oculto");
+
+                mysqli_commit($this->conn);
+                return true;
+            } else {
+                // Si no hay grado con visibilidad 0, actualizar normalmente
+                $query_update = "UPDATE grado SET numero_anio = $numero_anio WHERE id_grado = $id";
+                return mysqli_query($this->conn, $query_update);
+            }
         } catch (mysqli_sql_exception $e) {
+            mysqli_rollback($this->conn);
             throw $e;
         }
     }
