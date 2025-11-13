@@ -58,7 +58,13 @@ switch ($action) {
             $nombre = $_POST['nombre_materia_edit'];
             $info = $_POST['info_materia_edit'];
             $resultado = $materiaModelo->actualizarMateria($id, $nombre, $info);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+             if ($resultado === true) {
+                $_SESSION['status'] = "Materia actualizada correctamente";
+            } elseif ($resultado === 1062) {
+                $_SESSION['status'] = "Ya existe una materia con ese nombre. Intente con otro.";
+            } else {
+                $_SESSION['status'] = "Error al actualizar materia";
+            }
             header('Location: /liceo/controladores/materia_controlador.php');
             exit();
         }
