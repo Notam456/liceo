@@ -13,7 +13,14 @@ switch ($action) {
             $nombre = $_POST['nombre'];
             $tipo = $_POST['tipo'];
             $resultado = $cargoModelo->crearCargo($nombre, $tipo);
-            $_SESSION['status'] = $resultado ? "Cargo creado correctamente" : "Error al crear el cargo";
+            
+            if ($resultado === 1062 ){
+                $_SESSION['status'] = "Ya existe un cargo con ese nombre. Intente agregar otro";
+            } else if ($resultado) {
+                $_SESSION['status'] = "Cargo creado correctamente.";
+            } else {
+                $_SESSION['status'] = "Error al crear el cargo";
+            }
             header('Location: /liceo/controladores/cargo_controlador.php');
             exit();
         }
@@ -52,7 +59,15 @@ switch ($action) {
             $nombre = $_POST['nombre_edit'];
             $tipo = $_POST['tipo_edit'];
             $resultado = $cargoModelo->actualizarCargo($id, $nombre, $tipo);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+           if ($resultado === 1062 ){
+                $_SESSION['status'] = "Ya existe un cargo con ese nombre. Intente con otro";
+            } else if ($resultado) {
+                $_SESSION['status'] = "Cargo actualizado correctamente.";
+            } else {
+                $_SESSION['status'] = "Error al actualizar el cargo";
+            }
+            header('Location: /liceo/controladores/cargo_controlador.php');
+            exit();
             header('Location: /liceo/controladores/cargo_controlador.php');
             exit();
         }
