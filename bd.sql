@@ -55,6 +55,7 @@ CREATE TABLE grado (
     id_anio INT NOT NULL,
     numero_anio INT NOT NULL,
     visibilidad BOOLEAN DEFAULT TRUE,
+    UNIQUE KEY uq_grado_anio (numero_anio, id_anio),
     FOREIGN KEY (id_anio) REFERENCES anio_academico(id_anio)
           ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -19,18 +19,25 @@ switch ($action) {
                 header('Location: /liceo/controladores/grado_controlador.php');
                 exit();
             }
-            $resultado = $gradoModelo->generarGrados($_POST['cantidad'], $anioActivo['id_anio']);
-            switch ($resultado) {
-                case 'success':
-                    $_SESSION['status'] =  "Grados generados correctamente";
-                    break;
-                
-                case 'muchos':
-                    $_SESSION['status'] =  "Error al generar grados: La cantidad de grados totales es mayor a 6";
-                    break;
-                default:
-                     $_SESSION['status'] = "Error al crear los grados";
-
+            try {
+                $resultado = $gradoModelo->generarGrados($_POST['cantidad'], $anioActivo['id_anio']);
+                switch ($resultado) {
+                    case 'success':
+                        $_SESSION['status'] =  "Grados generados correctamente";
+                        break;
+                    case 'muchos':
+                        $_SESSION['status'] =  "Error al generar grados: La cantidad de grados totales es mayor a 6";
+                        break;
+                    default:
+                        $_SESSION['status'] = "Error al crear los grados";
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe un grado con esos datos";
+                } else {
+                    $_SESSION['error'] = "Error al crear los grados: " . $e->getMessage();
+                }
+                $_SESSION['form_data'] = $_POST;
             }
 
         
@@ -72,8 +79,17 @@ switch ($action) {
         if (isset($_POST['update-data'])) {
             $id = $_POST['idEdit'];
             $numero_anio = $_POST['numero_anio_edit'];
-            $resultado = $gradoModelo->actualizarGrado($id, $numero_anio);
-            $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            try {
+                $resultado = $gradoModelo->actualizarGrado($id, $numero_anio);
+                $_SESSION['status'] = $resultado ? "Datos actualizados correctamente" : "No se pudieron actualizar los datos";
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1062) {
+                    $_SESSION['error'] = "Ya existe un grado con esos datos";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el grado: " . $e->getMessage();
+                }
+                $_SESSION['form_data'] = $_POST;
+            }
             header('Location: /liceo/controladores/grado_controlador.php');
             exit();
         }
@@ -82,8 +98,12 @@ switch ($action) {
     case 'eliminar':
         if (isset($_POST['id'])) {
             $id = $_POST['id'];
-            $resultado = $gradoModelo->eliminarGrado($id);
-            echo $resultado ? "Datos eliminados correctamente" : "Los datos no se han podido eliminar";
+            try {
+                $resultado = $gradoModelo->eliminarGrado($id);
+                echo $resultado ? "Datos eliminados correctamente" : "Los datos no se han podido eliminar";
+            } catch (mysqli_sql_exception $e) {
+                echo "Error al eliminar: " . $e->getMessage();
+            }
         }
         break;
 

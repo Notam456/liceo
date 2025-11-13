@@ -41,7 +41,12 @@ class GradoModelo
         $id_anio = mysqli_real_escape_string($this->conn, $id_anio);
 
         $query = "INSERT INTO grado(numero_anio, id_anio) VALUES ('$numero_anio', '$id_anio')";
-        return mysqli_query($this->conn, $query);
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            throw $e;
+        }
     }
 
     public function obtenerGradoPorId($id)
@@ -85,14 +90,24 @@ class GradoModelo
         $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
 
         $query = "UPDATE grado SET numero_anio = '$numero_anio' WHERE id_grado = $id";
-        return mysqli_query($this->conn, $query);
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            throw $e;
+        }
     }
 
     public function eliminarGrado($id)
     {
         $id = (int)$id;
         $query = "UPDATE grado SET visibilidad = FALSE WHERE id_grado ='$id'";
-        return mysqli_query($this->conn, $query);
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        try {
+            return mysqli_query($this->conn, $query);
+        } catch (mysqli_sql_exception $e) {
+            throw $e;
+        }
     }
 }
 ?>
