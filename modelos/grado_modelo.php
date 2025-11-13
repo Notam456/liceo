@@ -26,15 +26,34 @@ class GradoModelo
     {
         $max_grados = 6; // límite total
         $id_anio = (int)$id_anio;
+        $cantidad = (int)$cantidad;
+        $solicitados = $cantidad; // guardamos lo que pidió el usuario
 
-        // Obtener todos los números existentes (visibles u ocultos)
-        $query = "SELECT numero_anio, visibilidad FROM grado WHERE id_anio = $id_anio";
+        // Obtener todos los números existentes (visibles o no)
+        $query = "SELECT id_grado, numero_anio, visibilidad FROM grado WHERE id_anio = $id_anio";
         $result = mysqli_query($this->conn, $query);
 
         $existentes = [];
+        $visibles = 0;
+
         while ($row = mysqli_fetch_assoc($result)) {
-            $existentes[(int)$row['numero_anio']] = (int)$row['visibilidad'];
+            $numero = (int)$row['numero_anio'];
+            $existentes[$numero] = [
+                'id' => (int)$row['id_grado'],
+                'visibilidad' => (int)$row['visibilidad']
+            ];
+            if ($row['visibilidad'] == 1) {
+                $visibles++;
+            }
         }
+
+        // Si ya tiene el máximo de grados visibles
+        if ($visibles >= $max_grados) {
+            return "maximo alcanzado";
+        }
+
+        // Ajustar la cantidad posible, pero conservar la original
+        $cantidad = min($cantidad, $max_grados - $visibles);
 
         $creados = 0;
 
@@ -43,16 +62,22 @@ class GradoModelo
                 // No existe → crear nuevo
                 $this->crearGrado($i, $id_anio);
                 $creados++;
-            } elseif ($existentes[$i] == 0) {
+            } elseif ($existentes[$i]['visibilidad'] == 0) {
                 // Existe pero está oculto → reactivar
-                $gradoExistente = $this->buscarPorNumero($i, $id_anio);
-                $id_grado = $gradoExistente['id_grado'];
+                $id_grado = $existentes[$i]['id'];
                 mysqli_query($this->conn, "UPDATE grado SET visibilidad = 1 WHERE id_grado = $id_grado");
                 $creados++;
             }
         }
 
-        return $creados > 0 ? "success" : "muchos";
+        // Generar mensaje informativo coherente
+        if ($creados == 0) {
+            return "sin cambios";
+        } elseif ($creados < $solicitados) {
+            return "se crearon $creados de $solicitados grados";
+        } else {
+            return "success";
+        }
     }
     public function crearGrado($numero_anio, $id_anio)
     {

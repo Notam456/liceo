@@ -14,25 +14,32 @@ switch ($action) {
     case 'crear':
         if (isset($_POST['save_data'])) {
             $anioActivo = mysqli_fetch_array($anioModelo->obtenerAnioActivo());
-            if(empty($anioActivo)){
+            if (empty($anioActivo)) {
                 $_SESSION['status'] = 'No existe un año académico activo. Ponte en contacto con el administrador';
                 header('Location: /liceo/controladores/grado_controlador.php');
                 exit();
             }
             try {
                 $resultado = $gradoModelo->generarGrados($_POST['cantidad'], $anioActivo['id_anio']);
-                switch ($resultado) {
-                    case 'success':
-                        $_SESSION['status'] =  "Grados generados correctamente";
+                switch (true) {
+                    case $resultado === 'success':
+                        $_SESSION['status'] = "Grados generados correctamente.";
                         break;
-                    case 'muchos':
-                        $_SESSION['status'] =  "Error al generar grados: La cantidad de grados totales es mayor a 6";
+
+                    case $resultado === 'maximo alcanzado':
+                        $_SESSION['status'] = "Ya existen los 6 grados permitidos.";
                         break;
-                    case '1062':
-                        $_SESSION['status'] = "Error al crear los grados: grados duplicados";
+
+                    case $resultado === 'sin cambios':
+                        $_SESSION['status'] = "No se realizaron cambios, todos los grados ya están activos.";
                         break;
+
+                    case preg_match('/^se crearon \d+ de \d+ grados$/', $resultado):
+                        $_SESSION['status'] = ucfirst($resultado) . ".";
+                        break;
+
                     default:
-                        $_SESSION['status'] = $resultado;
+                        $_SESSION['status'] = "Error al generar grados: $resultado";
                 }
             } catch (mysqli_sql_exception $e) {
                 if ($e->getCode() == 1062) {
@@ -43,7 +50,7 @@ switch ($action) {
                 $_SESSION['form_data'] = $_POST;
             }
 
-        
+
             header('Location: /liceo/controladores/grado_controlador.php');
             exit();
         }
@@ -55,7 +62,7 @@ switch ($action) {
             $resultado = $gradoModelo->obtenerGradoPorId($id);
             if (mysqli_num_rows($resultado) > 0) {
                 $row = mysqli_fetch_array($resultado);
-                
+
                 include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/modals/grado_modal_view.php');
             } else {
 
@@ -70,7 +77,7 @@ switch ($action) {
             $id = $_POST['id'];
             $resultado = $gradoModelo->obtenerGradoPorId($id);
             $data = [];
-            while($row = mysqli_fetch_assoc($resultado)) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
                 $data[] = $row;
             }
             header('Content-Type: application/json');
@@ -116,4 +123,3 @@ switch ($action) {
         include_once($_SERVER['DOCUMENT_ROOT'] . '/liceo/vistas/grado_vista.php');
         break;
 }
-?>
