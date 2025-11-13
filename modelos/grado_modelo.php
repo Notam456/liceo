@@ -2,44 +2,70 @@
 
 class GradoModelo
 {
-    
+
     private $conn;
-    
+
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
-   public function generarGrados($cantidad, $id)
-{
-
-    $sql = "SELECT COUNT(*) AS total FROM grado WHERE id_anio = ?";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-
-    $existentes = (int)$result['total'];
-
-    if ($existentes >= 6 || $existentes + $cantidad > 6) {
-        return "muchos";
+    public function buscarPorNumero($numero, $id_anio) {
+        $numero = mysqli_real_escape_string($this->conn, $numero);
+        $id_anio = mysqli_real_escape_string($this->conn, $id_anio);
+        $query = "SELECT * FROM grado WHERE numero_anio = '$numero' AND id_anio = '$id_anio'";
+        $result = mysqli_query($this->conn, $query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }
+        return null;
     }
 
-    
-    $inicio = $existentes + 1;
-    $fin = $existentes + (int)$cantidad;
+    public function generarGrados($cantidad, $id)
+    {
 
-    for ($i = $inicio; $i <= $fin; $i++) {
-        $this->crearGrado($i, $id);
+        $sql = "SELECT COUNT(*) AS total FROM grado WHERE id_anio = ? AND visibilidad = 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $existentes = (int)$result['total'];
+
+        if ($existentes >= 6 || $existentes + $cantidad > 6) {
+            return "muchos";
+        }
+
+
+        $inicio = $existentes + 1;
+        $fin = $existentes + (int)$cantidad;
+
+        for ($i = $inicio; $i <= $fin; $i++) {
+            $this->crearGrado($i, $id);
+        }
+
+        return "success";
     }
-
-    return "success";
-}
     public function crearGrado($numero_anio, $id_anio)
     {
         $numero_anio = mysqli_real_escape_string($this->conn, $numero_anio);
         $id_anio = mysqli_real_escape_string($this->conn, $id_anio);
 
+        $gradoExistente = $this->buscarPorNumero($numero_anio, $id_anio);
+
+        if ($gradoExistente) {
+            if ($gradoExistente['visibilidad'] == 0) {
+                $id_grado = $gradoExistente['id_grado'];
+                $query = "UPDATE grado SET numero_anio = '$numero_anio', visibilidad = TRUE WHERE id_grado = $id_grado";
+                try {
+                    mysqli_query($this->conn, $query);
+                    return true;
+                } catch (mysqli_sql_exception $e) {
+                    return false;
+                }
+            } else {
+                return 1062;
+            }
+        }
         $query = "INSERT INTO grado(numero_anio, id_anio) VALUES ('$numero_anio', '$id_anio')";
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         try {
@@ -110,4 +136,3 @@ class GradoModelo
         }
     }
 }
-?>

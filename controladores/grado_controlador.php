@@ -28,14 +28,17 @@ switch ($action) {
                     case 'muchos':
                         $_SESSION['status'] =  "Error al generar grados: La cantidad de grados totales es mayor a 6";
                         break;
+                    case '1062':
+                        $_SESSION['status'] = "Ya existe un grado con esos datos";
+                        break;
                     default:
-                        $_SESSION['status'] = "Error al crear los grados";
+                        $_SESSION['status'] = $resultado;
                 }
             } catch (mysqli_sql_exception $e) {
                 if ($e->getCode() == 1062) {
-                    $_SESSION['error'] = "Ya existe un grado con esos datos";
+                    $_SESSION['status'] = "Ya existe un grado con esos datos";
                 } else {
-                    $_SESSION['error'] = "Error al crear los grados: " . $e->getMessage();
+                    $_SESSION['status'] = "Error al crear los grados: " . $e->getMessage();
                 }
                 $_SESSION['form_data'] = $_POST;
             }
